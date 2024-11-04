@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuckI", "DuckI.csproj", "{ABF59F90-41C6-4109-BAB9-14CC34623767}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABF59F90-41C6-4109-BAB9-14CC34623767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABF59F90-41C6-4109-BAB9-14CC34623767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABF59F90-41C6-4109-BAB9-14CC34623767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABF59F90-41C6-4109-BAB9-14CC34623767}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
