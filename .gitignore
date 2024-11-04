@@ -1,14 +1,6 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs
+﻿/.vs
 /.idea
 /IzvorniKod/.vs
 /IzvorniKod/.idea
-/IzvorniKod/Data/bin
-/IzvorniKod/Data/obj
-/IzvorniKod/DuckI.Server/bin
-/IzvorniKod/DuckI.Server/obj
-/IzvorniKod/ducki.client/bin
-/IzvorniKod/ducki.client/obj
+/IzvorniKod/obj
+/IzvorniKod/bin
