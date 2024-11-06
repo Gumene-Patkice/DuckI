@@ -25,6 +25,13 @@ public class CalendarService : ICalendarService
     {
         if (file != null && file.Length > 0)
         {
+            
+            var fileExtension = Path.GetExtension(file.FileName);
+            if (fileExtension != ".csv")
+            {
+                throw new InvalidOperationException("Invalid file type. Only .csv files are allowed.");
+            }
+            
             var existingUserCalendar = _context.UserCalendars.FirstOrDefault(uc => uc.UserId == userId);
 
             if (existingUserCalendar != null)
