@@ -3,18 +3,44 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
- @{
+@{
     ViewData["Title"] = "Home Page";
+    var uploadSuccess = TempData["UploadSuccess"] as bool?;
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome To DuckI</h1>
 </div>
 
-@if(User.IsInRole("Student"))
+@if (User.IsInRole("Student"))
 {
     <div class="text-center">
         <h1 class="display-4">Student</h1>
         <p>Enjoy your stay!</p>
     </div>
+    <div class="text-center">
+        <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
+    </div>
+    <div class="text-center">
+        <button id="fetchCalendarButton" class="btn btn-primary">Fetch Calendar</button>
+    </div>
+    <div id="calendarContent" class="text-center mt-3"></div>
+}
+
+@section Scripts {
+    <script>
+        document.getElementById('fetchCalendarButton').addEventListener('click', async function() {
+            const response = await fetch('/api/calendars/getcalendar');
+            if (response.ok) {
+                const csvContent = await response.text();
+                document.getElementById('calendarContent').innerText = csvContent;
+            } else {
+                document.getElementById('calendarContent').innerText = 'Failed to fetch calendar.';
+            }
+        });
+        @if (uploadSuccess == true)
+        {
+            <text>alert('File successfully updated!');</text>
+        }
+    </script>
 }
