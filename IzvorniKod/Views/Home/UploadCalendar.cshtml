@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "Upload Calendar";
+}
+
+<h2>Upload Calendar</h2>
+
+<form asp-action="UploadCalendar" asp-controller="Home" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">Choose CSV file</label>
+        <input type="file" name="file" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
