@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using DuckI.Data;
 using Microsoft.AspNetCore.Mvc;
 using DuckI.Models;
 using DuckI.Services;
@@ -37,17 +36,21 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
+    ///<summary>Render UploadCalendar view</summary>
     [HttpGet]
     public IActionResult UploadCalendar()
     {
         return View();
     }
 
+    ///<summary>Upload a calendar file route</summary>
     [HttpPost]
     public async Task<IActionResult> UploadCalendar(IFormFile file)
     {
+        // check if the file is uploaded
         if (file != null && file.Length > 0)
         {
+            // get userId and upload calendar for the user
             var userId = _userManager.GetUserId(User);
             await _calendarService.UploadCalendarAsync(file, userId);
             TempData["UploadSuccess"] = true;
@@ -56,6 +59,8 @@ public class HomeController : Controller
         {
             TempData["UploadSuccess"] = false;
         }
+        
+        // redirect to the Index page
         return RedirectToAction("Index");
     }
 }

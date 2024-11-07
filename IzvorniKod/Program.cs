@@ -17,6 +17,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+// registering the CalendarService
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 
 // Configuring Identity options for password, lockout, user
