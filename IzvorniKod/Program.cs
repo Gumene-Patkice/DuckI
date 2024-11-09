@@ -84,10 +84,13 @@ else
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseMiddleware<GlobalErrorHandeler>();
 
 app.UseAuthentication();
 app.UseAuthorization();
