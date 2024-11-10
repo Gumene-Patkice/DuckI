@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Net;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using DuckI.Exceptions;
+using DuckI.Helpers;
 
 public class GlobalErrorHandeler
 {
@@ -14,12 +17,29 @@ public class GlobalErrorHandeler
     {
         try
         {
-            await _next(context); // Call the next middleware
+            await _next(context); 
         }
         catch (Exception ex)
         {
-            // Handle the exception and redirect as needed
-            context.Response.Redirect("/Home/UploadCalendar");
+            await HandleExceptionAs(context, ex);
         }
     }
-}
+
+    private async Task HandleExceptionAs(HttpContext context, Exception exception)
+    {
+        ExceptionResponse response;
+        switch (exception)
+        {
+            case WrongFileFormatException:
+                response = new ExceptionResponse(HttpStatusCode.Forbidden, exception.Message);
+                break;
+            default:
+                response = new ExceptionResponse(HttpStatusCode.InternalServerError, exception.Message);
+                break;
+        }
+
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)response.Status;
+        await context.Response.WriteAsync(response.ToJson());
+    }
+} 

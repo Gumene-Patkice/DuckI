@@ -90,10 +90,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseMiddleware<GlobalErrorHandeler>();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalErrorHandeler>();
 
 app.MapControllerRoute(
     name: "default",
