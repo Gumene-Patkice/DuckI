@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using DuckI.Exceptions;
 using DuckI.Helpers;
 
-public class GlobalErrorHandeler
+public class GlobalErrorHandler
 {
     private readonly RequestDelegate _next;
 
-    public GlobalErrorHandeler(RequestDelegate next)
+    public GlobalErrorHandler(RequestDelegate next)
     {
         _next = next;
     }

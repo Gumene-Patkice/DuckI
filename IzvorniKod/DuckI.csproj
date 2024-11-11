@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.10" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.10" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />
@@ -24,10 +28,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Files\Calendars\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="app.db" />
     </ItemGroup>
 
 </Project>

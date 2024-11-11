@@ -93,7 +93,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<GlobalErrorHandeler>();
+app.UseMiddleware<GlobalErrorHandler>();
 
 app.MapControllerRoute(
     name: "default",
