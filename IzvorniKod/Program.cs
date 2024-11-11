@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DuckI.Data;
 using DuckI.Services;
+using DuckI.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +85,7 @@ else
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -91,6 +93,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalErrorHandler>();
 
 app.MapControllerRoute(
     name: "default",
