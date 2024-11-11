@@ -1,8 +1,8 @@
 ﻿using System.Net;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 using DuckI.Exceptions;
 using DuckI.Helpers;
+
+namespace DuckI.Helpers;
 
 public class GlobalErrorHandler
 {

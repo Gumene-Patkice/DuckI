@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DuckI.Data;
 using DuckI.Services;
+using DuckI.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
