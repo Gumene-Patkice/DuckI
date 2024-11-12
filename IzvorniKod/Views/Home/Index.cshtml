@@ -172,5 +172,10 @@
             const monthLabel = document.getElementById('monthLabel');
             monthLabel.innerText = `${monthNames[month]} ${year}`;
         }
+
+        @if (uploadSuccess == true)
+        {
+        <text>alert('File successfully updated!');</text>
+        }
     </script>
 }
