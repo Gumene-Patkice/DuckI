@@ -60,7 +60,6 @@
 
     .event-container {
         max-height: 60px;
-        overflow-y: auto;
         width: 100%;
     }
 
@@ -189,7 +188,7 @@
 
             // Create the event container (initially empty)
             const eventContainer = document.createElement('div');
-            eventContainer.classList.add('event-container', 'd-flex', 'flex-column', 'align-items-center', 'w-100', 'overflow-scroll');
+            eventContainer.classList.add('event-container', 'd-flex', 'flex-column', 'align-items-center', 'w-100');
             dayCell.appendChild(eventContainer);
 
             return dayCell;
