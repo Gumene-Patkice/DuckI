@@ -67,7 +67,7 @@
             // Update the displayed month name
             updateMonthLabel();
 
-            const response = await fetch(`/api/calendars/getcalendar?year=${year}&month=${month + 1}`);
+            const response = await fetch(`/api/calendars/getcalendar`);
 
             if (response.ok) {
                 // Show the calendar controls (buttons, headers, etc.)
