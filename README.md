@@ -1,35 +1,56 @@
 # Programsko inženjerstvo
 
-> Ime projekta u naslovu ima cilj opisati namjenu projekta te pomoći u podizanju početnog interesa za projekt prezentirajući osnovnu svrhu projekta.
-> Isključivo ovisi o Vama!
-> 
-> Naravno, nijedan predložak nije idealan za sve projekte jer su potrebe i ciljevi različiti. Ne bojte se naglasiti Vaš cilj u ovoj početnoj stranici projekta, podržat ćemo ga bez obzira usredotočili se Vi više na tenologiju ili marketing.
-> 
-> Zašto ovaj dokument? Samo manji dio timova je do sada propoznao potrebu (a i meni je lakše pratiti Vaš rad).  
-
 # Opis projekta
-Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu. 
+Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
 
-Kratko opisati cilj Vašeg projekta. Vaša motivacija?  (Napomena: odgovor nije »Zato što je to bio zadatak i nismo imali ideje za drugo.«). Koji problem rješavate?
-> Obzirom da je ovo zadani projekt navedite i što želite/jeste novo  naučili.
+Kao projektni zadatak izvodit će se aplikacija za pomoć pri učenju u obliku AI asistenta. Koristeći materijale tekstualnih oblika poput PDF, AI asistent bi kreirao brojan sadržaj s kojim bi se korisnik mogao bolje shvatiti određenu temu uz osjećaj personaliziranog podučavanja. Uz studente aplikaciju bi koristili i edukatori koji bi imali mogućnost objavljivanja svog sadržaja, resursa i materijala koje može koristiti student ili ih AI asistent može koristiti kao izvor podataka. Nad edukatorima nadgledaju i administratori čija je uloga provjeravati točnost sadržaja koji su dodali edukatori. 
 
-> Dobro izrađen opis omogućuje vam da pokažete svoj rad drugim programerima, kao i potencijalnim poslodavcima. Ne samo da prvi dojam na stranici opisa često razlikuje dobar projekt od lošeg projekta već i predstavlja dobru praksu koju morate savladati.
+Studentu aplikacija služi za spremište i upravljanje svojim materijalima. Kada će student htjeti interakciju s AI asistentom, generirali bi se resursi u obliku raznih zadataka, „flashcards“-ova, te ostalih oblika učenja koje bi studentu pomogle pri savladavanju određenih tema. Kao izvore podataka bi se koristili upravo materijali koji su spremljeni na aplikaciju, tako da se svakome studentu može kreirati točno taj sadržaj koji njemu treba.
+
+AI asistent je izveden pomoću Google Gemini 1.5 Flash modela. Model će primati dokumente (poput PDF-a), te na temelju njih stvoriti sadržaj, zadatke i ostale resurse koji bi pomogli studentu. Student sam bira dokumente iz kojih želi generirati sadržaj.
+
+Uz studenta, aplikacijom se mogu koristiti i edukatori koji bi imali mogućnost kreacije i dodavanje svojih materijala za koje oni smatraju da bi mogli pomoći studentu, te se student može pretplatiti na dodatne materijale što bi omogućilo AI asistentu da se služi s tim materijalima pri generaciji.
+
+Nad edukatorima bi mogao nadzirati administrator koji se bavi pregledom sadržaja i rada edukatora te se bavi prijavama, poput neispravnog sadržaja ili sličnog. Oni bi odobravali edukatore, resurse i bavili time da je sadržaj aplikacije i rad edukatora validan.
+
+Svi korisnici aplikacije se moraju prijaviti i potvrditi svoj identitet, te je u tu svrhu korištena OAuth2 autentifikacija. Responzivnost će biti ostvarena pomoću modernih alata poput React, Typescripta te Tailwind CSS-a. U tu svrhu, koristit će se principi responzivnog dizajna za dinamičku prilagodbu korisničkog sučelja različitim veličinama i razlučivostima zaslona.
+
+Aplikacija također sadrži kalendar koji studentima služi za upravljanje s vremenom.
+
+U kalendar mogu staviti unos rasporeda ispita.
+Studenti mogu ostaviti recenzije o materijalima, na bazi tih recenzija se odabiru najprimjereniji materijali za učenje.
+
+# Cilj i motivacija? 
+Ideja iza projekta je napraviti aplikaciju koja može pomoći prosječnome studentu/učeniku uz pomoć AI asistenta raditi prilagođene materijale za učenje te učiniti učenje pristupačnijim,
+također s dodatkom edukatora u sistem ova aplikacija može se lagano prilagoditi na rad u učionici gdje edukator radi i bira koje materijale učenici/studenti trebaju koristiti za učenje za ispit.
 
 # Funkcijski zahtjevi
-> Navedite ključne zahtjeve Vašeg projekta.
+| ID zahtjeva | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
+|-------------|------|-----------|-------|------------------------|
+| F-001 | Sustav omogućuje korisnicima registraciju putem e-mail adrese ili OAuth2 autentifikacije. | Visok | Zahtjev dionika | Korisnik može kreirati račun putem e-maila, primiti potvrdu i uspješno se prijaviti. |
+| F-002 | Sustav omogućuje studentima dodavanje vlastitih materijala (PDF, tekstualne datoteke) u osobni profil. | Visok | Zahtjev dionika | Student može uspješno prenijeti materijale i pregledati ih unutar aplikacije. |
+| F-003 | Sustav omogućuje generiranje personaliziranih zadataka i “flashcards”-a iz odabranih materijala putem AI asistenta. | Visok | Specifikacija projekta | Na temelju priloženih materijala, AI kreira prilagođeni sadržaj za korisnika. |
+| F-004 | Edukatori mogu objavljivati dodatne obrazovne resurse dostupne studentima. | Srednji | Povratne informacije korisnika | Edukator može uspješno dodati resurse, a studenti ih mogu pregledati i koristiti. |
+| F-005 | Revieweri mogu pregledati i brisati sadržaj objavljen od strane edukatora. | Visok | Zahtjev dionika | Reviewer može uspješno pregledati i potvrditi/odbiti dodane resurse. |
+| F-006 | Aplikacija omogućuje studentima pregled rasporeda ispita kroz kalendar. | Srednji | Specifikacija projekta | Student može dodati termine ispita u kalendar i pregledati ih kasnije. |
+| F-007 | Sustav omogućuje korisnicima ocjenjivanje materijala. | Srednji | Specifikacija projekta | Korisnik može ostaviti recenziju na materijal, a najbolji materijali se prikazuju kao preporučeni. |
+| F-008 | Student može uploadati kalendar u obliku CSV datoteke. | Srednji | Zahtjev dionika | Student može uspješno prenijeti CSV datoteku, a sustav je prikazuje u osobnom kalendaru unutar aplikacije. |
+| F-009 | Korisnici mogu brisati vlastiti sadržaj s aplikacije. | Visok | Zahtjev dionika | Korisnici mogu uspješno ukloniti svoj preneseni sadržaj iz aplikacije. |
+| F-010 | Administrator može odobravati nove edukatore na sustavu. | Visok | Zahtjev dionika | Administrator može pregledati i odobriti/odbiti zahtjeve edukatora za pridruživanje sustavu. |
+| F-011 | Reviewer i administrator nadgledaju i brišu nepremjerene i neispravne recenzije. | Nizak | Zahtjev dionika | Reviewer i administrator mogu brisati recenzije. |
+
 
 
 # Tehnologije
 
-Frontend - React JS
+Frontend - React JS, jquery, bootstrap
 
 Backend - ASP .NET
 
-Database - PostgreSQL
+Database - SQLite
 
 Project Management - JIRA + Confluence
 
-#Instalcija
 # Članovi tima 
 
 Filip Belina - Prject Lead
@@ -49,7 +70,8 @@ Jan Badel - Frontend Engineer
 
 
 # Kontribucije
->Pravila ovise o organizaciji tima i su često izdvojena u CONTRIBUTING.md
+
+Kontribucije su vidljive i opisane u Confluence dokumentaciji.
 
 
 
@@ -58,17 +80,8 @@ Kao studenti sigurno ste upoznati s minimumom prihvatljivog ponašanja definiran
 Očekujemo da ćete poštovati [etički kodeks IEEE-a](https://www.ieee.org/about/corporate/governance/p7-8.html) koji ima važnu obrazovnu funkciju sa svrhom postavljanja najviših standarda integriteta, odgovornog ponašanja i etičkog ponašanja u profesionalnim aktivnosti. Time profesionalna zajednica programskih inženjera definira opća načela koja definiranju  moralni karakter, donošenje važnih poslovnih odluka i uspostavljanje jasnih moralnih očekivanja za sve pripadnike zajenice.
 
 Kodeks ponašanja skup je provedivih pravila koja služe za jasnu komunikaciju očekivanja i zahtjeva za rad zajednice/tima. Njime se jasno definiraju obaveze, prava, neprihvatljiva ponašanja te  odgovarajuće posljedice (za razliku od etičkog kodeksa). U ovom repozitoriju dan je jedan od široko prihvačenih kodeks ponašanja za rad u zajednici otvorenog koda.
->### Poboljšajte funkcioniranje tima:
->* definirajte načina na koji će rad biti podijeljen među članovima grupe
->* dogovorite kako će grupa međusobno komunicirati.
->* ne gubite vrijeme na dogovore na koji će grupa rješavati sporove primjenite standarde!
->* implicitno podrazmijevamo da će svi članovi grupe slijediti kodeks ponašanja.
- 
->###  Prijava problema
->Najgore što se može dogoditi je da netko šuti kad postoje problemi. Postoji nekoliko stvari koje možete učiniti kako biste najbolje riješili sukobe i probleme:
->* Obratite mi se izravno [e-pošta](mailto:vlado.sruk@fer.hr) i  učinit ćemo sve što je u našoj moći da u punom povjerenju saznamo koje korake trebamo poduzeti kako bismo riješili problem.
->* Razgovarajte s vašim asistentom jer ima najbolji uvid u dinamiku tima. Zajedno ćete saznati kako riješiti sukob i kako izbjeći daljnje utjecanje u vašem radu.
->* Ako se osjećate ugodno neposredno razgovarajte o problemu. Manje incidente trebalo bi rješavati izravno. Odvojite vrijeme i privatno razgovarajte s pogođenim članom tima te vjerujte u iskrenost.
+
+Pri početku projekta podijeljene su uloge u timu te opisana očekivanja od svake uloge, tokom rađenja projekta svako se držao dodijeljene uloge.
 
 # 📝 Licenca
 Važeča (1)
