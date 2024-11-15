@@ -9,15 +9,14 @@ Studentu aplikacija služi za spremište i upravljanje svojim materijalima. Kada
 
 AI asistent je izveden pomoću Google Gemini 1.5 Flash modela. Model će primati dokumente (poput PDF-a), te na temelju njih stvoriti sadržaj, zadatke i ostale resurse koji bi pomogli studentu. Student sam bira dokumente iz kojih želi generirati sadržaj.
 
-Uz studenta, aplikacijom se mogu koristiti i edukatori koji bi imali mogućnost kreacije i dodavanje svojih materijala za koje oni smatraju da bi mogli pomoći studentu, te se student može pretplatiti na dodatne materijale što bi omogućilo AI asistentu da se služi s tim materijalima pri generaciji.
+Uz studenta, aplikacijom se mogu koristiti i edukatori koji bi imali mogućnost kreiranja i dodavanja svojih materijala za koje oni smatraju da bi mogli pomoći studentu, te se student može pretplatiti na dodatne materijale što bi omogućilo AI asistentu da se služi s tim materijalima pri generiranju sadržaja.
 
-Nad edukatorima bi mogao nadzirati administrator koji se bavi pregledom sadržaja i rada edukatora te se bavi prijavama, poput neispravnog sadržaja ili sličnog. Oni bi odobravali edukatore, resurse i bavili time da je sadržaj aplikacije i rad edukatora validan.
+Edukatore nadzire administrator koji se bavi pregledom sadržaja i rada edukatora, te se bavi prijavama, poput neispravnog sadržaja ili sličnog. Oni bi odobravali edukatore, resurse i bavili time da je sadržaj aplikacije i rad edukatora u skladu sa pravilima ponašanja.
 
 Svi korisnici aplikacije se moraju prijaviti i potvrditi svoj identitet, te je u tu svrhu korištena OAuth2 autentifikacija. Responzivnost će biti ostvarena pomoću modernih alata poput React, Typescripta te Tailwind CSS-a. U tu svrhu, koristit će se principi responzivnog dizajna za dinamičku prilagodbu korisničkog sučelja različitim veličinama i razlučivostima zaslona.
 
-Aplikacija također sadrži kalendar koji studentima služi za upravljanje s vremenom.
+Aplikacija također sadrži kalendar preko kojega studenti mogu upravljati svoj raspored sati. Mogu staviti svoj predefinirani raspored iz .csv datoteke ili izraditi svoj klikanjem na željene datume.
 
-U kalendar mogu staviti unos rasporeda ispita.
 Studenti mogu ostaviti recenzije o materijalima, na bazi tih recenzija se odabiru najprimjereniji materijali za učenje.
 
 # Cilj i motivacija? 
@@ -59,7 +58,7 @@ Jakov Lovaković - Backend Team Lead
 
 Jan Lalić - Backend Engineer
 
-Leo Marušić - DevOps/Database Engineer
+Leo Marušić - DevOps Engineer
 
 Mislav Marinović - Lead design
 
