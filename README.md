@@ -52,7 +52,7 @@ Project Management - JIRA + Confluence
 
 # Članovi tima 
 
-Filip Belina - Prject Lead
+Filip Belina - Project Lead
 
 Jakov Lovaković - Backend Team Lead
 
