@@ -13,7 +13,7 @@ Uz studenta, aplikacijom se mogu koristiti i edukatori koji bi imali mogućnost 
 
 Edukatore nadzire administrator koji se bavi pregledom sadržaja i rada edukatora, te se bavi prijavama, poput neispravnog sadržaja ili sličnog. Oni bi odobravali edukatore, resurse i bavili time da je sadržaj aplikacije i rad edukatora u skladu sa pravilima ponašanja.
 
-Svi korisnici aplikacije se moraju prijaviti i potvrditi svoj identitet, te je u tu svrhu korištena OAuth2 autentifikacija. Responzivnost će biti ostvarena pomoću modernih alata poput React, Typescripta te Tailwind CSS-a. U tu svrhu, koristit će se principi responzivnog dizajna za dinamičku prilagodbu korisničkog sučelja različitim veličinama i razlučivostima zaslona.
+Svi korisnici aplikacije se moraju prijaviti i potvrditi svoj identitet, te je u tu svrhu korištena OAuth2 autentifikacija. Responzivnost će biti ostvarena pomoću modernih alata poput JavaScript-a i Bootstrap CSS-a. U tu svrhu, koristit će se principi responzivnog dizajna za dinamičku prilagodbu korisničkog sučelja različitim veličinama i razlučivostima zaslona.
 
 Aplikacija također sadrži kalendar preko kojega studenti mogu upravljati svoj raspored sati. Mogu staviti svoj predefinirani raspored iz .csv datoteke ili izraditi svoj klikanjem na željene datume.
 
@@ -42,7 +42,7 @@ također s dodatkom edukatora u sistem ova aplikacija može se lagano prilagodit
 
 # Tehnologije
 
-Frontend - React JS, jquery, bootstrap
+Frontend - jQuery, Bootstrap
 
 Backend - ASP .NET
 
