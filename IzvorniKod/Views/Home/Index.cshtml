@@ -1,9 +1,4 @@
-﻿<!-- This has to be added if we want to perform role based operations in the view -->
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
-
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
     var uploadSuccess = TempData["UploadSuccess"] as bool?;
 }

@@ -24,6 +24,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
+        <PackageReference Include="Mscc.GenerativeAI" Version="1.9.5" />
     </ItemGroup>
 
     <ItemGroup>

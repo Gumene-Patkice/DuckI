@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.RegularExpressions;
 
 namespace DuckI.Areas.Identity.Pages.Account.Manage
 {
@@ -49,12 +50,36 @@ namespace DuckI.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        public class UsernameAttribute : ValidationAttribute
+        {
+            protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+            {
+                if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
+                {
+                    return new ValidationResult("Username is required.");
+                }
+
+                var username = value.ToString();
+                var regex = new Regex(@"^[a-zA-Z0-9]+$"); // Only allow alphanumeric characters
+
+                if (!regex.IsMatch(username))
+                {
+                    return new ValidationResult("Username can only contain alphanumeric characters.");
+                }
+
+                return ValidationResult.Success;
+            }
+        }
         public class InputModel
         {
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            [Username]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+            
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -97,6 +122,20 @@ namespace DuckI.Areas.Identity.Pages.Account.Manage
             {
                 await LoadAsync(user);
                 return Page();
+            }
+            
+            var userName = await _userManager.GetUserNameAsync(user);
+            if (Input.Username != userName)
+            {
+                var setUsernameResult = await _userManager.SetUserNameAsync(user, Input.Username);
+                if (!setUsernameResult.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set username.";
+                    return RedirectToPage();
+                }
+            }
+            {
+                
             }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);

@@ -1,6 +1,7 @@
 using DuckI.Data;
 using DuckI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace DuckI.Services;
 
@@ -74,7 +75,23 @@ public class CalendarService : ICalendarService
             
             // Directory.GetCurrentDirectory()
             // using id to name calendar files to avoid problems if two users have the same file name
-            var filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\Calendars", userId + ".csv");
+            var filePath = "";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/Calendars")))
+                {
+                    Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/Calendars"));
+                }
+                filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/Calendars", userId + ".csv");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\Calendars")))
+                {
+                    Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\Calendars"));
+                }
+                filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\Calendars", userId + ".csv");
+            }
 
             // save the file to the directory
             using (var stream = new FileStream(filePath, FileMode.Create))
