@@ -138,7 +138,30 @@ public class RegisterModel : PageModel
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    var userCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    userCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(userCode));
+                    code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(userCode));
+                    await _userManager.ConfirmEmailAsync(user, code);
+                    await _userManager.AddToRoleAsync(user, "Student");
+                    var firstLogin = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, false, false);
+                    if (firstLogin.Succeeded)
+                    {
+                        _logger.LogInformation("User logged in.");
+                        return LocalRedirect(returnUrl);
+                    }
+
+                    if (firstLogin.RequiresTwoFactor)
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = false });
+                    if (firstLogin.IsLockedOut)
+                    {
+                        _logger.LogWarning("User account locked out.");
+                        return RedirectToPage("./Lockout");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
                 }
                 else
                 {

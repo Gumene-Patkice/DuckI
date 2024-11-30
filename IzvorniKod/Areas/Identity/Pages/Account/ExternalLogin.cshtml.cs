@@ -179,7 +179,13 @@ namespace DuckI.Areas.Identity.Pages.Account
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {
-                            return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
+                            var userCode = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                            userCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(userCode));
+                            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(userCode));
+                            await _userManager.ConfirmEmailAsync(user, code);
+                            await _userManager.AddToRoleAsync(user, "Student");
+                            await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                            return LocalRedirect(returnUrl);
                         }
 
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);

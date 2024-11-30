@@ -1,0 +1,19 @@
+﻿@page
+@model DuckI.Views.Home.ChatModel
+@{
+    ViewBag.Title = "Chat";
+    Layout = "_Layout";
+}
+<link rel="stylesheet" href="~/css/chat.css" asp-append-version="true"/>
+<script src="~/js/chat.js" asp-append-version="true"></script>
+
+<h2>Welcome to chat with Gemini</h2>
+<form method="post">
+    <div class="form-group">
+        <label for="prompt">Enter your prompt:</label>
+        <input type="text" id="prompt" name="Prompt" class="form-control" />
+    </div>
+    <button type="submit" id="sendButton" class="btn btn-primary">Submit</button>
+</form>
+<br/>
+<p id="response"></p>

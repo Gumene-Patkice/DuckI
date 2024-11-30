@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace DuckI.Areas.Identity.Pages.Account;
 
@@ -98,6 +100,26 @@ public class LoginModel : PageModel
 
         ReturnUrl = returnUrl;
     }
+    
+    // Custom SignInManager had to be made because user can change their username, but the default SignInManager uses email as username
+    public class CustomSignInManager : SignInManager<IdentityUser>
+    {
+        public CustomSignInManager(UserManager<IdentityUser> userManager, IHttpContextAccessor contextAccessor, IUserClaimsPrincipalFactory<IdentityUser> claimsFactory, IOptions<IdentityOptions> optionsAccessor, ILogger<SignInManager<IdentityUser>> logger, IAuthenticationSchemeProvider schemes, IUserConfirmation<IdentityUser> confirmation)
+            : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes, confirmation)
+        {
+        }
+
+        public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
+        {
+            var user = await UserManager.FindByEmailAsync(userName);
+            if (user == null)
+            {
+                return SignInResult.Failed;
+            }
+
+            return await PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure);
+        }
+    }
 
     public async Task<IActionResult> OnPostAsync(string returnUrl = null)
     {
@@ -107,12 +129,22 @@ public class LoginModel : PageModel
 
         if (ModelState.IsValid)
         {
+            // Create an instance of CustomSignInManager
+            var customSignInManager = new CustomSignInManager(
+                _signInManager.UserManager,
+                HttpContext.RequestServices.GetService<IHttpContextAccessor>(),
+                HttpContext.RequestServices.GetService<IUserClaimsPrincipalFactory<IdentityUser>>(),
+                HttpContext.RequestServices.GetService<IOptions<IdentityOptions>>(),
+                HttpContext.RequestServices.GetService<ILogger<SignInManager<IdentityUser>>>(),
+                HttpContext.RequestServices.GetService<IAuthenticationSchemeProvider>(),
+                HttpContext.RequestServices.GetService<IUserConfirmation<IdentityUser>>()
+            );
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, false);
+            var result = await customSignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, false);
             if (result.Succeeded)
             {
-                _logger.LogInformation("User logged in.");
+                _logger.LogInformation("User "+ Input.Email +" logged in.");
                 return LocalRedirect(returnUrl);
             }
 

@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+    //This has to be added if we want to perform role based operations in the view
+}
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -25,6 +31,11 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
+                    @if (SignInManager.IsSignedIn(User)) {
+                     <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Chat">Chat</a>   
+                     </li>
+                     }
                 </ul>
                 <partial name="_LoginPartial"/>
             </div>

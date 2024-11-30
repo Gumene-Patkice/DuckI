@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using DuckI.Models;
 using DuckI.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DuckI.Controllers;
 
@@ -26,6 +28,12 @@ public class HomeController : Controller
     }
 
     public IActionResult Privacy()
+    {
+        return View();
+    }
+    
+    [Authorize]
+    public IActionResult Chat()
     {
         return View();
     }
