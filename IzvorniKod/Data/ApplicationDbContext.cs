@@ -32,7 +32,7 @@ public class ApplicationDbContext : IdentityDbContext
             .HasForeignKey<UserCalendar>(uc => uc.CalendarId);
         
         modelBuilder.Entity<UserRoleStatus>()
-            .HasKey(urs => new { urs.UserId, urs.RoleId });
+            .HasKey(urs => urs.UserId);
         
         // one to one; user can have only one record at a time in this table
         // each record in UserRoleStatuses is associated with one user
