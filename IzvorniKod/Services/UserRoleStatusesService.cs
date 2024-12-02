@@ -29,11 +29,13 @@ public class UserRoleStatusesService : IUserRoleStatusesService
 {
     private readonly IWebHostEnvironment _webHostEnvironment; // for accessing directory path and other webhostenv functionalities
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
     
-    public UserRoleStatusesService(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context)
+    public UserRoleStatusesService(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, UserManager<IdentityUser> userManager)
     {
         _webHostEnvironment = webHostEnvironment;
         _context = context;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -127,14 +129,7 @@ public class UserRoleStatusesService : IUserRoleStatusesService
         {
             throw new InvalidOperationException("Role not found.");
         }
-        
-        // create new record for AspNetUserRoles table
-        var userRole = new IdentityUserRole<string>
-        {
-            UserId = userId,
-            RoleId = roleId
-        };
-        
+
         // get UserRoleStatuses record for this user
         var userRoleStatus = await _context.UserRoleStatuses
             .FirstOrDefaultAsync(urs => urs.UserId == userId && urs.RoleId == roleId);
@@ -145,15 +140,20 @@ public class UserRoleStatusesService : IUserRoleStatusesService
             throw new InvalidOperationException("User has already been approved!");
         }
         
-        _context.UserRoles.Add(userRole);
-        await _context.SaveChangesAsync();
+        // add user to role
+        var result = await _userManager.AddToRoleAsync(user, role.Name);
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException("Failed to add user to role.");
+        }
         
         if (userRoleStatus != null)
         {
             userRoleStatus.Status = true; // Update status to approved
             _context.UserRoleStatuses.Update(userRoleStatus);
-            await _context.SaveChangesAsync();
         }
+        
+        await _context.SaveChangesAsync();
     }
 
     /// <summary>
