@@ -12,13 +12,15 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ICalendarService _calendarService;
+    private readonly IUserRoleStatusesService _userRoleStatusesService;
     private readonly UserManager<IdentityUser> _userManager;
 
     public HomeController(ILogger<HomeController> logger, ICalendarService calendarService,
-        UserManager<IdentityUser> userManager)
+        UserManager<IdentityUser> userManager, IUserRoleStatusesService userRoleStatusesService)
     {
         _logger = logger;
         _calendarService = calendarService;
+        _userRoleStatusesService = userRoleStatusesService;
         _userManager = userManager;
     }
 
@@ -43,8 +45,15 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    
+    [Authorize]
+    public IActionResult Roles()
+    {
+        return View();
+    }
 
     ///<summary>Render UploadCalendar view</summary>
+    [Authorize]
     [HttpGet]
     public IActionResult UploadCalendar()
     {
@@ -52,6 +61,7 @@ public class HomeController : Controller
     }
 
     ///<summary>Upload a calendar file route</summary>
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> UploadCalendar(IFormFile file)
     {
@@ -70,5 +80,24 @@ public class HomeController : Controller
         
         // redirect to the Index page
         return RedirectToAction("Index");
+    }
+    
+    ///<summary>Apply for role. Adds records to the UserRoleStatuses table.</summary>
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> AddUserRoleStatus([FromForm] string roleName, [FromForm] string description)
+    {
+        var userId = _userManager.GetUserId(User);
+        try
+        {
+            await _userRoleStatusesService.AddUserRoleStatusAsync(userId, roleName, description);
+            TempData["AppliedForRole"] = true;
+            return RedirectToAction("Roles");
+        }
+        catch (Exception e)
+        {
+            TempData["AppliedForRole"] = false;
+            return RedirectToAction("Roles");
+        }
     }
 }

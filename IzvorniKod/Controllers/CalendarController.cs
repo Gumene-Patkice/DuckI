@@ -13,18 +13,18 @@ namespace DuckI.Controllers;
 /// </remarks>
 [Route("api/calendars")]
 [ApiController]
-public class CalendarApiController : ControllerBase
+public class CalendarController : ControllerBase
 {
     private readonly ICalendarService _calendarService;
     private readonly UserManager<IdentityUser> _userManager;
 
-    public CalendarApiController(ICalendarService calendarService, UserManager<IdentityUser> userManager)
+    public CalendarController(ICalendarService calendarService, UserManager<IdentityUser> userManager)
     {
         _calendarService = calendarService;
         _userManager = userManager;
     }
     
-    //<summary>Get calendar file route</summary>
+    ///<summary>Get calendar file route</summary>
     [Authorize]
     [HttpGet("getcalendar")]
     public async Task<IActionResult> GetCalendar()

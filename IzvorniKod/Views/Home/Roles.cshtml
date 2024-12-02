@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Apply For Role";
+    var appliedForRole = TempData["AppliedForRole"] as bool?;
+}
+
+<h2>Apply For Role</h2>
+
+<form asp-action="AddUserRoleStatus" asp-controller="Home" method="post">
+    <input type="hidden" name="roleName" value="Reviewer" />
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" name="description" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Apply for Reviewer Role</button>
+</form>
+
+<form asp-action="AddUserRoleStatus" asp-controller="Home" method="post">
+    <input type="hidden" name="roleName" value="Educator" />
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" name="description" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Apply for Educator Role</button>
+</form>
+
+@if (appliedForRole == true)
+{
+    <script>
+        alert('Successfully applied for role!');
+    </script>
+}

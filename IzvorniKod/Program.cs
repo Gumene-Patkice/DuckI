@@ -32,6 +32,9 @@ builder.Services.AddScoped<ICalendarService, CalendarService>();
 // registering the ChatService
 builder.Services.AddScoped<IChatService, ChatService>();
 
+// registering the UserRoleStatusesService
+builder.Services.AddScoped<IUserRoleStatusesService, UserRoleStatusesService>();
+
 // Configuring Identity options for password, lockout, user
 builder.Services.Configure<IdentityOptions>(options =>
 {
