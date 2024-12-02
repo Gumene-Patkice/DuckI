@@ -1,0 +1,48 @@
+@model IEnumerable<DuckI.Dtos.BrowseRoleApplicationsDto>
+
+@{
+ViewBag.Title = "Browse Role Applications";
+Layout = "_Layout";
+}
+
+<h2>Browse Role Applications</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        @*<th>UserId</th>*@
+        <th>Email</th>
+        <th>Role</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Action</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var data in Model)
+    {
+        <tr>
+            @*<td>@data.UserId</td>*@
+            <td>@data.Email</td>
+            <td>@data.RoleName</td>
+            <td>@data.Description</td>
+            <td>@data.Status</td>
+            <td>
+                <form method="post" asp-action="AddUserToRole">
+                    <input type="hidden" name="userId" value="@data.UserId"/>
+                    <input type="hidden" name="roleId" value="@data.RoleId"/>
+                    <button type="submit" class="btn btn-primary">Approve</button>
+                </form>
+            </td>
+            <td>
+                <form method="post" asp-action="RejectUser">
+                    <input type="hidden" name="userId" value="@data.UserId"/>
+                    <input type="hidden" name="roleId" value="@data.RoleId"/>
+                    <button type="submit" class="btn btn-primary">Reject</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

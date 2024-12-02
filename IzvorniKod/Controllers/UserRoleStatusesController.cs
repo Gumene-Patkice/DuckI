@@ -24,6 +24,8 @@ public class UserRoleStatusesController : ControllerBase
         _userManager = userManager;
     }
     
+    // in the end we didn't use this route
+    /*
     /// <summary>Get all roles from the UserRoleStatuses table route.</summary>
     //[Authorize(Roles = "Admin")] // WILL BE ADDED LATER, FOR DEVOLPMENT PURPOSES WE LEAVE IT AS IT IS
     [Authorize] // CHANGE LATER WITH ROLE ADMIN
@@ -39,4 +41,5 @@ public class UserRoleStatusesController : ControllerBase
         
         return Ok(userRoleStatuses);
     }
+    */
 }

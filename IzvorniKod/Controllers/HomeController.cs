@@ -46,9 +46,24 @@ public class HomeController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
     
+    ///<summary>
+    /// Check current user's role status and display the view with TempData (will be used for status)
+    ///</summary>
     [Authorize]
-    public IActionResult Roles()
+    public async Task<IActionResult> Roles()
     {
+        var userId = _userManager.GetUserId(User);
+        var userRecord = await _userRoleStatusesService.GetUserRoleStatusByUserIdAsync(userId);
+        
+        if (userRecord != null)
+        {
+            TempData["UserRoleStatus"] = userRecord.Status ? "Approved" : "Pending";
+        }
+        else
+        {
+            TempData["UserRoleStatus"] = "Unknown";
+        }
+        
         return View();
     }
 
@@ -88,6 +103,16 @@ public class HomeController : Controller
     public async Task<IActionResult> AddUserRoleStatus([FromForm] string roleName, [FromForm] string description)
     {
         var userId = _userManager.GetUserId(User);
+        
+        // Check if the user is in the Admin role (Admins can't apply for roles)
+        var isAdmin = await _userManager.IsInRoleAsync(await _userManager.FindByIdAsync(userId), "Admin");
+        if (isAdmin)
+        {
+            TempData["AppliedForRole"] = false;
+            // TempData["ErrorMessage"] = "Admins cannot apply for roles."; // maybe for later implementation
+            return RedirectToAction("Roles");
+        }
+        
         try
         {
             await _userRoleStatusesService.AddUserRoleStatusAsync(userId, roleName, description);
