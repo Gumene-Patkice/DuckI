@@ -4,18 +4,31 @@
     ViewData["Title"] = "Log out";
 }
 
-<header>
-    <h1>@ViewData["Title"]</h1>
-    @{
-        if (User.Identity?.IsAuthenticated ?? false)
-        {
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                <button type="submit" class="nav-link btn btn-link text-dark">Click here to Logout</button>
-            </form>
-        }
-        else
-        {
-            <p>You have successfully logged out of the application.</p>
-        }
-    }
-</header>
+<div class="container" style="display: flex; justify-content: center; align-items: center;">
+
+    <div class="card" style="max-width: 450px; margin: auto; padding: 20px; border-radius: 40px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);">
+
+
+        <div class="card-body">
+            <div class="card-title" style="display: flex; align-items: center; justify-content: center">
+                <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
+                <h1 class="text-primary">DuckI</h1>
+            </div>
+            <h4 class="card-subtitle text-center text-primary" style="padding: 20px">@ViewData["Title"]</h4>
+
+            @{
+                if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <form class="form-inline text-center" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                        <button type="submit" class="w-50 btn btn-sm btn-primary rounded-3" style="font-size: medium">Click here to Logout</button>
+                    </form>
+                }
+                else
+                {
+                    <p class="text-center">You have successfully logged out of the application.</p>
+                }
+            }
+        </div>
+    </div>
+
+</div>

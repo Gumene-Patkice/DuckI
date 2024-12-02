@@ -4,19 +4,36 @@
     ViewData["Title"] = "Register confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
-}
+<div class="container" style="display: flex; justify-content: center; align-items: center;">
+
+    <div class="card" style="max-width: 450px; margin: auto; padding: 20px; border-radius: 40px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);">
+
+
+        <div class="card-body">
+            <div class="card-title" style="display: flex; align-items: center; justify-content: center">
+                <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
+                <h1 class="text-primary">DuckI</h1>
+            </div>
+            <h4 class="card-subtitle text-center text-primary" style="padding: 20px">@ViewData["Title"]</h4>
+
+            @{
+                if (@Model.DisplayConfirmAccountLink)
+                {
+                    <p class="text-center">
+                        <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
+                    </p>
+                }
+                else
+                {
+                    <p class="text-center">
+                        Please check your email to confirm your account.
+                    </p>
+                }
+            }
+
+
+        </div>
+    </div>
+
+</div>
 

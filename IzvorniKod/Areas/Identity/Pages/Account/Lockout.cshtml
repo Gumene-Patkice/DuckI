@@ -4,7 +4,26 @@
     ViewData["Title"] = "Locked out";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <p class="text-danger">This account has been locked out, please try again later.</p>
-</header>
+<div class="container" style="display: flex; justify-content: center; align-items: center;">
+
+    <div class="card" style="max-width: 450px; margin: auto; padding: 20px; border-radius: 40px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);">
+
+
+        <div class="card-body">
+            <div class="card-title" style="display: flex; align-items: center; justify-content: center">
+                <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
+                <h1 class="text-primary">DuckI</h1>
+            </div>
+            <h4 class="card-subtitle text-center text-primary text-danger" style="padding: 15px">@ViewData["Title"]</h4>
+            <h5 class="card-subtitle text-center text-primary" style="padding: 20px">This account has been locked out, please try again later</h5>
+            
+
+
+            
+
+        </div>
+    </div>
+
+
+
+</div>
