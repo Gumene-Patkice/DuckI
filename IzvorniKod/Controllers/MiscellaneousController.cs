@@ -43,15 +43,6 @@ public class MiscellaneousController : Controller
                 Description = dto.Description
             });
         }
-        
-        /*
-        var userRoleStatuses = userRoleStatusDtos.Select(dto => new UserRoleStatus
-        {
-            UserId = dto.UserId,
-            RoleId = dto.RoleId,
-            Status = dto.Status
-        }).ToList();
-        */
 
         return View(browseRoleApplicationsDtos);
     }
