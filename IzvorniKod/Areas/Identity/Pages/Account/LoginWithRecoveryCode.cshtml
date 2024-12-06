@@ -4,19 +4,19 @@
     ViewData["Title"] = "Recovery code verification";
 }
 
+<link rel="stylesheet" href="/css/login.css" asp-append-version="true">
 
+<div class="container card-container">
 
-<div class="container" style="display: flex; justify-content: center; align-items: center;">
-
-    <div class="card" style="max-width: 450px; margin: auto; padding: 20px; border-radius: 40px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);">
+    <div class="card card-design">
 
 
         <div class="card-body">
-            <div class="card-title" style="display: flex; align-items: center; justify-content: center">
+            <div class="card-title card-container">
                 <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
                 <h1 class="text-primary">DuckI</h1>
             </div>
-            <h4 class="card-subtitle text-center text-primary" style="padding: 20px">@ViewData["Title"]</h4>
+            <h4 class="card-subtitle text-center text-primary">@ViewData["Title"]</h4>
 
             <p class="text-center">
                 You have requested to log in with a recovery code. This login will not be remembered until you provide
@@ -26,12 +26,12 @@
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="form-floating mb-3">
-                    <input asp-for="Input.RecoveryCode" style="background: #CCD5FF;" class="form-control" autocomplete="off" placeholder="RecoveryCode" />
-                    <label asp-for="Input.RecoveryCode" class="form-label" style="color: #6176e8;"></label>
+                    <input asp-for="Input.RecoveryCode" class="form-control form-bg-color" autocomplete="off" placeholder="RecoveryCode" />
+                    <label asp-for="Input.RecoveryCode" class="form-label form-text-color"></label>
                     <span asp-validation-for="Input.RecoveryCode" class="text-danger"></span>
                 </div>
                 <div class="text-center mb-3">
-                    <button type="submit" class="w-50 btn btn-sm btn-primary rounded-3" style="font-size: medium">Log in</button>
+                    <button type="submit" class="w-50 btn btn-sm btn-primary rounded-3 button-text-size">Log in</button>
                 </div>
                 
             </form>

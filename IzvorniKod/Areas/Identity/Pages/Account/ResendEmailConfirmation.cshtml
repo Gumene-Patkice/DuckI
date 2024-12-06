@@ -4,28 +4,30 @@
     ViewData["Title"] = "Resend email confirmation";
 }
 
-<div class="container" style="display: flex; justify-content: center; align-items: center;">
+<link rel="stylesheet" href="/css/login.css" asp-append-version="true">
 
-    <div class="card" style="max-width: 450px; margin: auto; padding: 20px; border-radius: 40px; box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);">
+<div class="container card-container">
+
+    <div class="card card-design">
 
 
         <div class="card-body">
-            <div class="card-title" style="display: flex; align-items: center; justify-content: center">
+            <div class="card-title card-container">
                 <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
                 <h1 class="text-primary">DuckI</h1>
             </div>
-            <h4 class="card-subtitle text-center text-primary" style="padding: 15px">@ViewData["Title"]</h4>
-            <h5 class="card-subtitle text-center text-primary" style="padding: 20px">Enter your email</h5>
+            <h4 class="card-subtitle text-center text-primary">@ViewData["Title"]</h4>
+            <h5 class="card-subtitle text-center text-primary">Enter your email</h5>
             <form method="post">
                 <div asp-validation-summary="All" class="text-danger" role="alert"></div>
                 <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" style="background: #CCD5FF;" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label" style="color: #6176e8;"></label>
+                    <input asp-for="Input.Email" class="form-control form-bg-color" aria-required="true" placeholder="name@example.com" />
+                    <label asp-for="Input.Email" class="form-label form-text-color"></label>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
                 
                 <div class="text-center mb-3 mt-4">
-                    <button type="submit" class="w-50 btn btn-sm btn-primary rounded-3" style="font-size: medium;">Resend</button>
+                    <button type="submit" class="w-50 btn btn-sm btn-primary rounded-3 button-text-size">Resend</button>
                 </div>
             </form>
 
