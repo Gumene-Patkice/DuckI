@@ -21,7 +21,8 @@ public class MiscellaneousController : Controller
         _userRoleStatusesService = userRoleStatusesService;
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin")]
+    // [Authorize]
     public async Task<IActionResult> BrowseRoleApplications()
     {
         var userRoleStatusDtos = await _userRoleStatusesService.GetAllUserRoleStatusesAsync();
@@ -47,8 +48,8 @@ public class MiscellaneousController : Controller
         return View(browseRoleApplicationsDtos);
     }
     
-    // [Authorize(Roles = "Admin")] // WILL BE ADDED LATER, FOR DEVOLPMENT PURPOSES WE LEAVE IT AS IT IS
-    [Authorize]
+    [Authorize(Roles = "Admin")]
+    //[Authorize]
     [HttpPost]
     public async Task<IActionResult> AddUserToRole([FromForm] string userId, [FromForm] string roleId)
     {
@@ -63,8 +64,8 @@ public class MiscellaneousController : Controller
         }
     }
     
-    // [Authorize(Roles = "Admin")] // WILL BE ADDED LATER, FOR DEVOLPMENT PURPOSES WE LEAVE IT AS IT IS
-    [Authorize]
+    [Authorize(Roles = "Admin")]
+    //[Authorize]
     [HttpPost]
     public async Task<IActionResult> RejectUser([FromForm] string userId, [FromForm] string roleId)
     {
