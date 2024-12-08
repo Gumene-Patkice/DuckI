@@ -7,28 +7,29 @@
 
 <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
 
-<div class="text-center">
-    <h1 class="display-4">Calendar</h1>
-</div>
-<div class="text-center">
+<h2>Upload Your Calendar</h2>
+<p>Have a calendar in CSV format ready to go? Click the button below to visit our upload page, where you can easily integrate your events into our calendar system.</p>
+<p>The upload process is quick and simple, allowing you to bring your important dates to life in just a few clicks. Ensure your file includes event details in the correct format for a seamless experience.</p>
+
+<div class="text-start">
     <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
 </div>
-<div class="text-center">
-    <button id="fetchCalendarButton" class="btn btn-primary">Fetch Calendar</button>
-</div>
+
+<h2 class="mt-3">My Calendar</h2>
+<p>View and interact with your calendar below. Use the navigation buttons to switch between months.</p>
 
 <!-- Calendar Container -->
-<div id="calendarContainer" class="container mt-3" style="display:none;">
+<div id="calendarContainer" class="container mt-1" style="display:none;">
     <div class="d-flex justify-content-between mb-2">
-        <button id="prevMonthButton" class="btn btn-secondary">Previous Month</button>
+        <button id="prevMonthButton" class="btn btn-primary">Previous Month</button>
 
         <span id="monthLabel" class="d-flex align-items-center justify-content-center" style="font-size: 1.2em;"></span>
 
-        <button id="nextMonthButton" class="btn btn-secondary">Next Month</button>
+        <button id="nextMonthButton" class="btn btn-primary">Next Month</button>
     </div>
 
     <!-- Days of the week headers -->
-    <div class="row text-center mb-2">
+    <div class="row text-center">
         <div class="col">Mon</div>
         <div class="col">Tue</div>
         <div class="col">Wed</div>
@@ -40,7 +41,6 @@
 
     <!-- Calendar grid using Bootstrap row-cols-7 -->
     <div id="calendarGrid" class="row row-cols-7 g-0"></div>
-    <div id="eventList" class="container mt-3"></div>
 </div>
 
 @section Scripts

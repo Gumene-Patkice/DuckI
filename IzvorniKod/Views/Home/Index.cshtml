@@ -19,39 +19,38 @@
         <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
     </div>
     <div class="text-center">
-        <button id="fetchCalendarButton" class="btn btn-primary">Fetch Calendar</button>
+        <button id="fetchCalendarButton" class="btn btn-primary mt-3">Fetch Calendar</button>
     </div>
 
     <!-- Calendar Container -->
     <div id="calendarContainer" class="container mt-3" style="display:none;">
         <div class="d-flex justify-content-between mb-2">
-            <button id="prevMonthButton" class="btn btn-secondary">Previous Month</button>
+            <button id="prevMonthButton" class="btn btn-primary">Previous Month</button>
 
             <span id="monthLabel" class="d-flex align-items-center justify-content-center" style="font-size: 1.2em;"></span>
 
-            <button id="nextMonthButton" class="btn btn-secondary">Next Month</button>
+            <button id="nextMonthButton" class="btn btn-primary">Next Month</button>
         </div>
 
         <!-- Days of the week headers -->
-        <div class="row text-center mb-2">
-            <div class="col">Mon</div>
-            <div class="col">Tue</div>
-            <div class="col">Wed</div>
-            <div class="col">Thu</div>
-            <div class="col">Fri</div>
-            <div class="col">Sat</div>
-            <div class="col">Sun</div>
+        <div class="row text-center">
+            <div class="col">MON</div>
+            <div class="col">TUE</div>
+            <div class="col">WED</div>
+            <div class="col">THU</div>
+            <div class="col">FRI</div>
+            <div class="col">SAT</div>
+            <div class="col">SUN</div>
         </div>
 
         <!-- Calendar grid using Bootstrap row-cols-7 -->
         <div id="calendarGrid" class="row row-cols-7 g-0"></div>
-        <div id="eventList" class="container mt-3"></div>
     </div>
 }
 
 @* This script attaches getcalendar route to the fetch calendar button and changes content of calendarContent div *@
 @section Scripts {
-    <script src="~/js/calendar.js" asp-append-version="true"></script>
+    <script src="~/js/index.js" asp-append-version="true"></script>
     <script>
         @if (uploadSuccess == true)
         {
