@@ -6,69 +6,81 @@
 
 <link rel="stylesheet" href="/css/login.css" asp-append-version="true">
 
-<div class="container card-container">
-    <div class="card card-design">
-        <div class="card-body">
-            <div class="card-title card-container">
-                <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
-                <h1 class="text-primary">DuckI</h1>
-            </div>
-            <h2 class="card-subtitle text-center text-primary">Create an account</h2>
-            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control form-bg-color" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-text-color">E-mail address</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control form-bg-color" autocomplete="new-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-text-color">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.ConfirmPassword" class="form-control form-bg-color" autocomplete="new-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.ConfirmPassword" class="form-text-color">Confirm Password</label>
-                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-                </div>
-                <div class="text-center mb-3">
-                    <button id="registerSubmit" type="submit" class="w-50 btn btn-sm btn-primary rounded-3 button-text-size">Register</button>
-                </div>
-                <div class="text-center">
-                    <p class="mb-2">
-                        <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Have an account? Log in here</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="alert alert-info">
+        You are already logged in.
+    </div>
+}
 
-            <section class="text-center">
-                <div class="line-1">
-                    <div class="line-2"></div>
-                    <div class="text-primary line-3">OR</div>
-                    <div class="line-2"></div>
+else
+{
+    <div class="container card-container">
+        
+        <div class="card card-design">
+            
+            <div class="card-body">
+                <div class="card-title card-container">
+                    <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
+                    <h1 class="text-primary fw-bold">DuckI</h1>
                 </div>
+                <h2 class="card-subtitle text-center text-primary">Create an account</h2>
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control form-bg-color" autocomplete="username" aria-required="true" placeholder="name@example.com"/>
+                        <label asp-for="Input.Email" class="form-text-color">E-mail address</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control form-bg-color" autocomplete="new-password" aria-required="true" placeholder="password"/>
+                        <label asp-for="Input.Password" class="form-text-color">Password</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.ConfirmPassword" class="form-control form-bg-color" autocomplete="new-password" aria-required="true" placeholder="password"/>
+                        <label asp-for="Input.ConfirmPassword" class="form-text-color">Confirm Password</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="text-center mb-3">
+                        <button id="registerSubmit" type="submit" class="w-50 btn btn-sm btn-primary rounded-3 button-text-size">Register</button>
+                    </div>
+                    <div class="text-center">
+                        <p class="mb-2">
+                            <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Have an account? Log in here</a>
+                        </p>
+                        <p>
+                            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                        </p>
+                    </div>
+                </form>
 
-                @{
-                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                    {
-                        <div>
-                            <p>
-                                There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                                    about setting up this ASP.NET application to support logging in via external services</a>.
-                            </p>
-                        </div>
-                    }
-                    else
-                    {
-                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                            <div class="d-grid gap-2 col-10 mx-auto">
-                                
+                <section class="text-center">
+                    <div class="line-1">
+                        <div class="line-2"></div>
+                        <div class="text-primary line-3">OR</div>
+                        <div class="line-2"></div>
+                    </div>
+
+                    @{
+                        if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                        {
+                            <div>
+                                <p class="text-center">
+                                    There are no external authentication services configured. See this
+                                    <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
+                                        about setting up this ASP.NET application to support logging in via external services</a>.
+                                </p>
+                            </div>
+                        }
+                        else
+                        {
+                            <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                                <div class="d-grid gap-2 col-10 mx-auto">
+
                                     @foreach (var provider in Model.ExternalLogins!)
                                     {
-                                        @if(provider.DisplayName.Equals("Google"))
+                                        @if (provider.DisplayName.Equals("Google"))
                                         {
                                             <button type="submit" class="btn btn-light oauth-button" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
                                                 <img src="~/images/googlelogo.png" class="oauth-button-img" alt="Google">Continue with @provider.DisplayName
@@ -80,14 +92,20 @@
                                                 <img src="~/images/microsoftlogo.png" class="oauth-button-img" alt="Microsoft">Continue with @provider.DisplayName
                                             </button>
                                         }
-                                        
+
                                     }
-                                
-                            </div>
-                        </form>
+
+                                </div>
+                            </form>
+                        }
                     }
-                }
-            </section>
+                </section>
+            </div>
         </div>
     </div>
-</div>
+    
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
