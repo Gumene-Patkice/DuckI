@@ -1,6 +1,7 @@
 using DuckI.Data;
 using DuckI.Dtos;
 using DuckI.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DuckI.Services;
@@ -9,12 +10,16 @@ namespace DuckI.Services;
 /// This class provides services for managing role management.
 /// </summary>
 /// <remarks>
-/// This service includes methods for applying to roles and getting all records from the table.
+/// This service includes methods for applying to roles and getting all records from the table,
+/// and managing roles using UserRoleStatuses table.
 /// </remarks>
 public interface IUserRoleStatusesService
 {
     Task AddUserRoleStatusAsync(string userId, string roleId, string description);
     Task<IEnumerable<UserRoleStatusDto>> GetAllUserRoleStatusesAsync();
+    Task<UserRoleStatusDto> GetUserRoleStatusByUserIdAsync(string userId);
+    Task AddUserToRoleAsync(string userId, string roleId);
+    Task RejectUserAsync(string userId, string roleId);
 }
 
 /// <summary>
@@ -24,11 +29,13 @@ public class UserRoleStatusesService : IUserRoleStatusesService
 {
     private readonly IWebHostEnvironment _webHostEnvironment; // for accessing directory path and other webhostenv functionalities
     private readonly ApplicationDbContext _context;
+    private readonly UserManager<IdentityUser> _userManager;
     
-    public UserRoleStatusesService(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context)
+    public UserRoleStatusesService(IWebHostEnvironment webHostEnvironment, ApplicationDbContext context, UserManager<IdentityUser> userManager)
     {
         _webHostEnvironment = webHostEnvironment;
         _context = context;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -80,5 +87,97 @@ public class UserRoleStatusesService : IUserRoleStatusesService
                 Description = urs.Description
             })
             .ToListAsync();
+    }
+
+    /// <summary>
+    /// Retrieves a single UserRoleStatuses record for the user who called the controller's route
+    /// </summary>
+    public async Task<UserRoleStatusDto> GetUserRoleStatusByUserIdAsync(string userId)
+    {
+        var userRoleStatus = await _context.UserRoleStatuses
+            .FirstOrDefaultAsync(urs => urs.UserId == userId);
+        
+        if (userRoleStatus == null)
+        {
+            return null;
+        }
+        
+        return new UserRoleStatusDto
+        {
+            UserId = userRoleStatus.UserId,
+            RoleId = userRoleStatus.RoleId,
+            Status = userRoleStatus.Status,
+            Description = userRoleStatus.Description
+        };
+    }
+
+    /// <summary>
+    /// Adds a user to a role and updates the status in the UserRoleStatuses table
+    /// </summary>
+    public async Task AddUserToRoleAsync(string userId, string roleId)
+    {
+        // find the user and check if it exists
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            throw new InvalidOperationException("User not found.");
+        }
+        
+        // do the same for role
+        var role = await _context.Roles.FindAsync(roleId);
+        if (role == null)
+        {
+            throw new InvalidOperationException("Role not found.");
+        }
+
+        // get UserRoleStatuses record for this user
+        var userRoleStatus = await _context.UserRoleStatuses
+            .FirstOrDefaultAsync(urs => urs.UserId == userId && urs.RoleId == roleId);
+
+        // if the user has already been approved, we don't want to add the user to the table again
+        if (userRoleStatus != null && userRoleStatus.Status)
+        {
+            throw new InvalidOperationException("User has already been approved!");
+        }
+        
+        // add user to role
+        var result = await _userManager.AddToRoleAsync(user, role.Name);
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException("Failed to add user to role.");
+        }
+        
+        if (userRoleStatus != null)
+        {
+            userRoleStatus.Status = true; // Update status to approved
+            _context.UserRoleStatuses.Update(userRoleStatus);
+        }
+        
+        await _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Remove UserRoleStatuses record from UserRoleStatuses table
+    /// </summary>
+    public async Task RejectUserAsync(string userId, string roleId)
+    {
+        // get record for the user
+        var userRoleStatus = await _context.UserRoleStatuses
+            .FirstOrDefaultAsync(urs => urs.UserId == userId && urs.RoleId == roleId);
+
+        if (userRoleStatus == null)
+        {
+            throw new InvalidOperationException("UserRoleStatus not found.");
+        }
+        
+        // if the user has already been approved, we don't want to reject the user to the table again
+        if (userRoleStatus.Status)
+        {
+            throw new InvalidOperationException("User has already been approved!");
+        }
+
+        // remove the record
+        _context.UserRoleStatuses.Remove(userRoleStatus);
+        await _context.SaveChangesAsync();
     }
 }
