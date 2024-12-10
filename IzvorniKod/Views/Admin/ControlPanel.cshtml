@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Control Panel";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <h2>Admin Control Panel</h2>
+    <div class="mt-3">
+        <a href="@Url.Action("BrowseRoleApplications", "Admin")" class="btn btn-primary">Browse Role Applications</a>
+        <a href="@Url.Action("Tags", "Admin")" class="btn btn-secondary">Manage Tags</a>
+    </div>
+</div>

@@ -8,21 +8,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DuckI.Controllers;
 
-public class MiscellaneousController : Controller
+public class AdminController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUserRoleStatusesService _userRoleStatusesService;
-
-    public MiscellaneousController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IUserRoleStatusesService userRoleStatusesService)
+    private readonly ITagService _tagService;
+    
+    public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
+        IUserRoleStatusesService userRoleStatusesService, ITagService tagService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _userRoleStatusesService = userRoleStatusesService;
+        _tagService = tagService;
     }
 
     [Authorize(Roles = "Admin")]
-    // [Authorize]
+    public IActionResult ControlPanel()
+    {
+        return View();
+    }
+    
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> BrowseRoleApplications()
     {
         var userRoleStatusDtos = await _userRoleStatusesService.GetAllUserRoleStatusesAsync();
@@ -46,6 +54,12 @@ public class MiscellaneousController : Controller
         }
 
         return View(browseRoleApplicationsDtos);
+    }
+    
+    [Authorize(Roles = "Admin")]
+    public IActionResult Tags()
+    {
+        return View();
     }
     
     [Authorize(Roles = "Admin")]
@@ -78,5 +92,30 @@ public class MiscellaneousController : Controller
         {
             return StatusCode(500, new { status = "InternalServerError", message = ex.Message });
         }
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<IActionResult> AddTag([FromForm] string tagName) {
+        try
+        {
+            await _tagService.AddTagAsync(tagName);
+            TempData["TagAdded"] = true;
+            return RedirectToAction("Tags");
+        }
+        catch (Exception ex)
+        {
+            TempData["TagAdded"] = false;
+            return RedirectToAction("Tags");
+        }
+    }
+    
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<IActionResult> GetAllTags()
+    {
+        var tags = await _tagService.GetAllTagsAsync();
+        ViewBag.Tags = tags;
+        return View("Tags");
     }
 }

@@ -1,0 +1,93 @@
+@{
+    ViewData["Title"] = "Upload PDF";
+}
+
+<h2>Upload PDF</h2>
+
+@*@if(User.IsInRole("SuperStudent")*@
+@if (!User.IsInRole("Educator"))
+{
+    <form id="uploadPrivateForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="file">Select PDF:</label>
+            <input class="form-control" type="file" id="file" name="file" required />
+        </div>
+        <div class="form-group">
+            <label for="tagName">Tag Name:</label>
+            <select class="form-control" id="tagName" name="tagName" required>
+                @foreach (var tag in ViewBag.Tags)
+                {
+                    <option value="@tag.Value">@tag.Text</option>
+                }
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Upload Private PDF</button>
+    </form>
+}
+
+@if (User.IsInRole("Educator"))
+{
+    <form id="uploadPublicForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="file">Select PDF:</label>
+            <input class="form-control" type="file" id="file" name="file" required />
+        </div>
+        <div class="form-group">
+            <label for="tagName">Tag Name:</label>
+            <select class="form-control" id="tagName" name="tagName" required>
+                @foreach (var tag in ViewBag.Tags)
+                {
+                    <option value="@tag.Value">@tag.Text</option>
+                }
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Upload Public PDF</button>
+    </form>
+}
+
+<div id="notification" style="display:none; color: green;">PDF uploaded successfully.</div>
+<div id="error" style="display:none; color: red;"></div>
+
+@section Scripts {
+    <script>
+        document.getElementById('uploadPrivateForm')?.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const response = await fetch('@Url.Action("UploadPrivatePdf", "Pdf")', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                document.getElementById('notification').style.display = 'block';
+                document.getElementById('error').style.display = 'none';
+            } else {
+                const errorText = await response.text();
+                document.getElementById('error').innerText = `Error: ${errorText}`;
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('notification').style.display = 'none';
+            }
+        });
+
+        document.getElementById('uploadPublicForm')?.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const response = await fetch('@Url.Action("UploadPublicPdf", "Pdf")', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                document.getElementById('notification').style.display = 'block';
+                document.getElementById('error').style.display = 'none';
+            } else {
+                const errorText = await response.text();
+                document.getElementById('error').innerText = `Error: ${errorText}`;
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('notification').style.display = 'none';
+            }
+        });
+    </script>
+}
