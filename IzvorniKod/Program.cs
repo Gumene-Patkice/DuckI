@@ -122,7 +122,7 @@ using (var scope = app.Services.CreateScope())
     // RoleManager is needed to create roles
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     // List of roles
-    var roles = new[] {"Admin", "Student", "Educator", "Reviewer"};
+    var roles = new[] {"Admin", "Student", "Educator", "Reviewer", "SuperStudent"};
     // Create roles, if they do not exist because this runs on every startup
     foreach (var role in roles)
     {
