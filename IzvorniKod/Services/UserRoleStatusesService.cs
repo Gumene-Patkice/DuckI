@@ -181,7 +181,10 @@ public class UserRoleStatusesService : IUserRoleStatusesService
         _context.UserRoleStatuses.Remove(userRoleStatus);
         await _context.SaveChangesAsync();
     }
-
+    
+    /// <summary>
+    /// Assigns a user to a role and updates the status in the UserRoleStatuses table
+    /// </summary>
     public async Task AssignSuperStudentAsync(string userId, string roleName)
     {
         // find the user and check if it exists
