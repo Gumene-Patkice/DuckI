@@ -38,16 +38,26 @@
 }
 @if (Model.OtherLogins?.Count > 0)
 {
-    <h4>Add another service to log in.</h4>
-    <hr />
+    <h4>Add another service to log in</h4>
+    <hr class="line"/>
     <form id="link-login-form" asp-page-handler="LinkLogin" method="post" class="form-horizontal">
-        <div id="socialLoginList">
-            <p>
+        <div id="socialLoginList" class="d-grid gap-2 col-5">
+            
                 @foreach (var provider in Model.OtherLogins)
                 {
-                    <button id="@($"link-login-button-{provider.Name}")" type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                    @if (provider.DisplayName.Equals("Google"))
+                    {
+                        <button id="@($"link-login-button-{provider.Name}")" type="submit" name="provider" class="btn btn-light oauth-button" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                            <img src="~/images/googlelogo.png" class="oauth-button-img" alt="Google">Continue with @provider.DisplayName
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" name="provider" class="btn btn-light oauth-button" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                            <img src="~/images/microsoftlogo.png" class="oauth-button-img" alt="Microsoft">Continue with @provider.DisplayName
+                        </button>
+                    }
                 }
-            </p>
         </div>
     </form>
 }

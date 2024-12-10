@@ -5,8 +5,7 @@
     ViewData["Title"] = "Log in";
 }
 
-<link rel="stylesheet" href="/css/login.css" asp-append-version="true">
-
+<link rel="stylesheet" href="~/css/login.css" asp-append-version="true">
 
 @if (User.Identity.IsAuthenticated)
 {
@@ -39,7 +38,7 @@ else
                         <span asp-validation-for="Input.Password" class="text-danger"></span>
                     </div>
                     <div class="checkbox mb-3">
-                        <label asp-for="Input.RememberMe" class="form-label form-check-color">
+                        <label asp-for="Input.RememberMe" class="form-label form-check-color text-primary">
                             <input class="form-check-input m-1" asp-for="Input.RememberMe"/>
                             @Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
@@ -50,10 +49,10 @@ else
 
                     <div class="text-center">
                         <p class="mb-2">
-                            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                            <a id="forgot-password" class="text-primary" asp-page="./ForgotPassword">Forgot your password?</a>
                         </p>
                         <p>
-                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Don't have an account? Register here</a>
+                            <a class="text-primary" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Don't have an account? Register here</a>
                         </p>
                     </div>
                 </form>

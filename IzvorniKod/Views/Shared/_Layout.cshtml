@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/DuckI.styles.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/header.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true">
 </head>
 <body>
 <header>
@@ -19,18 +20,6 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between pb-1">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        @* <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a> *@
-                        <a class="nav-link text-light pe-4" asp-area=""><img src="~/images/message-solid.svg" class="header-icon" alt="Icon">Chat</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light pe-4" asp-area=""><img src="~/images/book-solid.svg" class="header-icon" alt="Icon">View material</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light pe-4" asp-area=""><img src="~/images/calendar-days-solid.svg" class="header-icon" alt="Icon">View calendar</a>
-                    </li>
-                </ul>
                 <partial name="_LoginPartial"/>
             </div>
         </div>

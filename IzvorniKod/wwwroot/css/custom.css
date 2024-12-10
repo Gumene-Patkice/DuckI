@@ -1,0 +1,28 @@
+﻿.bg-primary {
+    background-color: #5172FF !important;
+}
+
+.btn-primary {
+    background-color: #5172FF !important;
+}
+
+button.nav-link {
+    background-color: #5172FF !important;
+    color: white !important;
+}
+
+.nav-pills a.nav-link {
+    background-color: white !important;
+    color: #5172FF !important;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .nav-link:focus,
+.nav-pills .nav-link:active {
+    background-color: #5172FF !important;
+    color: white !important;
+}
+
+.text-primary {
+    color: #5172FF !important;
+}

@@ -4,6 +4,22 @@
 
 <link rel="stylesheet" href="~/css/header.css" asp-append-version="true">
 
+<ul class="navbar-nav flex-grow-1">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            @* <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a> *@
+            <a class="nav-link text-light pe-lg-4 pe-0" asp-area=""><img src="~/images/message-solid.svg" class="header-icon" alt="Icon">Chat</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light pe-lg-4 pe-0" asp-area=""><img src="~/images/book-solid.svg" class="header-icon" alt="Icon">View material</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light pe-lg- pe-0" asp-area=""><img src="~/images/calendar-days-solid.svg" class="header-icon" alt="Icon">View calendar</a>
+        </li>
+    }
+</ul>
+
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
