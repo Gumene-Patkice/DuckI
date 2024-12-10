@@ -35,6 +35,12 @@ builder.Services.AddScoped<IChatService, ChatService>();
 // registering the UserRoleStatusesService
 builder.Services.AddScoped<IUserRoleStatusesService, UserRoleStatusesService>();
 
+// registering the TagService
+builder.Services.AddScoped<ITagService, TagService>();
+
+// registering the UploadPdfService
+builder.Services.AddScoped<IUploadPdfService, UploadPdfService>();
+
 // Configuring Identity options for password, lockout, user
 builder.Services.Configure<IdentityOptions>(options =>
 {

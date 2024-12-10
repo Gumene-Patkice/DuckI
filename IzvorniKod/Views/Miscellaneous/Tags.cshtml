@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Tags";
+    var tagStatus = TempData["TagAdded"] as bool?;
+}
+
+<h2>Tags</h2>
+
+<form asp-action="AddTag" asp-controller="Miscellaneous" method="post">
+    <div class="form-group">
+        <label for="tagName">Tag Name</label>
+        <input type="text" class="form-control" id="tagName" name="tagName" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Tag</button>
+</form>
+
+<form asp-action="GetAllTags" asp-controller="Miscellaneous" method="post">
+    <button type="submit" class="btn btn-primary">Show All Tags</button>
+</form>
+
+@if (ViewBag.Tags != null)
+{
+    <h3>All Tags</h3>
+    <ul>
+        @foreach (var tag in ViewBag.Tags)
+        {
+            <li>@tag.TagId - @tag.TagName</li>
+        }
+    </ul>
+}
+
+@if (tagStatus == true)
+{
+    <script>
+        alert('Successfully added tag!');
+    </script>
+}

@@ -3,6 +3,7 @@ using System;
 using DuckI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DuckI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241210115038_InitialPdfUpdateV2")]
+    partial class InitialPdfUpdateV2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -34,16 +37,16 @@ namespace DuckI.Data.Migrations
 
             modelBuilder.Entity("DuckI.Models.EducatorPdf", b =>
                 {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("PublicPdfId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.HasKey("UserId");
 
-                    b.HasKey("PublicPdfId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("PublicPdfId")
+                        .IsUnique();
 
                     b.ToTable("EducatorPdfs");
                 });
@@ -53,10 +56,6 @@ namespace DuckI.Data.Migrations
                     b.Property<long>("PrivatePdfId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("PdfName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("PdfPath")
                         .IsRequired()
@@ -88,10 +87,6 @@ namespace DuckI.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PdfName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("PdfPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -121,16 +116,16 @@ namespace DuckI.Data.Migrations
 
             modelBuilder.Entity("DuckI.Models.StudentPdf", b =>
                 {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.Property<long>("PrivatePdfId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.HasKey("UserId");
 
-                    b.HasKey("PrivatePdfId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("PrivatePdfId")
+                        .IsUnique();
 
                     b.ToTable("StudentPdfs");
                 });
@@ -397,8 +392,8 @@ namespace DuckI.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne()
+                        .HasForeignKey("DuckI.Models.EducatorPdf", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
