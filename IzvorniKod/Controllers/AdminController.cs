@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DuckI.Controllers;
 
-public class MiscellaneousController : Controller
+public class AdminController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUserRoleStatusesService _userRoleStatusesService;
     private readonly ITagService _tagService;
     
-    public MiscellaneousController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
+    public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
         IUserRoleStatusesService userRoleStatusesService, ITagService tagService)
     {
         _userManager = userManager;
@@ -24,6 +24,12 @@ public class MiscellaneousController : Controller
         _tagService = tagService;
     }
 
+    [Authorize(Roles = "Admin")]
+    public IActionResult ControlPanel()
+    {
+        return View();
+    }
+    
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> BrowseRoleApplications()
     {

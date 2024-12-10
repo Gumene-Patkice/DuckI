@@ -5,7 +5,7 @@
 
 <h2>Tags</h2>
 
-<form asp-action="AddTag" asp-controller="Miscellaneous" method="post">
+<form asp-action="AddTag" asp-controller="Admin" method="post">
     <div class="form-group">
         <label for="tagName">Tag Name</label>
         <input type="text" class="form-control" id="tagName" name="tagName" required />
@@ -13,7 +13,7 @@
     <button type="submit" class="btn btn-primary">Add Tag</button>
 </form>
 
-<form asp-action="GetAllTags" asp-controller="Miscellaneous" method="post">
+<form asp-action="GetAllTags" asp-controller="Admin" method="post">
     <button type="submit" class="btn btn-primary">Show All Tags</button>
 </form>
 
