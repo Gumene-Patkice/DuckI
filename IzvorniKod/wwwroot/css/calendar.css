@@ -6,8 +6,13 @@
     outline: 1px solid black;
 }
 
+h2 {
+    font-size: 1.7rem;
+}
+
 p {
     margin-bottom: 0.5rem;
+    font-size: 0.9rem;
 }
 
 #calendarContainer {
@@ -17,6 +22,7 @@ p {
 .btn-primary {
     width: 150px;
     text-align: center;
+    background-color: #5172FF;
 }
 
 .day-cell {
