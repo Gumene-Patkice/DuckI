@@ -24,6 +24,11 @@
     <button type="submit" class="btn btn-primary">Apply for Educator Role</button>
 </form>
 
+<form asp-action="AddUserToSuperStudentRole" asp-controller="Home" method="post">
+    <input type="hidden" name="roleName" value="SuperStudent" />
+    <button type="submit" class="btn btn-primary">Get Student Role</button>
+</form>
+
 @if (appliedForRole == true)
 {
     <script>
@@ -50,5 +55,9 @@
 @if (User.IsInRole("Educator"))
 {
     <p>Educator</p>
+}
+@if (User.IsInRole("SuperStudent"))
+{
+    <p>SuperStudent</p>
 }
 *@

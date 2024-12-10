@@ -20,6 +20,7 @@ public interface IUserRoleStatusesService
     Task<UserRoleStatusDto> GetUserRoleStatusByUserIdAsync(string userId);
     Task AddUserToRoleAsync(string userId, string roleId);
     Task RejectUserAsync(string userId, string roleId);
+    Task AssignSuperStudentAsync(string userId, string roleId);
 }
 
 /// <summary>
@@ -178,6 +179,54 @@ public class UserRoleStatusesService : IUserRoleStatusesService
 
         // remove the record
         _context.UserRoleStatuses.Remove(userRoleStatus);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task AssignSuperStudentAsync(string userId, string roleName)
+    {
+        // find the user and check if it exists
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            throw new InvalidOperationException("User not found.");
+        }
+        
+        // do the same for role
+        var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+        if (role == null)
+        {
+            throw new InvalidOperationException("Role not found.");
+        }
+        
+        var roleId = role.Id;
+        
+        // get UserRoleStatuses record for this user
+        var userRoleStatus = await _context.UserRoleStatuses
+            .FirstOrDefaultAsync(urs => urs.UserId == userId && urs.RoleId == roleId);
+
+        // if the user has already applied for a role, we don't want to add the user to the table again
+        if (userRoleStatus != null)
+        {
+            throw new InvalidOperationException("User has already applied for a role!");
+        }
+        
+        // add user to role
+        var result = await _userManager.AddToRoleAsync(user, roleName);
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException("Failed to add user to the role.");
+        }
+
+        // add user to UserRoleStatuses table with status approved
+        var userRoleStatusRecord = new UserRoleStatus
+        {
+            UserId = userId,
+            Description = "SuperStudent",
+            RoleId = roleId,
+            Status = true
+        };
+
+        _context.UserRoleStatuses.Add(userRoleStatusRecord);
         await _context.SaveChangesAsync();
     }
 }
