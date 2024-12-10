@@ -126,7 +126,7 @@ public class HomeController : Controller
         }
     }
     
-    ///<summary>Apply for role. Adds records to the UserRoleStatuses table.</summary>
+    ///<summary> Apply for role. Adds records to the UserRoleStatuses table. </summary>
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddUserToSuperStudentRole([FromForm] string roleName)

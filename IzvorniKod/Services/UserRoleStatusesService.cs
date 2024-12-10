@@ -183,7 +183,7 @@ public class UserRoleStatusesService : IUserRoleStatusesService
     }
     
     /// <summary>
-    /// Assigns a user to a role and updates the status in the UserRoleStatuses table
+    /// Assigns a user to a role and updates the status in the UserRoleStatuses table 
     /// </summary>
     public async Task AssignSuperStudentAsync(string userId, string roleName)
     {
