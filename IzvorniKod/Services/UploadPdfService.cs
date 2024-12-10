@@ -5,12 +5,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DuckI.Services;
 
+/// <summary>
+/// This class provides services for managing uploads for pdfs.
+/// </summary>
 public interface IUploadPdfService
 {
     public Task UploadPrivatePdfAsync(IFormFile file, string userId, string tagName);
     public Task UploadPublicPdfAsync(IFormFile file, string userId, string tagName);
 }
     
+/// <summary>
+/// This service is used for uploading PDFs by both educators and students (SuperStudents).
+/// </summary>
 public class UploadPdfService : IUploadPdfService
 {
     private readonly IWebHostEnvironment _webHostEnvironment; // for accessing directory path and other webhostenv functionalities
@@ -22,6 +28,9 @@ public class UploadPdfService : IUploadPdfService
         _context = context;
     }
     
+    /// <summary>
+    /// This function is used in PdfController.cs for uploading private PDFs by students (SuperStudents).
+    /// </summary>
     public async Task UploadPrivatePdfAsync(IFormFile file, string userId, string tagName)
     {
         if (!file.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
@@ -129,6 +138,9 @@ public class UploadPdfService : IUploadPdfService
         }
     }
 
+    /// <summary>
+    /// This function is used in PdfController.cs for uploading public PDFs by educators.
+    /// </summary>
     public async Task UploadPublicPdfAsync(IFormFile file, string userId, string tagName)
     {
         if (!file.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
