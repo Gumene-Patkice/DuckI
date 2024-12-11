@@ -1,0 +1,59 @@
+﻿.card-design {
+    max-width: 450px;
+    margin: auto;
+    padding: 10px;
+    border-radius: 45px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-subtitle {
+    padding: 20px;
+}
+
+.form-bg-color, .form-bg-color:hover, .form-bg-color:active, .form-bg-color:focus {
+    background: #CCD5FF;
+}
+
+.form-text-color {
+    color: #6176e8;
+}
+
+.form-check-color {
+    color: #0d6efd;
+}
+
+.form-check-input {
+    background: #D3D3D3;
+    border-color: #D3D3D3;
+}
+
+.button-text-size {
+    font-size: medium;
+}
+
+.line-1 {
+    display: flex; align-items: center; text-align: center; margin-bottom: 10px
+}
+
+.line-2 {
+    flex-grow: 1;height: 0.15rem;background-color: #5172FF;
+}
+
+.line-3 {
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+.oauth-button, .oauth-button:focus, .oauth-button:hover {
+    border-color: #212529; display: flex;
+}
+
+.oauth-button-img {
+    width: 25px; margin-right: 5px;
+}

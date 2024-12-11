@@ -4,19 +4,38 @@
     ViewData["Title"] = "Register confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
-}
+<link rel="stylesheet" href="/css/login.css" asp-append-version="true">
+
+<div class="container card-container">
+
+    <div class="card card-design">
+
+
+        <div class="card-body">
+            <div class="card-title card-container">
+                <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
+                <h1 class="text-primary fw-bold">DuckI</h1>
+            </div>
+            <h4 class="card-subtitle text-center text-primary">@ViewData["Title"]</h4>
+
+            @{
+                if (@Model.DisplayConfirmAccountLink)
+                {
+                    <p class="text-center">
+                        <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
+                    </p>
+                }
+                else
+                {
+                    <p class="text-center">
+                        Please check your email to confirm your account.
+                    </p>
+                }
+            }
+
+
+        </div>
+    </div>
+
+</div>
 

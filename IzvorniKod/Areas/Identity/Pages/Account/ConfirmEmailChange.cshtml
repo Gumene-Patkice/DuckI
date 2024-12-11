@@ -4,5 +4,23 @@
     ViewData["Title"] = "Confirm email change";
 }
 
-<h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage" />
+<link rel="stylesheet" href="/css/login.css" asp-append-version="true">
+
+<div class="container card-container">
+
+    <div class="card card-design">
+
+
+        <div class="card-body">
+            <div class="card-title" style="display: flex; align-items: center; justify-content: center">
+                <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
+                <h1 class="text-primary fw-bold">DuckI</h1>
+            </div>
+            <h4 class="card-subtitle text-center text-primary">@ViewData["Title"]</h4>
+            <partial name="_StatusMessage" model="Model.StatusMessage" />
+
+
+        </div>
+    </div>
+
+</div>

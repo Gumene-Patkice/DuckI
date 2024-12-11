@@ -1,0 +1,28 @@
+.form-bg-color, .form-bg-color:hover, .form-bg-color:active, .form-bg-color:focus, .form-bg-color:disabled {
+    background: #CCD5FF;
+}
+
+.form-text-color {
+    color: #6176e8;
+}
+
+.oauth-button, .oauth-button:focus, .oauth-button:hover {
+    border-color: #212529; display: flex;
+}
+
+.oauth-button-img {
+    width: 25px; margin-right: 5px;
+}
+
+hr.line {
+    background-color: #5172FF;
+    height: 3px;
+}
+
+.button-text-size {
+    font-size: medium;
+}
+
+.settings {
+    background-color: #97AAFF;
+}

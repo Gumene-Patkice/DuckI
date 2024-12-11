@@ -4,28 +4,43 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
-<hr />
+<link rel="stylesheet" href="/css/login.css" asp-append-version="true">
 
-<p id="external-login-description" class="text-info">
-    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
-</p>
+<div class="container card-container">
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email."/>
-                <label asp-for="Input.Email" class="form-label"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+    <div class="card card-design">
+
+
+        <div class="card-body">
+            <div class="card-title" style="display: flex; align-items: center; justify-content: center">
+                <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
+                <h1 class="text-primary fw-bold">DuckI</h1>
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+            <h4 class="card-subtitle text-center text-primary">@ViewData["Title"]</h4>
+            <h5 id="external-login-title" class="card-subtitle text-center text-primary">Associate your @Model.ProviderDisplayName account</h5>
+
+            <p id="external-login-description" class="text-info" class="text-center">
+                You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
+                Please enter an email address for this site below and click the Register button to finish
+                logging in.
+            </p>
+
+            <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control form-bg-color" autocomplete="email" placeholder="Please enter your email."/>
+                    <label asp-for="Input.Email" class="form-label form-text-color"></label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                <div class="text-center mb-3 mt-4">
+                    <button type="submit" class="w-50 btn btn-sm btn-primary rounded-3 button-text-size">Register</button>
+                </div>
+                
+            </form>
+
+        </div>
     </div>
+
 </div>
 
 @section Scripts {
