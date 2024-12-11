@@ -205,7 +205,7 @@ public class UserRoleStatusesService : IUserRoleStatusesService
         
         // get UserRoleStatuses record for this user
         var userRoleStatus = await _context.UserRoleStatuses
-            .FirstOrDefaultAsync(urs => urs.UserId == userId && urs.RoleId == roleId);
+            .FirstOrDefaultAsync(urs => urs.UserId == userId);
 
         // if the user has already applied for a role, we don't want to add the user to the table again
         if (userRoleStatus != null)
