@@ -10,7 +10,6 @@
 <div class="row">
     <div class="col-md-6">
         <form id="profile-form" method="post">
-            @* <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div> *@
             <div class="form-floating mb-3">
                 <input asp-for="Input.Username" class="form-control form-bg-color" placeholder="Please choose your username." value="@User.Identity?.Name"/>
                 <label asp-for="Input.Username" class="form-label form-text-color"></label>
