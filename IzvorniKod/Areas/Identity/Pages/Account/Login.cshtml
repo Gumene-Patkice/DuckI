@@ -5,6 +5,7 @@
     ViewData["Title"] = "Log in";
 }
 
+
 <link rel="stylesheet" href="~/css/login.css" asp-append-version="true">
 
 @if (User.Identity.IsAuthenticated)
@@ -49,9 +50,6 @@ else
 
                     <div class="text-center">
                         <p class="mb-2">
-                            <a id="forgot-password" class="text-primary" asp-page="./ForgotPassword">Forgot your password?</a>
-                        </p>
-                        <p>
                             <a class="text-primary" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Don't have an account? Register here</a>
                         </p>
                     </div>
@@ -105,11 +103,9 @@ else
             </div>
         </div>
 
-
-
     </div>
 }
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

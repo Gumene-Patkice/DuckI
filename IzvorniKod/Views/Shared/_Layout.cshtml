@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+    //This has to be added if we want to perform role based operations in the view
+}
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>

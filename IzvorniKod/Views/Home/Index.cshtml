@@ -1,9 +1,4 @@
-﻿<!-- This has to be added if we want to perform role based operations in the view -->
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
-
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
     var uploadSuccess = TempData["UploadSuccess"] as bool?;
 }
@@ -14,6 +9,8 @@
 
 @if (User.IsInRole("Student"))
 {
+    <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
+    
     <div class="text-center">
         <h1 class="display-4">Student</h1>
         <p>Enjoy your stay!</p>
@@ -22,23 +19,39 @@
         <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
     </div>
     <div class="text-center">
-        <button id="fetchCalendarButton" class="btn btn-primary">Fetch Calendar</button>
+        <button id="fetchCalendarButton" class="btn btn-primary mt-3">Fetch Calendar</button>
     </div>
-    <div id="calendarContent" class="text-center mt-3"></div>
+
+    <!-- Calendar Container -->
+    <div id="calendarContainer" class="container mt-3" style="display:none;">
+        <div class="d-flex justify-content-between mb-2">
+            <button id="prevMonthButton" class="btn btn-primary">Previous Month</button>
+
+            <span id="monthLabel" class="d-flex align-items-center justify-content-center" style="font-size: 1.2em;"></span>
+
+            <button id="nextMonthButton" class="btn btn-primary">Next Month</button>
+        </div>
+
+        <!-- Days of the week headers -->
+        <div class="row text-center">
+            <div class="col">MON</div>
+            <div class="col">TUE</div>
+            <div class="col">WED</div>
+            <div class="col">THU</div>
+            <div class="col">FRI</div>
+            <div class="col">SAT</div>
+            <div class="col">SUN</div>
+        </div>
+
+        <!-- Calendar grid using Bootstrap row-cols-7 -->
+        <div id="calendarGrid" class="row row-cols-7 g-0"></div>
+    </div>
 }
 
 @* This script attaches getcalendar route to the fetch calendar button and changes content of calendarContent div *@
 @section Scripts {
+    <script src="~/js/index.js" asp-append-version="true"></script>
     <script>
-        document.getElementById('fetchCalendarButton').addEventListener('click', async function() {
-            const response = await fetch('/api/calendars/getcalendar');
-            if (response.ok) {
-                const csvContent = await response.text();
-                document.getElementById('calendarContent').innerText = csvContent;
-            } else {
-                document.getElementById('calendarContent').innerText = 'Failed to fetch calendar.';
-            }
-        });
         @if (uploadSuccess == true)
         {
             <text>alert('File successfully updated!');</text>

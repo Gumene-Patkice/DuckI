@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DuckI.Data;
 using DuckI.Services;
+using DuckI.Helpers;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +19,21 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+// For the reverse proxy
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
+
 // registering the CalendarService
 builder.Services.AddScoped<ICalendarService, CalendarService>();
+
+// registering the ChatService
+builder.Services.AddScoped<IChatService, ChatService>();
+
+// registering the UserRoleStatusesService
+builder.Services.AddScoped<IUserRoleStatusesService, UserRoleStatusesService>();
 
 // Configuring Identity options for password, lockout, user
 builder.Services.Configure<IdentityOptions>(options =>
@@ -72,6 +87,8 @@ builder.Services.AddAuthentication()
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -84,6 +101,7 @@ else
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -91,6 +109,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<GlobalErrorHandler>();
 
 app.MapControllerRoute(
     name: "default",
