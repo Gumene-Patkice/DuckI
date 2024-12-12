@@ -131,4 +131,32 @@ public class HomeController : Controller
             return RedirectToAction("Roles");
         }
     }
+    
+    ///<summary> Apply for role. Adds records to the UserRoleStatuses table. </summary>
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> AddUserToSuperStudentRole([FromForm] string roleName)
+    {
+        var userId = _userManager.GetUserId(User);
+        
+        // Check if the user is in the Admin role (Admins can't apply for roles)
+        var isAdmin = await _userManager.IsInRoleAsync(await _userManager.FindByIdAsync(userId), "Admin");
+        if (isAdmin)
+        {
+            TempData["AppliedForRole"] = false;
+            return RedirectToAction("Roles");
+        }
+        
+        try
+        {
+            await _userRoleStatusesService.AssignSuperStudentAsync(userId, roleName);
+            TempData["AppliedForRole"] = true;
+            return RedirectToAction("Roles");
+        }
+        catch (Exception ex)
+        {
+            TempData["AppliedForRole"] = false;
+            return RedirectToAction("Roles");
+        }
+    }
 }
