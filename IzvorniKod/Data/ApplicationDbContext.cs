@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<PublicPdfTag> PublicPdfTags { get; set; }
     public DbSet<StudentPdf> StudentPdfs { get; set; }
     public DbSet<EducatorPdf> EducatorPdfs { get; set; }
+    public DbSet<FlaggedPdf> FlaggedPdfs { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -113,5 +114,19 @@ public class ApplicationDbContext : IdentityDbContext
             .HasOne(ep => ep.PublicPdf)
             .WithOne(pp => pp.EducatorPdf)
             .HasForeignKey<EducatorPdf>(ep => ep.PublicPdfId);
+        
+        // one to many; each User can have many records in FlaggedPdf
+        modelBuilder.Entity<FlaggedPdf>()
+            .HasKey(fp => new { fp.UserId, fp.PublicPdfId });
+
+        modelBuilder.Entity<FlaggedPdf>()
+            .HasOne(fp => fp.User)
+            .WithMany()
+            .HasForeignKey(fp => fp.UserId);
+
+        modelBuilder.Entity<FlaggedPdf>()
+            .HasOne(fp => fp.PublicPdf)
+            .WithMany()
+            .HasForeignKey(fp => fp.PublicPdfId);
     }
 }

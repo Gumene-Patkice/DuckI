@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using DuckI.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using DuckI.Models;
 using DuckI.Services;
@@ -11,22 +12,34 @@ namespace DuckI.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly ICalendarService _calendarService;
     private readonly IUserRoleStatusesService _userRoleStatusesService;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IManagePdfService _managePdfService;
 
     public HomeController(ILogger<HomeController> logger, ICalendarService calendarService,
-        UserManager<IdentityUser> userManager, IUserRoleStatusesService userRoleStatusesService)
+        UserManager<IdentityUser> userManager, IUserRoleStatusesService userRoleStatusesService, IManagePdfService managePdfService)
     {
         _logger = logger;
+        _userManager = userManager;
         _calendarService = calendarService;
         _userRoleStatusesService = userRoleStatusesService;
-        _userManager = userManager;
+        _managePdfService = managePdfService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var userId = _userManager.GetUserId(User);
+        var pdfs = new List<PrivateAndFlaggedPdfDto>();
+        if (User.IsInRole("SuperStudent"))
+        {
+            pdfs = await _managePdfService.GetUserPrivateAndFlaggedPdfsAsync(userId);   
+        }
+        if (User.IsInRole("Educator"))
+        {
+            pdfs = await _managePdfService.GetUserEducatorsPdfs(userId);
+        }
+        return View(pdfs);
     }
 
     public IActionResult Privacy()

@@ -12,17 +12,19 @@ public class PdfController : Controller
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUploadPdfService _uploadPdfService;
     private readonly ITagService _tagService;
+    private readonly IManagePdfService _managePdfService;
     
     public PdfController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
-        IUploadPdfService uploadPdfService, ITagService tagService)
+        IUploadPdfService uploadPdfService, ITagService tagService, IManagePdfService managePdfService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _uploadPdfService = uploadPdfService;
         _tagService = tagService;
+        _managePdfService = managePdfService;
     }
     
-    [Authorize]
+    [Authorize(Roles = "SuperStudent,Educator")]
     public async Task<IActionResult> UploadPdf()
     {
         var tags = await _tagService.GetAllTagsAsync();
@@ -30,8 +32,8 @@ public class PdfController : Controller
         return View();
     }
     
-    //[Authorize(Roles="SuperStudent")]
-    [Authorize]
+    [Authorize(Roles="SuperStudent")]
+    //[Authorize]
     [HttpPost]
     public async Task<IActionResult> UploadPrivatePdf(IFormFile file, string tagName)
     {
@@ -83,5 +85,74 @@ public class PdfController : Controller
         }
     }
     
+    [Authorize]
+    public async Task<IActionResult> ViewPublicMaterial()
+    {
+        var pdfs = await _managePdfService.GetAllPublicPdfsAsync();
+        return View(pdfs);
+    }
     
+    [Authorize(Roles="SuperStudent")]
+    // [Authorize(Roles="SuperStudent,Educator")]
+    [HttpPost]
+    public async Task<IActionResult> FlagPdf([FromForm] long publicPdfId)
+    {
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            await _managePdfService.AddUserToFlaggedPdfsAsync(userId, publicPdfId);
+            return Ok("PDF flagged successfully.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    [Authorize(Roles="SuperStudent,Educator")]
+    // [Authorize(Roles="SuperStudent,Educator,Reviewer")]
+    [HttpPost]
+    public async Task<IActionResult> OpenPdf([FromForm] long pdfId, [FromForm] string isPublic)
+    {
+        var pdfPath = await _managePdfService.GetPdfPathByIdAsync(pdfId, isPublic);
+        if (pdfPath == null)
+        {
+            return NotFound("PDF not found.");
+        }
+
+        //var filePath = Path.Combine("path_to_your_pdf_directory", pdfPath);
+        var fileBytes = await System.IO.File.ReadAllBytesAsync(pdfPath);
+
+        return File(fileBytes, "application/pdf");
+    }
+    
+    [Authorize(Roles="SuperStudent")]
+    [HttpPost]
+    public async Task<IActionResult> UnflagPdf([FromForm] long publicPdfId)
+    {
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            await _managePdfService.RemoveUserFromFlaggedPdfsAsync(userId, publicPdfId);
+            return Ok("PDF unflagged successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 }
