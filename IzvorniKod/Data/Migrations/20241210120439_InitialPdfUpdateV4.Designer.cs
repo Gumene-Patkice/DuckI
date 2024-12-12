@@ -3,6 +3,7 @@ using System;
 using DuckI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DuckI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241210120439_InitialPdfUpdateV4")]
+    partial class InitialPdfUpdateV4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -54,10 +57,6 @@ namespace DuckI.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("PdfName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("PdfPath")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -87,10 +86,6 @@ namespace DuckI.Data.Migrations
                     b.Property<long>("PublicPdfId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("PdfName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<string>("PdfPath")
                         .IsRequired()
