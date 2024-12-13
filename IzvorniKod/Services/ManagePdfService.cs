@@ -106,7 +106,7 @@ public class ManagePdfService : IManagePdfService
                 PdfId = sp.PublicPdf.PublicPdfId,
                 PdfPath = sp.PublicPdf.PdfPath,
                 PdfName = sp.PublicPdf.PdfName,
-                Rating = 0,
+                Rating = sp.PublicPdf.Rating,
                 TagName = sp.PublicPdf.PublicPdfTag.Tag.TagName,
                 IsPublic = false
             })

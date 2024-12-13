@@ -5,23 +5,23 @@
 <table class="table">
     <thead>
     <tr>
-        @*<th>PDF ID</th>*@
-        @*<th>PDF Path</th>*@
         <th>PDF Name</th>
         <th>Educator Username</th>
         <th>Rating</th>
         <th>Tag Name</th>
+        @if (User.IsInRole("SuperStudent"))
+        {
+            <th>Action</th>
+        }
     </tr>
     </thead>
     <tbody>
     @foreach (var pdf in Model)
     {
         <tr>
-            @*<td>@pdf.PdfName</td>*@
             <td>
-                <form action="@Url.Action("OpenPdf", "Pdf")" method="post" target="_blank">
+                <form action="@Url.Action("OpenPublicPdf", "Pdf")" method="post" target="_blank">
                     <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
-                    <input type="hidden" name="isPublic" value="true" />
                     <button type="submit" class="btn-link">@pdf.PdfName</button>
                 </form>
             </td>
@@ -29,7 +29,7 @@
             <td>@pdf.Rating</td>
             <td>@pdf.TagName</td>
             <td>
-                @if (!User.IsInRole("Educator"))
+                @if (User.IsInRole("SuperStudent"))
                 {
                     <form class="flag-form" data-pdf-id="@pdf.PublicPdfId">
                         <input type="hidden" name="publicPdfId" value="@pdf.PublicPdfId"/>

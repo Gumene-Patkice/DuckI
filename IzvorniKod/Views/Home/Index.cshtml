@@ -70,9 +70,8 @@
             {
                 <tr>
                     <td>
-                        <form action="@Url.Action("OpenPdf", "Pdf")" method="post" target="_blank">
+                        <form action="@(pdf.IsPublic ? Url.Action("OpenPublicPdf", "Pdf") : Url.Action("OpenPrivatePdf", "Pdf"))" method="post" target="_blank">
                             <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                            <input type="hidden" name="isPublic" value="@(pdf.IsPublic.ToString().ToLower())" />
                             <button type="submit" class="btn-link">@pdf.PdfName</button>
                         </form>
                     </td>
@@ -113,9 +112,8 @@
             {
                 <tr>
                     <td>
-                        <form action="@Url.Action("OpenPdf", "Pdf")" method="post" target="_blank">
+                        <form action="@Url.Action("OpenPublicPdf", "Pdf")" method="post" target="_blank">
                             <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                            <input type="hidden" name="isPublic" value="true" />
                             <button type="submit" class="btn-link">@pdf.PdfName</button>
                         </form>
                     </td>

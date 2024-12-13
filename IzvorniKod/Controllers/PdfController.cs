@@ -117,21 +117,32 @@ public class PdfController : Controller
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
-
-    [Authorize(Roles="SuperStudent,Educator")]
-    // [Authorize(Roles="SuperStudent,Educator,Reviewer")]
+    
+    [Authorize(Roles="SuperStudent")]
     [HttpPost]
-    public async Task<IActionResult> OpenPdf([FromForm] long pdfId, [FromForm] string isPublic)
+    public async Task<IActionResult> OpenPrivatePdf([FromForm] long pdfId)
     {
-        var pdfPath = await _managePdfService.GetPdfPathByIdAsync(pdfId, isPublic);
+        var pdfPath = await _managePdfService.GetPdfPathByIdAsync(pdfId, "false");
         if (pdfPath == null)
         {
             return NotFound("PDF not found.");
         }
 
-        //var filePath = Path.Combine("path_to_your_pdf_directory", pdfPath);
         var fileBytes = await System.IO.File.ReadAllBytesAsync(pdfPath);
+        return File(fileBytes, "application/pdf");
+    }
 
+    [Authorize(Roles="SuperStudent,Educator")]
+    [HttpPost]
+    public async Task<IActionResult> OpenPublicPdf([FromForm] long pdfId)
+    {
+        var pdfPath = await _managePdfService.GetPdfPathByIdAsync(pdfId, "true");
+        if (pdfPath == null)
+        {
+            return NotFound("PDF not found.");
+        }
+
+        var fileBytes = await System.IO.File.ReadAllBytesAsync(pdfPath);
         return File(fileBytes, "application/pdf");
     }
     
