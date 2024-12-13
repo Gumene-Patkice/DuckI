@@ -4,60 +4,74 @@
     var userRoleStatus = TempData["UserRoleStatus"];
 }
 
-<h2>Apply For Role</h2>
+<link rel="stylesheet" href="~/css/roles.css" asp-append-version="true">
 
-<form asp-action="AddUserRoleStatus" asp-controller="Home" method="post">
-    <input type="hidden" name="roleName" value="Reviewer" />
-    <div class="form-group">
-        <label for="description">Description</label>
-        <input type="text" name="description" class="form-control" />
+<div class="container card-container">
+
+    <div class="card card-design">
+
+        <div class="card-body">
+            <div class="card-title card-container">
+                <img src="~/images/Ducki_1.png" class="w-25" alt="DuckI">
+                <h1 class="text-primary fw-bold">DuckI</h1>
+            </div>
+            <h2 class="card-subtitle text-center text-primary">Application form</h2>
+
+            <p>On this page you will have to apply for the Educator or Reviewer role.<br/>
+                An Educator is someone who provides information and relevant materials for students to learn from.<br/>
+                A Reviewer scouts all public material and checks their credibility and quality.</p>
+
+            <form asp-action="AddUserRoleStatus" asp-controller="Home" method="post" class="apply-role">
+                <input type="hidden" name="roleName" value="Educator" />
+                <div class="form-group">
+                    <label for="description" class="fw-bold">Educator</label>
+                    <p>If you're applying for the Educator role, please enter any relevant information in the field below.</p>
+                    <textarea id="textarea1" name="description" class="form-control resize-disable form-bg-color" placeholder="Write a bit about yourself..." rows="5"></textarea>
+                </div>
+                <div class="button-role mt-lg-4 mt-5 pt-lg-0 pt-5">
+                    <button id="EducatorReset" type="button" class="btn btn-primary" disabled>Reset</button>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </form>
+
+            <form asp-action="AddUserRoleStatus" asp-controller="Home" method="post" class="apply-role mt-4">
+                <input type="hidden" name="roleName" value="Reviewer" />
+                <div class="form-group">
+                    <label for="description" class="fw-bold">Reviewer</label>
+                    <p>If you're applying for the Reviewer role, please enter any relevant information in the field below.</p>
+                    <textarea id="textarea2" name="description" class="form-control resize-disable form-bg-color" placeholder="Write a bit about yourself..." rows="5"></textarea>
+                </div>
+                <div class="button-role mt-lg-4 mt-5 pt-lg-0 pt-5">
+                    <button id="ReviewerReset" type="button" class="btn btn-primary" disabled>Reset</button>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </div>
+            </form>
+
+            <form asp-action="AddUserToSuperStudentRole" asp-controller="Home" method="post">
+                <input type="hidden" name="roleName" value="SuperStudent" />
+                <button type="submit" class="btn btn-primary">Get Student Role</button>
+            </form>
+
+            @if (appliedForRole == true)
+            {
+                <script>
+                    alert('Successfully applied for role!');
+                </script>
+            }
+            @if (userRoleStatus == "Unknown")
+            {
+                <p class="text-center fw-bold">Appliement is either rejected or you haven't yet applied for the role.</p>
+            }
+            @if (userRoleStatus != "Unknown")
+            {
+                <p class="text-center fw-bold">Status: @userRoleStatus</p>
+            }
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Apply for Reviewer Role</button>
-</form>
 
-<form asp-action="AddUserRoleStatus" asp-controller="Home" method="post">
-    <input type="hidden" name="roleName" value="Educator" />
-    <div class="form-group">
-        <label for="description">Description</label>
-        <input type="text" name="description" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Apply for Educator Role</button>
-</form>
+</div>
 
-<form asp-action="AddUserToSuperStudentRole" asp-controller="Home" method="post">
-    <input type="hidden" name="roleName" value="SuperStudent" />
-    <button type="submit" class="btn btn-primary">Get Student Role</button>
-</form>
-
-@if (appliedForRole == true)
+@section Scripts
 {
-    <script>
-        alert('Successfully applied for role!');
-    </script>
+    <script src="~/js/roles.js" asp-append-version="true"></script>
 }
-@if (userRoleStatus == "Unknown")
-{
-    <p>Appliement is either rejected or you haven't yet applied for the role.</p>
-}
-@if (userRoleStatus != "Unknown")
-{
-    <p>Status: @userRoleStatus</p>
-}
-
-@*
-<!--We decided to left this here in case that frontend needs this, if frontend deems this useless, they can delete it-->
-
-<!--For testing purposes-->
-@if (User.IsInRole("Reviewer"))
-{
-    <p>Reviewer</p>
-}
-@if (User.IsInRole("Educator"))
-{
-    <p>Educator</p>
-}
-@if (User.IsInRole("SuperStudent"))
-{
-    <p>SuperStudent</p>
-}
-*@

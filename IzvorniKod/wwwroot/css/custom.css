@@ -26,3 +26,8 @@ button.nav-link {
 .text-primary {
     color: #5172FF !important;
 }
+
+textarea::placeholder {
+    color: #6176e8 !important;
+    opacity: 0.5 !important;
+}

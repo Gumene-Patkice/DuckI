@@ -23,6 +23,30 @@
             <button id="update-profile-button" type="submit" class="w-50 btn btn-primary">Save</button>
         </form>
     </div>
+    <h3 class="mt-3">Role</h3>
+    @if (User.IsInRole("Reviewer"))
+    {
+        <p class="fs-5">Your current role is a Reviewer.<br/>
+            With this, you can oversee and delete documents which do not meet the quality standard.</p>
+    }
+    @if (User.IsInRole("Educator"))
+    {
+        <p class="fs-5">Your current role is an Educator.<br/>
+            With this, you can upload your own files so other users can see them.</p>
+    }
+    @if (User.IsInRole("SuperStudent"))
+    {
+        <p class="fs-5">Your current role is a Student.</p>
+    }
+    @if (User.IsInRole("Admin"))
+    {
+        <p class="fs-5">Your current role is an Admin.<br/>
+            You can select and approve new Educators.</p>
+    }
+    @if (User.IsInRole("Student") && !User.IsInRole("Reviewer") && !User.IsInRole("Educator") && !User.IsInRole("SuperStudent") && !User.IsInRole("Admin"))
+    {
+        <p class="fs-5">No role.</p>
+    }
 </div>
 
 @section Scripts {

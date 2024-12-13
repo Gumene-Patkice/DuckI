@@ -1,0 +1,42 @@
+﻿.card-design {
+    max-width: 850px;
+    margin: auto;
+    padding: 10px;
+    border-radius: 45px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-self: center;
+}
+
+.card-subtitle {
+    padding: 20px;
+}
+
+.resize-disable {
+    resize: none;
+}
+
+.form-bg-color, .form-bg-color:hover, .form-bg-color:active, .form-bg-color:focus {
+    background: #CCD5FF;
+}
+
+.apply-role {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-self: center;
+    gap: 10px;
+}
+
+.button-role {
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+    flex-direction: column;
+    gap: 15px;
+}
