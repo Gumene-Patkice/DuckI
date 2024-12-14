@@ -10,8 +10,8 @@ namespace DuckI.Services;
 /// </summary>
 public interface IUploadPdfService
 {
-    public Task UploadPrivatePdfAsync(IFormFile file, string userId, string tagName);
-    public Task UploadPublicPdfAsync(IFormFile file, string userId, string tagName);
+    Task UploadPrivatePdfAsync(IFormFile file, string userId, string tagName);
+    Task UploadPublicPdfAsync(IFormFile file, string userId, string tagName);
 }
     
 /// <summary>

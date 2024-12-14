@@ -41,6 +41,9 @@ builder.Services.AddScoped<ITagService, TagService>();
 // registering the UploadPdfService
 builder.Services.AddScoped<IUploadPdfService, UploadPdfService>();
 
+// registering the ManagePdfService
+builder.Services.AddScoped<IManagePdfService, ManagePdfService>();
+
 // Configuring Identity options for password, lockout, user
 builder.Services.Configure<IdentityOptions>(options =>
 {

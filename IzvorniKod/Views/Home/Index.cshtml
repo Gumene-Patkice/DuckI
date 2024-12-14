@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<DuckI.Dtos.PrivateAndFlaggedPdfDto>
+
+@{
     ViewData["Title"] = "Home Page";
     var uploadSuccess = TempData["UploadSuccess"] as bool?;
 }
@@ -12,7 +14,7 @@
     <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
     
     <div class="text-center">
-        <h1 class="display-4">Student</h1>
+        <h1 class="display-4">User</h1>
         <p>Enjoy your stay!</p>
     </div>
     <div class="text-center">
@@ -48,13 +50,111 @@
     </div>
 }
 
+@if (User.IsInRole("SuperStudent"))
+{
+    <div class="container mt-4">
+        <h2>List of Private and Flagged PDFs</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>PDF Name</th>
+                <th>Uploaded by</th>
+                <th>Rating</th>
+                <th>Tag Name</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var pdf in Model)
+            {
+                <tr>
+                    <td>
+                        <form action="@(pdf.IsPublic ? Url.Action("OpenPublicPdf", "Pdf") : Url.Action("OpenPrivatePdf", "Pdf"))" method="post" target="_blank">
+                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                            <button type="submit" class="btn-link">@pdf.PdfName</button>
+                        </form>
+                    </td>
+                    <td>@(pdf.IsPublic ? pdf.EducatorUsername : "You" )</td>
+                    <td>@pdf.Rating</td>
+                    <td>@pdf.TagName</td>
+                    <td>@(pdf.IsPublic ? "Public" : "Private")</td>
+                    <td>
+                        @if (pdf.IsPublic)
+                        {
+                            <form class="unflag-form" data-pdf-id="@pdf.PdfId" style="display:inline;">
+                                <input type="hidden" name="publicPdfId" value="@pdf.PdfId" />
+                                <button type="submit" class="btn btn-danger">Unflag</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (User.IsInRole("Educator"))
+{
+    <div class="container mt-4">
+        <h2>List of Your Pdfs</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>PDF Name</th>
+                <th>Rating</th>
+                <th>Tag Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var pdf in Model)
+            {
+                <tr>
+                    <td>
+                        <form action="@Url.Action("OpenPublicPdf", "Pdf")" method="post" target="_blank">
+                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                            <button type="submit" class="btn-link">@pdf.PdfName</button>
+                        </form>
+                    </td>
+                    <td>@pdf.Rating</td>
+                    <td>@pdf.TagName</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
 @* This script attaches getcalendar route to the fetch calendar button and changes content of calendarContent div *@
 @section Scripts {
     <script src="~/js/index.js" asp-append-version="true"></script>
     <script>
+        // for calendars; seperate these two comment sections in two different scripts
+        // for more info contat Jan or Jakov
         @if (uploadSuccess == true)
         {
             <text>alert('File successfully updated!');</text>
         }
+    
+        // for unflagging; seperate these two comment sections in two different scripts
+        // for more info contat Jan or Jakov
+        document.querySelectorAll('.unflag-form').forEach(form => {
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const response = await fetch('/Pdf/UnflagPdf', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Failed to unflag the PDF.');
+                    location.reload();
+                }
+            });
+        });
     </script>
 }

@@ -1,0 +1,67 @@
+@model List<DuckI.Dtos.PublicPdfDto>
+
+<h2>List of Public PDFs</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>PDF Name</th>
+        <th>Educator Username</th>
+        <th>Rating</th>
+        <th>Tag Name</th>
+        @if (User.IsInRole("SuperStudent"))
+        {
+            <th>Action</th>
+        }
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var pdf in Model)
+    {
+        <tr>
+            <td>
+                <form action="@Url.Action("OpenPublicPdf", "Pdf")" method="post" target="_blank">
+                    <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
+                    <button type="submit" class="btn-link">@pdf.PdfName</button>
+                </form>
+            </td>
+            <td>@pdf.EducatorUsername</td>
+            <td>@pdf.Rating</td>
+            <td>@pdf.TagName</td>
+            <td>
+                @if (User.IsInRole("SuperStudent"))
+                {
+                    <form class="flag-form" data-pdf-id="@pdf.PublicPdfId">
+                        <input type="hidden" name="publicPdfId" value="@pdf.PublicPdfId"/>
+                        <button type="submit" class="btn btn-warning">Flag This Pdf</button>
+                    </form>
+                    <span class="flag-message" style="display:none; color:green;">Successfully added</span>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.flag-form').forEach(form => {
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const response = await fetch('/Pdf/FlagPdf', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    this.nextElementSibling.style.display = 'block';
+                } else if (response.status >= 400 && response.status < 500) {
+                    alert('The selected pdf has already been flagged!');
+                } else {
+                    alert('Failed to flag the PDF.');
+                }
+            });
+        });
+    </script>
+}
