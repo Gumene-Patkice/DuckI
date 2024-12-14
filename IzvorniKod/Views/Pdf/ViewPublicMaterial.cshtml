@@ -16,7 +16,7 @@
         <th>Educator Username</th>
         <th>Rating</th>
         <th>Tag Name</th>
-        @if (User.IsInRole("SuperStudent"))
+        @if (User.IsInRole("SuperStudent") || User.IsInRole("Reviewer"))
         {
             <th>Action</th>
             <th></th>
