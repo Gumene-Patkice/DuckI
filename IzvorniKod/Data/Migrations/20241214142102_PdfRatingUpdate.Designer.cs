@@ -3,6 +3,7 @@ using System;
 using DuckI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DuckI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241214142102_PdfRatingUpdate")]
+    partial class PdfRatingUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -134,7 +137,7 @@ namespace DuckI.Data.Migrations
                     b.ToTable("PublicPdfTags");
                 });
 
-            modelBuilder.Entity("DuckI.Models.RatingLog", b =>
+            modelBuilder.Entity("DuckI.Models.RaitingLogs", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("TEXT");
@@ -146,38 +149,7 @@ namespace DuckI.Data.Migrations
 
                     b.HasIndex("PublicPdfId");
 
-                    b.ToTable("RatingLogs");
-                });
-
-            modelBuilder.Entity("DuckI.Models.RemovedLog", b =>
-                {
-                    b.Property<long>("RemoveLogId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("EducatorId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ReviewerId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RemoveLogId");
-
-                    b.HasIndex("EducatorId");
-
-                    b.HasIndex("ReviewerId");
-
-                    b.ToTable("RemovedLogs");
+                    b.ToTable("RaitingLogs");
                 });
 
             modelBuilder.Entity("DuckI.Models.StudentPdf", b =>
@@ -525,7 +497,7 @@ namespace DuckI.Data.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("DuckI.Models.RatingLog", b =>
+            modelBuilder.Entity("DuckI.Models.RaitingLogs", b =>
                 {
                     b.HasOne("DuckI.Models.PublicPdf", "PublicPdf")
                         .WithMany()
@@ -542,25 +514,6 @@ namespace DuckI.Data.Migrations
                     b.Navigation("PublicPdf");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DuckI.Models.RemovedLog", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Educator")
-                        .WithMany()
-                        .HasForeignKey("EducatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Reviewer")
-                        .WithMany()
-                        .HasForeignKey("ReviewerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Educator");
-
-                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("DuckI.Models.StudentPdf", b =>

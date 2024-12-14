@@ -1,0 +1,25 @@
+﻿@model List<DuckI.Models.RemovedLog>
+
+<h2>Removed Logs</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Remove Log ID</th>
+        <th>Reviewer</th>
+        <th>Description</th>
+        <th>File Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var log in Model)
+    {
+    <tr>
+        <td>@log.RemoveLogId</td>
+        <td>@log.Reviewer.UserName</td>
+        <td>@log.Description</td>
+        <td>@log.FileName</td>
+    </tr>
+    }
+    </tbody>
+</table>

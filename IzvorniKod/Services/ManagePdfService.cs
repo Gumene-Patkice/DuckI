@@ -14,6 +14,11 @@ public interface IManagePdfService
     Task AddUserToFlaggedPdfsAsync(string userId, long publicPdfId);
     Task RemoveUserFromFlaggedPdfsAsync(string userId, long publicPdfId);
     Task<string> GetPdfPathByIdAsync(long pdfId, string isPublic);
+    Task RatePdfAsync(long pdfId, string userId, bool isUpvote);
+    Task DeletePrivatePdfAsync(long pdfId, string userId);
+    Task DeletePublicPdfAsync(long pdfId, string userId);
+    Task DeletePublicPdfReviewerAsync(long pdfId, string  reviewerId, string description);
+    Task<List<RemovedLog>> GetAllRemovedLogsAsync(string educatorId);
 }
 
 public class ManagePdfService : IManagePdfService
@@ -173,5 +178,161 @@ public class ManagePdfService : IManagePdfService
         {
             return null;
         }
+    }
+
+    public async Task RatePdfAsync(long pdfId, string userId, bool isUpvote)
+    {
+        var existingRatingLog = await _context.RatingLogs
+            .FirstOrDefaultAsync(rl => rl.PublicPdfId == pdfId && rl.UserId == userId);
+
+        if (existingRatingLog == null)
+        {
+            var ratingLog = new RatingLog
+            {
+                UserId = userId,
+                PublicPdfId = pdfId
+            };
+
+            _context.RatingLogs.Add(ratingLog);
+            
+            var publicPdf = await _context.PublicPdfs
+                .FirstOrDefaultAsync(pdf => pdf.PublicPdfId == pdfId);
+            
+            publicPdf.Rating += isUpvote ? 1 : -1;
+            _context.PublicPdfs.Update(publicPdf);
+            
+        }
+        
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeletePrivatePdfAsync(long pdfId, string userId)
+    {
+        var privatePdf = await _context.PrivatePdfs
+            .Include(p => p.PrivatePdfTag)
+            .Include(p => p.StudentPdf)
+            .FirstOrDefaultAsync(p => p.PrivatePdfId == pdfId);
+
+        if (privatePdf == null)
+        {
+            throw new InvalidOperationException("Private PDF not found.");
+        }
+        
+        if(privatePdf.StudentPdf.UserId != userId)
+        {
+            throw new InvalidOperationException("You are not authorized to delete this PDF.");
+        }
+        
+        File.Delete(privatePdf.PdfPath);
+        
+        if (privatePdf.PrivatePdfTag != null)
+        {
+            _context.PrivatePdfTags.Remove(privatePdf.PrivatePdfTag);
+        }
+
+        if (privatePdf.StudentPdf != null)
+        {
+            _context.StudentPdfs.Remove(privatePdf.StudentPdf);
+        }
+
+        _context.PrivatePdfs.Remove(privatePdf);
+
+        await _context.SaveChangesAsync();
+        
+        
+    }
+
+    public async Task DeletePublicPdfAsync(long pdfId, string userId)
+    {
+        var publicPdf = await _context.PublicPdfs
+            .Include(p => p.PublicPdfTag)
+            .Include(p => p.EducatorPdf)
+            .FirstOrDefaultAsync(p => p.PublicPdfId == pdfId);
+
+        if (publicPdf == null)
+        {
+            throw new InvalidOperationException("Public PDF not found.");
+        }
+
+        if (publicPdf.EducatorPdf.UserId != userId)
+        {
+            throw new InvalidOperationException("You are not authorized to delete this PDF.");
+        }
+        
+        File.Delete(publicPdf.PdfPath);
+
+        if (publicPdf.PublicPdfTag != null)
+        {
+            _context.PublicPdfTags.Remove(publicPdf.PublicPdfTag);
+        }
+
+        if (publicPdf.EducatorPdf != null)
+        {
+            _context.EducatorPdfs.Remove(publicPdf.EducatorPdf);
+        }
+
+        var ratingLogs = _context.RatingLogs.Where(rl => rl.PublicPdfId == pdfId);
+        _context.RatingLogs.RemoveRange(ratingLogs);
+
+        var flaggedPdfs = _context.FlaggedPdfs.Where(fp => fp.PublicPdfId == pdfId);
+        _context.FlaggedPdfs.RemoveRange(flaggedPdfs);
+
+        _context.PublicPdfs.Remove(publicPdf);
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeletePublicPdfReviewerAsync(long pdfId, string reviewerId, string description)
+    {
+        var publicPdf = await _context.PublicPdfs
+            .Include(p => p.PublicPdfTag)
+            .Include(p => p.EducatorPdf)
+            .FirstOrDefaultAsync(p => p.PublicPdfId == pdfId);
+
+        if (publicPdf == null)
+        {
+            throw new InvalidOperationException("Public PDF not found.");
+        }
+        
+        File.Delete(publicPdf.PdfPath);
+
+        if (publicPdf.PublicPdfTag != null)
+        {
+            _context.PublicPdfTags.Remove(publicPdf.PublicPdfTag);
+        }
+
+        if (publicPdf.EducatorPdf != null)
+        {
+            _context.EducatorPdfs.Remove(publicPdf.EducatorPdf);
+        }
+
+        var ratingLogs = _context.RatingLogs.Where(rl => rl.PublicPdfId == pdfId);
+        _context.RatingLogs.RemoveRange(ratingLogs);
+
+        var flaggedPdfs = _context.FlaggedPdfs.Where(fp => fp.PublicPdfId == pdfId);
+        _context.FlaggedPdfs.RemoveRange(flaggedPdfs);
+
+        _context.PublicPdfs.Remove(publicPdf);
+        
+        var removedLog = new RemovedLog
+        {
+            ReviewerId = reviewerId,
+            EducatorId = publicPdf.EducatorPdf.UserId,
+            Description = description,
+            FileName = publicPdf.PdfName
+        };
+
+        _context.RemovedLogs.Add(removedLog);
+
+        await _context.SaveChangesAsync();
+    }
+    
+    public async Task<List<RemovedLog>> GetAllRemovedLogsAsync(string educatorId)
+    {
+        return await _context.RemovedLogs
+            .Include(rl => rl.Reviewer)
+            .Include(rl => rl.Educator)
+            .Where(rl => rl.EducatorId == educatorId)
+            .ToListAsync();
     }
 }

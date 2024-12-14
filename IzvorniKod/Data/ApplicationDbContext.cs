@@ -17,6 +17,8 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<StudentPdf> StudentPdfs { get; set; }
     public DbSet<EducatorPdf> EducatorPdfs { get; set; }
     public DbSet<FlaggedPdf> FlaggedPdfs { get; set; }
+    public DbSet<RatingLog> RatingLogs { get; set; }
+    public DbSet<RemovedLog> RemovedLogs { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -128,5 +130,35 @@ public class ApplicationDbContext : IdentityDbContext
             .HasOne(fp => fp.PublicPdf)
             .WithMany()
             .HasForeignKey(fp => fp.PublicPdfId);
+        
+        // one to many; each Student can rate multiple pdfs
+        // each public pdf can be rated by multiple students
+        modelBuilder.Entity<RatingLog>()
+            .HasKey(rl => new { rl.UserId, rl.PublicPdfId });
+
+        modelBuilder.Entity<RatingLog>()
+            .HasOne(rl => rl.User)
+            .WithMany()
+            .HasForeignKey(rl => rl.UserId);
+
+        modelBuilder.Entity<RatingLog>()
+            .HasOne(rl => rl.PublicPdf)
+            .WithMany()
+            .HasForeignKey(rl => rl.PublicPdfId);
+        
+        // one to many; each Reviewer can have many records in RemovedLog
+        // each Educator can have many records in RemovedLog
+        modelBuilder.Entity<RemovedLog>()
+            .HasKey(rl => rl.RemoveLogId);
+
+        modelBuilder.Entity<RemovedLog>()
+            .HasOne(rl => rl.Reviewer)
+            .WithMany()
+            .HasForeignKey(rl => rl.ReviewerId);
+
+        modelBuilder.Entity<RemovedLog>()
+            .HasOne(rl => rl.Educator)
+            .WithMany()
+            .HasForeignKey(rl => rl.EducatorId);
     }
 }

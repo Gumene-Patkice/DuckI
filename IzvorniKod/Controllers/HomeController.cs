@@ -172,4 +172,34 @@ public class HomeController : Controller
             return RedirectToAction("Roles");
         }
     }
+    
+    [Authorize(Roles="SuperStudent")]
+    [HttpPost]
+    public async Task<IActionResult> RatePdf([FromForm] long pdfId, [FromForm] string isUpvote)
+    {
+        var userId = _userManager.GetUserId(User);
+        // forms can't pass boolean values, so we pass them as strings 
+        await _managePdfService.RatePdfAsync(pdfId, userId, isUpvote == "true");
+        return RedirectToAction("Index");
+    }
+    
+    [Authorize(Roles="Educator")]
+    [HttpPost]
+    public async Task<IActionResult> DeletePublicPdf([FromForm] long pdfId)
+    {
+        try
+        {
+            var userId = _userManager.GetUserId(User);
+            await _managePdfService.DeletePublicPdfAsync(pdfId, userId);
+            return RedirectToAction("Index");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
 }
