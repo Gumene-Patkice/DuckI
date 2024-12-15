@@ -21,6 +21,13 @@
                 An Educator is someone who provides information and relevant materials for students to learn from.<br/>
                 A Reviewer scouts all public material and checks their credibility and quality.</p>
 
+            <p>Get a <strong>Student</strong> role by clicking the button below.</p>
+
+            <form class="text-start mb-3" asp-action="AddUserToSuperStudentRole" asp-controller="Home" method="post">
+                <input type="hidden" name="roleName" value="SuperStudent" />
+                <button type="submit" class="btn btn-sm btn-primary">Get Student Role</button>
+            </form>
+
             <form asp-action="AddUserRoleStatus" asp-controller="Home" method="post" class="apply-role">
                 <input type="hidden" name="roleName" value="Educator" />
                 <div class="form-group">
@@ -47,11 +54,6 @@
                 </div>
             </form>
 
-            <form asp-action="AddUserToSuperStudentRole" asp-controller="Home" method="post">
-                <input type="hidden" name="roleName" value="SuperStudent" />
-                <button type="submit" class="btn btn-primary">Get Student Role</button>
-            </form>
-
             @if (appliedForRole == true)
             {
                 <script>
@@ -60,11 +62,11 @@
             }
             @if (userRoleStatus == "Unknown")
             {
-                <p class="text-center fw-bold">Appliement is either rejected or you haven't yet applied for the role.</p>
+                <p class="text-center fw-bold mt-1">Appliement is either rejected or you haven't yet applied for the role.</p>
             }
             @if (userRoleStatus != "Unknown")
             {
-                <p class="text-center fw-bold">Status: @userRoleStatus</p>
+                <p class="text-center fw-bold mt-1">Status: @userRoleStatus</p>
             }
         </div>
     </div>

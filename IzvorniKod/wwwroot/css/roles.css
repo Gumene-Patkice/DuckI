@@ -40,3 +40,51 @@
     flex-direction: column;
     gap: 15px;
 }
+
+.nav-bg-color {
+    background: #CCD5FF;
+}
+
+.inbox-container {
+    min-width: 15%;
+}
+
+.form-container {
+    min-width: 80%;
+    max-width: 80%;
+}
+
+.navbar-size {
+    min-height: 100px;
+    max-height: 600px;
+    overflow-y: auto;
+    max-width: 300px;
+}
+
+.application-size {
+    height: 600px;
+    overflow-y: auto;
+}
+
+.nav-pills .nav-link {
+    background-color: white !important;
+    color: black !important;
+}
+
+@media only screen and (max-width: 1200px) {
+    .navbar-size {
+        max-height: 200px;
+    }
+
+    .inbox-container {
+        min-width: 20%
+    }
+
+    .form-container {
+        min-width: 100%;
+    }
+
+    .application-size {
+        height: 500px;
+    }
+}
