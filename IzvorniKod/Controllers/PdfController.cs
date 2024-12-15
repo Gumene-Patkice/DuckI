@@ -24,6 +24,9 @@ public class PdfController : Controller
         _managePdfService = managePdfService;
     }
     
+    /// <summary>
+    /// Renders UploadPdf view, as well as get all tags.
+    /// </summary>
     [Authorize(Roles = "SuperStudent,Educator")]
     public async Task<IActionResult> UploadPdf()
     {
@@ -32,8 +35,11 @@ public class PdfController : Controller
         return View();
     }
     
+    /// <summary>
+    /// Used in UploadPdf view.
+    /// Accessible only to students (SuperStudents).
+    /// </summary>
     [Authorize(Roles="SuperStudent")]
-    //[Authorize]
     [HttpPost]
     public async Task<IActionResult> UploadPrivatePdf(IFormFile file, string tagName)
     {
@@ -59,6 +65,10 @@ public class PdfController : Controller
         }
     }
     
+    /// <summary>
+    /// Used in UploadPdf.
+    /// Accessible only to Educators.
+    /// </summary>
     [Authorize(Roles="Educator")]
     [HttpPost]
     public async Task<IActionResult> UploadPublicPdf(IFormFile file, string tagName)
@@ -85,6 +95,9 @@ public class PdfController : Controller
         }
     }
     
+    /// <summary>
+    /// Used to render the ViewPublicMaterial view with all available public PDFs
+    /// </summary>
     [Authorize]
     public async Task<IActionResult> ViewPublicMaterial()
     {
@@ -92,8 +105,10 @@ public class PdfController : Controller
         return View(pdfs);
     }
     
+    /// <summary>
+    /// Used in javascript in ViewPublicMaterial view for flagging public PDFs.
+    /// </summary>
     [Authorize(Roles="SuperStudent")]
-    // [Authorize(Roles="SuperStudent,Educator")]
     [HttpPost]
     public async Task<IActionResult> FlagPdf([FromForm] long publicPdfId)
     {
@@ -118,11 +133,14 @@ public class PdfController : Controller
         }
     }
     
+    /// <summary>
+    /// Used in Index view to open private PDFs.
+    /// </summary>
     [Authorize(Roles="SuperStudent")]
     [HttpPost]
     public async Task<IActionResult> OpenPrivatePdf([FromForm] long pdfId)
     {
-        var pdfPath = await _managePdfService.GetPdfPathByIdAsync(pdfId, "false");
+        var pdfPath = await _managePdfService.GetPdfPathByIdAsync(pdfId, false);
         if (pdfPath == null)
         {
             return NotFound("PDF not found.");
@@ -132,11 +150,14 @@ public class PdfController : Controller
         return File(fileBytes, "application/pdf");
     }
 
-    [Authorize(Roles="SuperStudent,Educator")]
+    /// <summary>
+    ///  Used in both Index and ViewPublicMaterial views to open public PDFs.
+    /// </summary>
+    [Authorize(Roles="SuperStudent,Educator,Reviewer")]
     [HttpPost]
     public async Task<IActionResult> OpenPublicPdf([FromForm] long pdfId)
     {
-        var pdfPath = await _managePdfService.GetPdfPathByIdAsync(pdfId, "true");
+        var pdfPath = await _managePdfService.GetPdfPathByIdAsync(pdfId, true);
         if (pdfPath == null)
         {
             return NotFound("PDF not found.");
@@ -146,6 +167,9 @@ public class PdfController : Controller
         return File(fileBytes, "application/pdf");
     }
     
+    /// <summary>
+    /// Used in javascript in Index view for unflagging previously flagged public PDFs.
+    /// </summary>
     [Authorize(Roles="SuperStudent")]
     [HttpPost]
     public async Task<IActionResult> UnflagPdf([FromForm] long publicPdfId)
@@ -167,7 +191,11 @@ public class PdfController : Controller
         }
     }
     
-    ///<summary> Rate pdf. </summary>
+    ///<summary>
+    /// Rate public PDFs.
+    /// Accessible only to students (SuperStudents)
+    /// Used in ViewPublicMaterial view.
+    /// </summary>
     [Authorize(Roles="SuperStudent")]
     [HttpPost]
     public async Task<IActionResult> RatePdf([FromForm] long pdfId, [FromForm] string isUpvote)
@@ -178,7 +206,10 @@ public class PdfController : Controller
         return RedirectToAction("ViewPublicMaterial");
     }
     
-    [Authorize(Roles="Educator,SuperStudent")]
+    /// <summary>
+    /// Used in javascript Index view and ViewPublicMaterial view to get all tags.
+    /// </summary>
+    [Authorize(Roles="Educator,SuperStudent,Reviewer")]
     [HttpGet]
     public async Task<IActionResult> GetAllTags()
     {
@@ -186,6 +217,9 @@ public class PdfController : Controller
         return Json(tags);
     }
     
+    /// <summary>
+    /// Used in Index view to delete private PDFs by students (SuperStudents).
+    /// </summary>
     [Authorize(Roles="SuperStudent")]
     [HttpPost]
     public async Task<IActionResult> DeletePrivatePdf([FromForm] long pdfId)
@@ -206,6 +240,9 @@ public class PdfController : Controller
         }
     }
     
+    /// <summary>
+    /// Used by Educators in Index view to delete their public PDFs.
+    /// </summary>
     [Authorize(Roles="Educator")]
     [HttpPost]
     public async Task<IActionResult> DeletePublicPdf([FromForm] long pdfId)
@@ -226,6 +263,9 @@ public class PdfController : Controller
         }
     }
     
+    /// <summary>
+    /// Used by Reviewers in ViewPublicMaterial view to delete public PDFs.
+    /// </summary>
     [Authorize(Roles = "Reviewer")]
     [HttpPost]
     public async Task<IActionResult> DeletePublicPdfReviewer([FromForm] long pdfId, [FromForm] string description)
