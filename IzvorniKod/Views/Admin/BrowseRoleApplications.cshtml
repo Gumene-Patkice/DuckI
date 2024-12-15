@@ -1,3 +1,4 @@
+@using Microsoft.EntityFrameworkCore
 @model IEnumerable<DuckI.Dtos.BrowseRoleApplicationsDto>
 
 @{
@@ -7,13 +8,34 @@ Layout = "_Layout";
 
 <link rel="stylesheet" href="~/css/roles.css" asp-append-version="true">
 
-<div class="d-flex flex-xxl-row gap-xxl-3 gap-1 flex-column align-items-start align-content-center justify-content-center">
+@{
+    var n = true;
+}
+
+@foreach (var data in Model)
+{
+    @if (!data.Status)
+    {
+        n = false;
+    }
+}
+
+@if (n)
+{
+    <h3 class="text-primary">No applications available.</h3>
+}
+else
+{
+    <div class="d-flex flex-xxl-row gap-xxl-3 gap-1 flex-column align-items-start align-content-center justify-content-center">
     <div class="me-xxl-2 inbox-container">
         <h4 class="text-primary">Inbox</h4>
         <div class="nav d-flex flex-row justify-content-center align-content-start gap-2 pt-4 pb-4 nav-pills nav-bg-color navbar-size rounded" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
             @foreach (var data in Model)
             {
-                <button class="nav-link text-start" id="v-pills-@data.UserId-tab" data-bs-toggle="pill" data-bs-target="#v-pills-@data.UserId" type="button" role="tab" aria-controls="v-pills-@data.UserId" aria-selected="false">@data.Email</button>
+                @if (!data.Status)
+                {
+                    <button class="nav-link text-start" id="v-pills-@data.UserId-tab" data-bs-toggle="pill" data-bs-target="#v-pills-@data.UserId" type="button" role="tab" aria-controls="v-pills-@data.UserId" aria-selected="false">@data.Email</button>
+                }
             }
         </div>
     </div>
@@ -23,29 +45,34 @@ Layout = "_Layout";
         <div class="tab-content nav-bg-color rounded" id="v-pills-tabContent">
             @foreach (var data in Model)
             {
-                <div class="tab-pane fade pt-4 px-3" id="v-pills-@data.UserId" role="tabpanel" aria-labelledby="v-pills-@data.UserId-tab" tabindex="0">
-                    <div class="bg-light application-size">
-                        <div class="m-2">
-                            <p>From: @data.Email</p>
-                            <p>Purpose: Applying for @data.RoleName.ToUpper()</p>
-                            <p>Body:</p>
-                            <p class="text-break">@data.Description</p>
+                if (!data.Status)
+                {
+                    <div class="tab-pane fade pt-4 px-3" id="v-pills-@data.UserId" role="tabpanel" aria-labelledby="v-pills-@data.UserId-tab" tabindex="0">
+                        <div class="bg-light application-size">
+                            <div class="m-2">
+                                <p>From: @data.Email</p>
+                                <p>Purpose: Applying for @data.RoleName.ToUpper()</p>
+                                <p>Body:</p>
+                                <p class="text-break">@data.Description</p>
+                            </div>
+                        </div>
+                        <div class="p-lg-4 p-2 d-flex flex-row justify-content-lg-end justify-content-evenly gap-2">
+                            <form class="d-grid col-2" method="post" asp-action="AddUserToRole">
+                                <input type="hidden" name="userId" value="@data.UserId"/>
+                                <input type="hidden" name="roleId" value="@data.RoleId"/>
+                                <button type="submit" class="btn btn-primary">Approve</button>
+                            </form>
+                            <form class="d-grid col-2" method="post" asp-action="RejectUser">
+                                <input type="hidden" name="userId" value="@data.UserId"/>
+                                <input type="hidden" name="roleId" value="@data.RoleId"/>
+                                <button type="submit" class="btn btn-primary">Deny</button>
+                            </form>
                         </div>
                     </div>
-                    <div class="p-lg-4 p-2 d-flex flex-row justify-content-lg-end justify-content-evenly gap-2">
-                        <form class="d-grid col-2" method="post" asp-action="AddUserToRole">
-                            <input type="hidden" name="userId" value="@data.UserId"/>
-                            <input type="hidden" name="roleId" value="@data.RoleId"/>
-                            <button type="submit" class="btn btn-primary">Approve</button>
-                        </form>
-                        <form class="d-grid col-2" method="post" asp-action="RejectUser">
-                            <input type="hidden" name="userId" value="@data.UserId"/>
-                            <input type="hidden" name="roleId" value="@data.RoleId"/>
-                            <button type="submit" class="btn btn-primary">Deny</button>
-                        </form>
-                    </div>
-                </div>
+                }
             }
         </div>
     </div>
 </div>
+}
+
