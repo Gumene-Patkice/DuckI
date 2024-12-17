@@ -163,89 +163,98 @@ public class UploadPdfService : IUploadPdfService
         var existingPdf = await _context.PublicPdfs.FirstOrDefaultAsync(p => p.PdfPath == filePath);
         
         if (existingPdf != null) 
-        { 
-            // Replace the existing PDF
-            using (var stream = new FileStream(filePath, FileMode.Create)) 
-            { 
-                await file.CopyToAsync(stream);
-            }
-            
-            // Update the tag if it is different
-            var existingTag = await _context.PublicPdfTags.FirstOrDefaultAsync(pt => pt.PublicPdfId == existingPdf.PublicPdfId);
-            var newTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName);
-            if (newTag == null)
+        {
+            var publicPdf = await _context.PublicPdfs
+                .Include(p => p.PublicPdfTag)
+                .Include(p => p.EducatorPdf)
+                .FirstOrDefaultAsync(p => p.PublicPdfId == existingPdf.PublicPdfId);
+
+            if (publicPdf == null)
             {
-                throw new InvalidOperationException("That tag doesn't exist!");
+                throw new InvalidOperationException("Public PDF not found.");
+            }
+        
+            File.Delete(publicPdf.PdfPath);
+
+            if (publicPdf.PublicPdfTag != null)
+            {
+                _context.PublicPdfTags.Remove(publicPdf.PublicPdfTag);
             }
 
-            if (existingTag.TagId != newTag.TagId)
+            if (publicPdf.EducatorPdf != null)
             {
-                existingTag.TagId = newTag.TagId;
-                _context.PublicPdfTags.Update(existingTag);
-                await _context.SaveChangesAsync();
-            }
-        }
-        else 
-        { 
-            // Create new file
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/PublicPdfs"))) 
-                { 
-                    Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, 
-                        "Data/Files/PublicPdfs"));
-                }
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\PublicPdfs"))) 
-                { 
-                    Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, 
-                        "Data\\Files\\PublicPdfs"));
-                }
+                _context.EducatorPdfs.Remove(publicPdf.EducatorPdf);
             }
 
-            using (var stream = new FileStream(filePath, FileMode.Create)) 
-            { 
-                await file.CopyToAsync(stream);
-            }
+            var ratingLogs = _context.RatingLogs.Where(rl => rl.PublicPdfId == existingPdf.PublicPdfId);
+            _context.RatingLogs.RemoveRange(ratingLogs);
 
-            // Update PublicPdfs table
-            var publicPdf = new PublicPdf 
-            { 
-                PdfPath = filePath, 
-                PdfName = file.FileName,
-                Rating = 0
-            }; 
-            
-            _context.PublicPdfs.Add(publicPdf);
-            await _context.SaveChangesAsync(); 
-            
-            // Update EducatorPdfs table
-            var educatorPdf = new EducatorPdf 
-            { 
-                UserId = userId, 
-                PublicPdfId = publicPdf.PublicPdfId
-            }; 
-            
-            _context.EducatorPdfs.Add(educatorPdf); 
-            await _context.SaveChangesAsync();
+            var flaggedPdfs = _context.FlaggedPdfs.Where(fp => fp.PublicPdfId == existingPdf.PublicPdfId);
+            _context.FlaggedPdfs.RemoveRange(flaggedPdfs);
 
-            // Update PublicPdfTags table
-            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName); 
-            if (tag == null)
-            {
-                throw new InvalidOperationException("That tag doesn't exists!");
-            }
-            
-            var publicPdfTag = new PublicPdfTag 
-            { 
-                TagId = tag.TagId,
-                PublicPdfId = publicPdf.PublicPdfId
-            }; 
-            
-            _context.PublicPdfTags.Add(publicPdfTag); 
+            _context.PublicPdfs.Remove(publicPdf);
+
             await _context.SaveChangesAsync();
         }
-    }
+        
+        // Create new file
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) 
+        { 
+            if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/PublicPdfs"))) 
+            { 
+                Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, 
+                    "Data/Files/PublicPdfs"));
+            }
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+        { 
+            if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\PublicPdfs"))) 
+            { 
+                Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, 
+                    "Data\\Files\\PublicPdfs"));
+            }
+        }
+
+        using (var stream = new FileStream(filePath, FileMode.Create)) 
+        { 
+            await file.CopyToAsync(stream);
+        }
+
+        // Update PublicPdfs table
+        var publicPdfForUpload = new PublicPdf 
+        { 
+            PdfPath = filePath, 
+            PdfName = file.FileName, 
+            Rating = 0
+        };
+        
+        _context.PublicPdfs.Add(publicPdfForUpload); 
+        await _context.SaveChangesAsync();
+        
+        // Update EducatorPdfs table
+        var educatorPdf = new EducatorPdf 
+        { 
+            UserId = userId, 
+            PublicPdfId = publicPdfForUpload.PublicPdfId
+        };
+        
+        _context.EducatorPdfs.Add(educatorPdf); 
+        await _context.SaveChangesAsync();
+
+        // Update PublicPdfTags table
+        var tag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName);
+        if (tag == null) 
+        { 
+            throw new InvalidOperationException("That tag doesn't exists!");
+        }
+        
+        var publicPdfTag = new PublicPdfTag
+        { 
+            TagId = tag.TagId, 
+            PublicPdfId = publicPdfForUpload.PublicPdfId
+        };
+        
+        _context.PublicPdfTags.Add(publicPdfTag); 
+        await _context.SaveChangesAsync();
+    } 
 }

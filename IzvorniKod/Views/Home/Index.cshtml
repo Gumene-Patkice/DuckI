@@ -71,6 +71,7 @@
                 <th>Actions</th>
                 <th></th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody id="pdfTableBody">
@@ -119,6 +120,13 @@
                         </form>
                     </td>
                     }
+                    <td>
+                        <form action="@Url.Action("CreateTask", "Task")" method="post" style="display:inline;">
+                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                            <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")" />
+                            <button type="submit" class="btn btn-primary">Create Task</button>
+                        </form>
+                    </td>
                 </tr>
             }
             </tbody>
