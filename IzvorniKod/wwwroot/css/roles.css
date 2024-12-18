@@ -21,7 +21,7 @@
     resize: none;
 }
 
-.form-bg-color, .form-bg-color:hover, .form-bg-color:active, .form-bg-color:focus {
+.form-bg-color, .form-bg-color:hover, .form-bg-color:active, .form-bg-color:focus, .form-bg-color:disabled {
     background: #CCD5FF;
 }
 
