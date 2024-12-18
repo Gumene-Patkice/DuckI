@@ -27,6 +27,10 @@ public class HomeController : Controller
         _managePdfService = managePdfService;
     }
 
+    /// <summary>
+    /// Render the Index view with the list of private and flagged PDFs,
+    /// depending on the user role
+    /// </summary>
     public async Task<IActionResult> Index()
     {
         var userId = _userManager.GetUserId(User);
@@ -102,7 +106,6 @@ public class HomeController : Controller
         // check if the file is uploaded
         if (file != null && file.Length > 0)
         {
-            // get userId and upload calendar for the user
             var userId = _userManager.GetUserId(User);
             await _calendarService.UploadCalendarAsync(file, userId);
             TempData["UploadSuccess"] = true;
@@ -112,7 +115,6 @@ public class HomeController : Controller
             TempData["UploadSuccess"] = false;
         }
         
-        // redirect to the Index page
         return RedirectToAction("Index");
     }
     
@@ -128,7 +130,6 @@ public class HomeController : Controller
         if (isAdmin)
         {
             TempData["AppliedForRole"] = false;
-            // TempData["ErrorMessage"] = "Admins cannot apply for roles."; // maybe for later implementation
             return RedirectToAction("Roles");
         }
         
@@ -171,5 +172,19 @@ public class HomeController : Controller
             TempData["AppliedForRole"] = false;
             return RedirectToAction("Roles");
         }
+    }
+    
+    ///<summary>
+    /// Rate public PDFs, only accessible to students (SuperStudents).
+    /// Used in Index.cshtml
+    /// </summary>
+    [Authorize(Roles="SuperStudent")]
+    [HttpPost]
+    public async Task<IActionResult> RatePdf([FromForm] long pdfId, [FromForm] string isUpvote)
+    {
+        var userId = _userManager.GetUserId(User);
+        // forms can't pass bool values, so we pass them as strings converted to bool 
+        await _managePdfService.RatePdfAsync(pdfId, userId, isUpvote == "true");
+        return RedirectToAction("Index");
     }
 }

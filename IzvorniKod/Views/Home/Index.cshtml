@@ -54,6 +54,12 @@
 {
     <div class="container mt-4">
         <h2>List of Private and Flagged PDFs</h2>
+        <div>
+            <select id="tagFilter" class="form-control">
+                <option value="">All Tags</option>
+            </select>
+            <button id="filterButton" class="btn btn-primary mt-2">Filter</button>
+        </div>
         <table class="table">
             <thead>
             <tr>
@@ -63,9 +69,12 @@
                 <th>Tag Name</th>
                 <th>Type</th>
                 <th>Actions</th>
+                <th></th>
+                <th></th>
+                <th></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="pdfTableBody">
             @foreach (var pdf in Model)
             {
                 <tr>
@@ -79,14 +88,44 @@
                     <td>@pdf.Rating</td>
                     <td>@pdf.TagName</td>
                     <td>@(pdf.IsPublic ? "Public" : "Private")</td>
-                    <td>
-                        @if (pdf.IsPublic)
-                        {
+                    @if (pdf.IsPublic)
+                    {
+                        <td>
                             <form class="unflag-form" data-pdf-id="@pdf.PdfId" style="display:inline;">
                                 <input type="hidden" name="publicPdfId" value="@pdf.PdfId" />
                                 <button type="submit" class="btn btn-danger">Unflag</button>
                             </form>
-                        }
+                        </td>
+                        <td>
+                            <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
+                                <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                                <input type="hidden" name="isUpvote" value="true" />
+                                <button type="submit" class="btn btn-success">Upvote</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
+                                <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                                <input type="hidden" name="isUpvote" value="false" />
+                                <button type="submit" class="btn btn-warning">Downvote</button>
+                            </form>
+                        </td>
+                    }
+                    else
+                    {
+                    <td>
+                        <form action="@Url.Action("DeletePrivatePdf", "Pdf")" method="post" style="display:inline;">
+                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                    }
+                    <td>
+                        <form action="@Url.Action("CreateTask", "Task")" method="post" style="display:inline;">
+                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                            <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")" />
+                            <button type="submit" class="btn btn-primary">Create Task</button>
+                        </form>
                     </td>
                 </tr>
             }
@@ -99,15 +138,22 @@
 {
     <div class="container mt-4">
         <h2>List of Your Pdfs</h2>
+        <div>
+            <select id="educatorTagFilter" class="form-control">
+                <option value="">All Tags</option>
+            </select>
+            <button id="educatorFilterButton" class="btn btn-primary mt-2">Filter</button>
+        </div>
         <table class="table">
             <thead>
             <tr>
                 <th>PDF Name</th>
                 <th>Rating</th>
                 <th>Tag Name</th>
+                <th>Action</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="educatorPdfTableBody">
             @foreach (var pdf in Model)
             {
                 <tr>
@@ -119,6 +165,12 @@
                     </td>
                     <td>@pdf.Rating</td>
                     <td>@pdf.TagName</td>
+                    <td>
+                        <form action="@Url.Action("DeletePublicPdf", "Pdf")" method="post" style="display:inline;">
+                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
                 </tr>
             }
             </tbody>
@@ -130,31 +182,104 @@
 @section Scripts {
     <script src="~/js/index.js" asp-append-version="true"></script>
     <script>
+        @if (User.IsInRole("SuperStudent"))
+        {
+            <text>
+                document.addEventListener('DOMContentLoaded', async function() {
+                    const response = await fetch('/Pdf/GetAllTags', {
+                        method: 'GET'
+                    });
+                    const tags = await response.json();
+                    console.log('Fetched tags:', tags); 
+                    const tagFilter = document.getElementById('tagFilter');
+                    tags.forEach(tag => {
+                        const option = document.createElement('option');
+                        option.value = tag.tagName;
+                        option.textContent = tag.tagName;
+                        tagFilter.appendChild(option);
+                    });
+                });
+            
+                document.getElementById('filterButton').addEventListener('click', function() {
+                    const selectedTag = document.getElementById('tagFilter').value.toLowerCase();
+                    const rows = document.querySelectorAll('#pdfTableBody tr');
+
+                    rows.forEach(row => {
+                        const tagName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                        if (selectedTag === "" || tagName === selectedTag) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    });
+                });
+            </text>
+        }
+        @if (User.IsInRole("Educator"))
+        {
+            <text>
+                document.addEventListener('DOMContentLoaded', async function() {
+                    const response = await fetch('/Pdf/GetAllTags', {
+                        method: 'GET'
+                    });
+                    const tags = await response.json();
+                    console.log('Fetched tags:', tags);
+                    const tagFilter = document.getElementById('educatorTagFilter');
+                    tags.forEach(tag => {
+                        const option = document.createElement('option');
+                        option.value = tag.tagName;
+                        option.textContent = tag.tagName;
+                        tagFilter.appendChild(option);
+                    });
+                });
+
+                document.getElementById('educatorFilterButton').addEventListener('click', function() {
+                    const selectedTag = document.getElementById('educatorTagFilter').value.toLowerCase();
+                    const rows = document.querySelectorAll('#educatorPdfTableBody tr');
+
+                    rows.forEach(row => {
+                        const tagName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                        if (selectedTag === "" || tagName === selectedTag) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    });
+                });
+            </text>
+        }
+                
         // for calendars; seperate these two comment sections in two different scripts
         // for more info contat Jan or Jakov
         @if (uploadSuccess == true)
         {
             <text>alert('File successfully updated!');</text>
         }
-    
+        
+        @if (User.IsInRole("SuperStudent"))
+        {
+            <text>
+                document.querySelectorAll('.unflag-form').forEach(form => {
+                    form.addEventListener('submit', async function(event) {
+                        event.preventDefault();
+                        const formData = new FormData(this);
+                        const response = await fetch('/Pdf/UnflagPdf', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            alert('Failed to unflag the PDF.');
+                            location.reload();
+                        }
+                    });
+                });        
+            </text>
+        }
         // for unflagging; seperate these two comment sections in two different scripts
         // for more info contat Jan or Jakov
-        document.querySelectorAll('.unflag-form').forEach(form => {
-            form.addEventListener('submit', async function(event) {
-                event.preventDefault();
-                const formData = new FormData(this);
-                const response = await fetch('/Pdf/UnflagPdf', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    alert('Failed to unflag the PDF.');
-                    location.reload();
-                }
-            });
-        });
+            
     </script>
 }

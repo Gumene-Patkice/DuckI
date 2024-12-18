@@ -6,6 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DuckI.Services;
 
+/// <summary>
+/// This class provides services for managing PDFs
+/// </summary>
+/// <remarks>
+/// The services are used in PdfController and HomeController.
+/// </remarks>
 public interface IManagePdfService
 {
     Task<List<PublicPdfDto>> GetAllPublicPdfsAsync();
@@ -13,12 +19,17 @@ public interface IManagePdfService
     Task<List<PrivateAndFlaggedPdfDto>> GetUserEducatorsPdfs(string userId);
     Task AddUserToFlaggedPdfsAsync(string userId, long publicPdfId);
     Task RemoveUserFromFlaggedPdfsAsync(string userId, long publicPdfId);
-    Task<string> GetPdfPathByIdAsync(long pdfId, string isPublic);
+    Task<string> GetPdfPathByIdAsync(long pdfId, bool isPublic);
+    Task RatePdfAsync(long pdfId, string userId, bool isUpvote);
+    Task DeletePrivatePdfAsync(long pdfId, string userId);
+    Task DeletePublicPdfAsync(long pdfId, string userId);
+    Task DeletePublicPdfReviewerAsync(long pdfId, string  reviewerId, string description);
+    Task<List<RemovedLog>> GetAllRemovedLogsAsync(string educatorId);
 }
 
 public class ManagePdfService : IManagePdfService
 {
-    private readonly IWebHostEnvironment _webHostEnvironment; // for accessing directory path and other webhostenv functionalities
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly ApplicationDbContext _context;
     private readonly UserManager<IdentityUser> _userManager;
     
@@ -29,6 +40,10 @@ public class ManagePdfService : IManagePdfService
         _userManager = userManager;
     }
     
+    /// <summary>
+    /// This function is used to get all public PDFs from the database.
+    /// It is used in the PdfController in rendering ViewPublicMaterial view.
+    /// </summary>
     public async Task<List<PublicPdfDto>> GetAllPublicPdfsAsync()
     {
         return await _context.PublicPdfs
@@ -48,6 +63,10 @@ public class ManagePdfService : IManagePdfService
             .ToListAsync();
     }
 
+    /// <summary>
+    /// This function is used to get all private and flagged PDFs from the database for Student (SuperStudent).
+    /// It is used in the HomeController in rendering Index view.
+    /// </summary>
     public async Task<List<PrivateAndFlaggedPdfDto>> GetUserPrivateAndFlaggedPdfsAsync(string userId)
     {
         if (string.IsNullOrEmpty(userId))
@@ -94,6 +113,11 @@ public class ManagePdfService : IManagePdfService
         return privatePdfs.Concat(flaggedPdfs).ToList();
     }
 
+    /// <summary>
+    /// This function is used to get all PDFs uploaded by the Educator with the given userId.
+    /// Its usage is similar to the one of the previous function, but doesn't fetch flagged PDFs
+    /// since Educator can not flag PDFs. It is used in HomeController for Index rendering.
+    /// </summary>
     public async Task<List<PrivateAndFlaggedPdfDto>> GetUserEducatorsPdfs(string userId)
     {
         var educatorPdfs = await _context.EducatorPdfs
@@ -115,6 +139,10 @@ public class ManagePdfService : IManagePdfService
         return educatorPdfs;
     }
     
+    /// <summary>
+    /// This function is used in PdfController.
+    /// It adds user to the FlaggedPdfs table, thus flagging their chosen public PDF.
+    /// </summary>
     public async Task AddUserToFlaggedPdfsAsync(string userId, long publicPdfId)
     {
         var existingFlaggedPdf = await _context.FlaggedPdfs
@@ -137,6 +165,10 @@ public class ManagePdfService : IManagePdfService
         }
     }
     
+    /// <summary>
+    /// Similarly to the previous function, this function is used in the PdfController
+    /// to remove user from the FlaggedPdf tables, thus unflagging the pdf 
+    /// </summary>
     public async Task RemoveUserFromFlaggedPdfsAsync(string userId, long publicPdfId)
     {
         var flaggedPdf = await _context.FlaggedPdfs
@@ -153,25 +185,201 @@ public class ManagePdfService : IManagePdfService
         }
     }
 
-    public async Task<string> GetPdfPathByIdAsync(long pdfId, string isPublic)
+    /// <summary>
+    /// This function is used in PdfController, as a helper for opening public and private PDFs.
+    /// It fetches the path of the PDF, given its pdfId.
+    /// </summary>
+    public async Task<string> GetPdfPathByIdAsync(long pdfId, bool isPublic)
     {
-        if (isPublic == "true")
+        if (isPublic)
         {
             var pdf = await _context.PublicPdfs
                 .FirstOrDefaultAsync(p => p.PublicPdfId == pdfId);
 
             return pdf?.PdfPath;
         }
-        else if (isPublic == "false")
+        else if (!isPublic)
         {
             var pdf = await _context.PrivatePdfs
                 .FirstOrDefaultAsync(p => p.PrivatePdfId == pdfId);
 
             return pdf?.PdfPath;
         }
+        // we decided to leave this else in case somehow isPublic turns out to have value that is different from true/false
         else
         {
             return null;
         }
+    }
+
+    /// <summary>
+    /// This function is used in both PdfController and HomeController.
+    /// It is used for rating PDF and increasing or decreasing its rating value.
+    /// </summary>
+    public async Task RatePdfAsync(long pdfId, string userId, bool isUpvote)
+    {
+        var existingRatingLog = await _context.RatingLogs
+            .FirstOrDefaultAsync(rl => rl.PublicPdfId == pdfId && rl.UserId == userId);
+
+        if (existingRatingLog == null)
+        {
+            var ratingLog = new RatingLog
+            {
+                UserId = userId,
+                PublicPdfId = pdfId
+            };
+
+            _context.RatingLogs.Add(ratingLog);
+            
+            var publicPdf = await _context.PublicPdfs
+                .FirstOrDefaultAsync(pdf => pdf.PublicPdfId == pdfId);
+            
+            publicPdf.Rating += isUpvote ? 1 : -1;
+            _context.PublicPdfs.Update(publicPdf);
+         
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    /// <summary>
+    /// This function is used in PdfController for deleting private PDFs.
+    /// </summary>
+    public async Task DeletePrivatePdfAsync(long pdfId, string userId)
+    {
+        var privatePdf = await _context.PrivatePdfs
+            .Include(p => p.PrivatePdfTag)
+            .Include(p => p.StudentPdf)
+            .FirstOrDefaultAsync(p => p.PrivatePdfId == pdfId);
+
+        if (privatePdf == null)
+        {
+            throw new InvalidOperationException("Private PDF not found.");
+        }
+        
+        if(privatePdf.StudentPdf.UserId != userId)
+        {
+            throw new InvalidOperationException("You are not authorized to delete this PDF.");
+        }
+        
+        File.Delete(privatePdf.PdfPath);
+        
+        if (privatePdf.PrivatePdfTag != null)
+        {
+            _context.PrivatePdfTags.Remove(privatePdf.PrivatePdfTag);
+        }
+
+        if (privatePdf.StudentPdf != null)
+        {
+            _context.StudentPdfs.Remove(privatePdf.StudentPdf);
+        }
+
+        _context.PrivatePdfs.Remove(privatePdf);
+
+        await _context.SaveChangesAsync();
+        
+        
+    }
+
+    /// <summary>
+    /// This function is used for deleting public PDFs by Educators in PdfController.
+    /// </summary>
+    public async Task DeletePublicPdfAsync(long pdfId, string userId)
+    {
+        var publicPdf = await _context.PublicPdfs
+            .Include(p => p.PublicPdfTag)
+            .Include(p => p.EducatorPdf)
+            .FirstOrDefaultAsync(p => p.PublicPdfId == pdfId);
+
+        if (publicPdf == null)
+        {
+            throw new InvalidOperationException("Public PDF not found.");
+        }
+
+        if (publicPdf.EducatorPdf.UserId != userId)
+        {
+            throw new InvalidOperationException("You are not authorized to delete this PDF.");
+        }
+        
+        File.Delete(publicPdf.PdfPath);
+
+        if (publicPdf.PublicPdfTag != null)
+        {
+            _context.PublicPdfTags.Remove(publicPdf.PublicPdfTag);
+        }
+
+        if (publicPdf.EducatorPdf != null)
+        {
+            _context.EducatorPdfs.Remove(publicPdf.EducatorPdf);
+        }
+
+        var ratingLogs = _context.RatingLogs.Where(rl => rl.PublicPdfId == pdfId);
+        _context.RatingLogs.RemoveRange(ratingLogs);
+
+        var flaggedPdfs = _context.FlaggedPdfs.Where(fp => fp.PublicPdfId == pdfId);
+        _context.FlaggedPdfs.RemoveRange(flaggedPdfs);
+
+        _context.PublicPdfs.Remove(publicPdf);
+
+        await _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// This function is used in PdfController by Reviewers for deleting public PDFs.
+    /// </summary>
+    public async Task DeletePublicPdfReviewerAsync(long pdfId, string reviewerId, string description)
+    {
+        var publicPdf = await _context.PublicPdfs
+            .Include(p => p.PublicPdfTag)
+            .Include(p => p.EducatorPdf)
+            .FirstOrDefaultAsync(p => p.PublicPdfId == pdfId);
+
+        if (publicPdf == null)
+        {
+            throw new InvalidOperationException("Public PDF not found.");
+        }
+        
+        File.Delete(publicPdf.PdfPath);
+
+        if (publicPdf.PublicPdfTag != null)
+        {
+            _context.PublicPdfTags.Remove(publicPdf.PublicPdfTag);
+        }
+
+        if (publicPdf.EducatorPdf != null)
+        {
+            _context.EducatorPdfs.Remove(publicPdf.EducatorPdf);
+        }
+
+        var ratingLogs = _context.RatingLogs.Where(rl => rl.PublicPdfId == pdfId);
+        _context.RatingLogs.RemoveRange(ratingLogs);
+
+        var flaggedPdfs = _context.FlaggedPdfs.Where(fp => fp.PublicPdfId == pdfId);
+        _context.FlaggedPdfs.RemoveRange(flaggedPdfs);
+
+        _context.PublicPdfs.Remove(publicPdf);
+        
+        var removedLog = new RemovedLog
+        {
+            ReviewerId = reviewerId,
+            EducatorId = publicPdf.EducatorPdf.UserId,
+            Description = description,
+            FileName = publicPdf.PdfName
+        };
+
+        _context.RemovedLogs.Add(removedLog);
+
+        await _context.SaveChangesAsync();
+    }
+    
+    /// <summary>
+    /// This function is used in PdfController by Educators for rendering ViewRemovedLogs view.
+    /// </summary>
+    public async Task<List<RemovedLog>> GetAllRemovedLogsAsync(string educatorId)
+    {
+        return await _context.RemovedLogs
+            .Include(rl => rl.Reviewer)
+            .Include(rl => rl.Educator)
+            .Where(rl => rl.EducatorId == educatorId)
+            .ToListAsync();
     }
 }
