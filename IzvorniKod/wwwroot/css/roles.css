@@ -46,11 +46,11 @@
 }
 
 .inbox-container {
-    min-width: 15%;
+    min-width: 40%;
 }
 
 .form-container {
-    min-width: 80%;
+    min-width: 60%;
     max-width: 80%;
 }
 

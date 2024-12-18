@@ -29,12 +29,12 @@ else
     <div class="d-flex flex-xxl-row gap-xxl-3 gap-1 flex-column align-items-start align-content-center justify-content-center">
     <div class="me-xxl-2 inbox-container">
         <h4 class="text-primary">Inbox</h4>
-        <div class="nav d-flex flex-row justify-content-center align-content-start gap-2 pt-4 pb-4 nav-pills nav-bg-color navbar-size rounded" id="v-pills-tab" role="tablist" aria-orientation="horizontal">
+        <div class="nav d-flex flex-row gap-2 pt-4 pb-4 px-2 nav-pills nav-bg-color navbar-size rounded" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             @foreach (var data in Model)
             {
                 @if (!data.Status)
                 {
-                    <button class="nav-link text-start" id="v-pills-@data.UserId-tab" data-bs-toggle="pill" data-bs-target="#v-pills-@data.UserId" type="button" role="tab" aria-controls="v-pills-@data.UserId" aria-selected="false">@data.Email</button>
+                    <button class="nav-link text-start w-100" id="v-pills-@data.UserId-tab" data-bs-toggle="pill" data-bs-target="#v-pills-@data.UserId" type="button" role="tab" aria-controls="v-pills-@data.UserId" aria-selected="false">@data.Email</button>
                 }
             }
         </div>
@@ -43,6 +43,10 @@ else
     <div class="ms-xxl-2 form-container">
         <h4 class="text-primary">Application form</h4>
         <div class="tab-content nav-bg-color rounded" id="v-pills-tabContent">
+            <div class="tab-pane active p-5 my-5 text-center" style="background-color: white;" role="tabpanel" tabindex="0">
+                <h3>Select an application</h3>
+                <p>Nothing is selected</p>
+            </div>
             @foreach (var data in Model)
             {
                 if (!data.Status)
