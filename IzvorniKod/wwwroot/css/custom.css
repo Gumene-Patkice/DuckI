@@ -29,5 +29,14 @@ button.nav-link {
 
 textarea::placeholder {
     color: #6176e8 !important;
-    opacity: 0.5 !important;
+    opacity: 0.7 !important;
+}
+
+input::placeholder {
+    color: #6176e8 !important;
+    opacity: 0.7 !important;
+}
+
+::-ms-input-placeholder {
+    color: #6176e8 !important;
 }
