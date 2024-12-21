@@ -293,4 +293,26 @@ public class PdfController : Controller
         var removedLogs = await _managePdfService.GetAllRemovedLogsAsync(educatorId);
         return View(removedLogs);
     }
+    
+    [Authorize(Roles="SuperStudent,Educator")]
+    [HttpGet]
+    public async Task<IActionResult> FetchPdfByName([FromQuery] string pdfName, [FromQuery] bool isPublic)
+    {
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrEmpty(pdfName))
+        {
+            return BadRequest("PDF name is required.");
+        }
+
+        try
+        {
+            var exists = await _managePdfService.FetchPdfByNameAsync(pdfName, userId, isPublic);
+            return Ok(exists);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+    
 }
