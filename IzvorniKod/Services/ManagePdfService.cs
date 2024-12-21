@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using DuckI.Data;
 using DuckI.Dtos;
 using DuckI.Models;
@@ -25,6 +26,7 @@ public interface IManagePdfService
     Task DeletePublicPdfAsync(long pdfId, string userId);
     Task DeletePublicPdfReviewerAsync(long pdfId, string  reviewerId, string description);
     Task<List<RemovedLog>> GetAllRemovedLogsAsync(string educatorId);
+    Task<bool> FetchPdfByNameAsync(string pdfName, string userId, bool isPublic);
 }
 
 public class ManagePdfService : IManagePdfService
@@ -381,5 +383,37 @@ public class ManagePdfService : IManagePdfService
             .Include(rl => rl.Educator)
             .Where(rl => rl.EducatorId == educatorId)
             .ToListAsync();
+    }
+
+    public async Task<bool> FetchPdfByNameAsync(string pdfName, string userId, bool isPublic)
+    {
+        var fileName = $"{userId}${pdfName}";
+        
+        var filePath = "";
+        if (isPublic)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/PublicPdfs", fileName);    
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\PublicPdfs", fileName);
+            }
+        }
+        else
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/PrivatePdfs", fileName);    
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                filePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\PrivatePdfs", fileName);
+            }
+        }
+
+        return isPublic ? await _context.PublicPdfs.AnyAsync(p => p.PdfPath == filePath)
+                : await _context.PrivatePdfs.AnyAsync(p => p.PdfPath == filePath);
     }
 }
