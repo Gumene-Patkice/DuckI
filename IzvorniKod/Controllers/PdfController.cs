@@ -209,7 +209,7 @@ public class PdfController : Controller
     /// <summary>
     /// Used in javascript Index view and ViewPublicMaterial view to get all tags.
     /// </summary>
-    [Authorize(Roles="Educator,SuperStudent,Reviewer")]
+    [Authorize(Roles="Educator,SuperStudent,Reviewer,Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAllTags()
     {
