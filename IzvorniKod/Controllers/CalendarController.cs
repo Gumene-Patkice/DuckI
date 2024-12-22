@@ -41,4 +41,41 @@ public class CalendarController : ControllerBase
         // return the calendar file, if it is found
         return File(fileBytes, "text/csv", $"{userId}.csv");
     }
+    
+    [Authorize]
+    [HttpPost("addevent")]
+    public async Task<IActionResult> AddEvent([FromQuery] string eventDate, [FromQuery] string eventDescription)
+    {
+        var userId = _userManager.GetUserId(User);
+
+        if (!DateTime.TryParse(eventDate, out var parsedEventDate))
+        {
+            return BadRequest("Invalid date format.");
+        }
+
+        await _calendarService.AddEventToCalendarAsync(parsedEventDate, eventDescription, userId);
+        return Ok("Event added successfully.");
+    }
+    
+    [Authorize]
+    [HttpDelete("deleteevent")]
+    public async Task<IActionResult> DeleteEvent([FromQuery] string eventDate, [FromQuery] string eventDescription)
+    {
+        var userId = _userManager.GetUserId(User);
+
+        if (!DateTime.TryParse(eventDate, out var parsedEventDate))
+        {
+            return BadRequest("Invalid date format.");
+        }
+
+        try
+        {
+            await _calendarService.DeleteEventFromCalendarAsync(parsedEventDate, eventDescription, userId);
+            return Ok("Event deleted successfully.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }
