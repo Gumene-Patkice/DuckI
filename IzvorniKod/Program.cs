@@ -47,6 +47,9 @@ builder.Services.AddScoped<IManagePdfService, ManagePdfService>();
 // registering the TaskService
 builder.Services.AddScoped<ITaskService, TaskService>();
 
+// registering the ManageUsersService
+builder.Services.AddScoped<IManageUsersService, ManageUsersService>();
+
 // Configuring Identity options for password, lockout, user
 builder.Services.Configure<IdentityOptions>(options =>
 {

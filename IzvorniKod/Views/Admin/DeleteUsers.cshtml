@@ -1,0 +1,37 @@
+@model List<DuckI.Dtos.UserInfoDto>
+
+@{
+    ViewData["Title"] = "Delete Users";
+}
+
+<div class="container mt-4">
+    <h2>List of Users</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>UserId</th>
+            <th>UserName</th>
+            <th>UserEmail</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserId</td>
+                <td>@user.UserName</td>
+                <td>@user.UserEmail</td>
+                <td>@string.Join(", ", user.Role)</td>
+                <td>
+                    <form action="@Url.Action("DeleteUserData", "ManageUsers")" method="post" style="display:inline;">
+                        <input type="hidden" name="userId" value="@user.UserId" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -14,14 +14,16 @@ public class AdminController : Controller
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUserRoleStatusesService _userRoleStatusesService;
     private readonly ITagService _tagService;
+    private readonly IManageUsersService _manageUsersService;
     
     public AdminController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
-        IUserRoleStatusesService userRoleStatusesService, ITagService tagService)
+        IUserRoleStatusesService userRoleStatusesService, ITagService tagService, IManageUsersService manageUsersService)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _userRoleStatusesService = userRoleStatusesService;
         _tagService = tagService;
+        _manageUsersService = manageUsersService;
     }
 
     [Authorize(Roles = "Admin")]
@@ -117,5 +119,13 @@ public class AdminController : Controller
         var tags = await _tagService.GetAllTagsAsync();
         ViewBag.Tags = tags;
         return View("Tags");
+    }
+    
+    [Authorize(Roles="Admin")]
+    [HttpGet]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _manageUsersService.GetAllUsersAsync();
+        return View("DeleteUsers", users);
     }
 }
