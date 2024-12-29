@@ -51,6 +51,7 @@ public class ManageUsersService : IManageUsersService
         // deleting identity user
         var user = await _userManager.FindByIdAsync(userId);
         await _userManager.DeleteAsync(user);
+        await _userManager.UpdateSecurityStampAsync(user);
 
         // deleting calendars
         var calendarDirectory = Path.Combine("Data", "Files", "Calendars");
@@ -90,6 +91,7 @@ public class ManageUsersService : IManageUsersService
         // deleting identity user
         var user = await _userManager.FindByIdAsync(userId);
         await _userManager.DeleteAsync(user);
+        await _userManager.UpdateSecurityStampAsync(user);
 
         // deleting calendars
         var calendarDirectory = Path.Combine("Data", "Files", "Calendars");
@@ -120,6 +122,7 @@ public class ManageUsersService : IManageUsersService
         // deleting identity user
         var user = await _userManager.FindByIdAsync(userId);
         await _userManager.DeleteAsync(user);
+        await _userManager.UpdateSecurityStampAsync(user);
 
         // deleting calendars
         var calendarDirectory = Path.Combine("Data", "Files", "Calendars");
@@ -140,6 +143,7 @@ public class ManageUsersService : IManageUsersService
         // deleting identity user
         var user = await _userManager.FindByIdAsync(userId);
         await _userManager.DeleteAsync(user);
+        await _userManager.UpdateSecurityStampAsync(user);
 
         // deleting calendars
         var calendarDirectory = Path.Combine("Data", "Files", "Calendars");
@@ -155,6 +159,7 @@ public class ManageUsersService : IManageUsersService
         // delete identity user
         var user = await _userManager.FindByIdAsync(userId);
         await _userManager.DeleteAsync(user);
+        await _userManager.UpdateSecurityStampAsync(user);
     }
     
     /// <summary>

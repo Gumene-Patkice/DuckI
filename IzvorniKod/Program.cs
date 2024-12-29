@@ -1,3 +1,4 @@
+using DuckI.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DuckI.Data;
@@ -49,6 +50,15 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 
 // registering the ManageUsersService
 builder.Services.AddScoped<IManageUsersService, ManageUsersService>();
+
+// registering the ManageUsersController
+builder.Services.AddScoped<ManageUsersController>();
+
+// registering the service for the security stamp validator (used to logout users after a certain time)
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.FromSeconds(30);
+});
 
 // Configuring Identity options for password, lockout, user
 builder.Services.Configure<IdentityOptions>(options =>
