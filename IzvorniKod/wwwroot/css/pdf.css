@@ -50,8 +50,12 @@
 }
 
 .table-size {
-    min-height: 70px;
-    max-height: 470px;
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.table-size-2 {
+    max-height: 550px;
     overflow-y: auto;
 }
 
@@ -73,4 +77,8 @@
 
 .element-width3 {
     min-width: 10em
+}
+
+.table-head {
+    position: sticky; top: 0;
 }

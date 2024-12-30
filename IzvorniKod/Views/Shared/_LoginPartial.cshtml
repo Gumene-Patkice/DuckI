@@ -16,6 +16,12 @@
         <li class="nav-item">
             <a class="nav-link text-light pe-lg-4 pe-0" asp-area="" asp-controller="Pdf" asp-action="ViewPublicMaterial"><img src="~/images/book-solid.svg" class="header-icon" alt="Icon">View public material</a>
         </li>
+        @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator"))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-light pe-lg-4 pe-0" asp-area="" asp-controller="Pdf" asp-action="UploadPdf"><img src="~/images/folder-solid-white.svg" class="header-icon" alt="Icon">Upload PDF</a>
+            </li>
+        }
         <li class="nav-item">
             <a class="nav-link text-light pe-lg-4 pe-0" asp-area="" asp-controller="Home" asp-action="Calendar"><img src="~/images/calendar-days-solid.svg" class="header-icon" alt="Icon">View calendar</a>
         </li>
