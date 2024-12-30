@@ -19,6 +19,12 @@
         <li class="nav-item">
             <a class="nav-link text-light pe-lg-4 pe-0" asp-area="" asp-controller="Home" asp-action="Calendar"><img src="~/images/calendar-days-solid.svg" class="header-icon" alt="Icon">View calendar</a>
         </li>
+        @if (User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-light pe-lg-4 pe-0" asp-area="" asp-controller="Admin" asp-action="ControlPanel"><img src="~/images/users-solid-white.svg" class="header-icon2" alt="Icon">Control panel</a>
+            </li>
+        }
     }
 </ul>
 

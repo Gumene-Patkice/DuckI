@@ -2,54 +2,106 @@
     ViewData["Title"] = "Upload PDF";
 }
 
-<h2>Upload PDF</h2>
+<link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true">
 
 @*@if(User.IsInRole("SuperStudent")*@
 @if (!User.IsInRole("Educator"))
 {
-    <form id="uploadPrivateForm" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="file">Select PDF:</label>
-            <input class="form-control" type="file" id="file" name="file" required />
+    <div class="container d-flex justify-content-center p-5 row-cols-lg-2">
+        <div class="d-flex flex-column justify-content-center gap-4">
+            
+            <h1 class="text-primary fw-bold align-self-center">Upload PDF</h1>
+            <div class="d-flex flex-row gap-4 align-items-center">
+                <img src="~/images/folder-solid.svg" alt="Logo" class="icon"/>
+                <p class="mt-2">For uploading PDFs and adding them to the private repository.</p>
+            </div>
+
+            <form class="d-flex flex-column gap-3" id="uploadPrivateForm" enctype="multipart/form-data">
+                
+                <div class="form-group d-flex flex-row gap-3">
+                    <label id="browse" class="btn btn-primary" for="file">Browse...</label>
+                    <input class="pdf-input" type="file" id="file" name="file" required/>
+                    <input id="browseFileShown" class="form-control form-bg-color" type="text" value="File name" aria-label="Disabled input example" disabled readonly>
+                </div>
+
+                <div class="d-flex gap-lg-3 gap-1">
+                    <p class="text-break w-75">Tags make it easier for students to sort out the materials they need.
+                        Add relevant tags to your PDF using the drop table.</p>
+                    <div class="form-group w-50">
+                        <select class="form-control form-bg-color" id="tagName" name="tagName" required>
+                            <option value="" disabled selected>Select your tag</option>
+                            @foreach (var tag in ViewBag.Tags)
+                            {
+                                <option value="@tag.Value">@tag.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                
+                
+                <div class="d-flex justify-content-start align-items-center gap-4">
+                    <button class="btn btn-primary" type="submit">Upload Private PDF</button>
+                    <div id="notification" class="fw-bold notification">File uploaded successfully.</div>
+                    <div id="error" class="fw-bold error"></div>
+                </div>
+                
+            </form>
         </div>
-        <div class="form-group">
-            <label for="tagName">Tag Name:</label>
-            <select class="form-control" id="tagName" name="tagName" required>
-                @foreach (var tag in ViewBag.Tags)
-                {
-                    <option value="@tag.Value">@tag.Text</option>
-                }
-            </select>
-        </div>
-        <button class="btn btn-primary" type="submit">Upload Private PDF</button>
-    </form>
+    </div>
 }
 
 @if (User.IsInRole("Educator"))
 {
-    <form id="uploadPublicForm" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="file">Select PDF:</label>
-            <input class="form-control" type="file" id="file" name="file" required />
-        </div>
-        <div class="form-group">
-            <label for="tagName">Tag Name:</label>
-            <select class="form-control" id="tagName" name="tagName" required>
-                @foreach (var tag in ViewBag.Tags)
-                {
-                    <option value="@tag.Value">@tag.Text</option>
-                }
-            </select>
-        </div>
-        <button class="btn btn-primary" type="submit">Upload Public PDF</button>
-    </form>
-}
+    <div class="container d-flex justify-content-center p-lg-5 p-0 row-cols-lg-2">
+        <div class="d-flex flex-column justify-content-center gap-4">
 
-<div id="notification" style="display:none; color: green;">PDF uploaded successfully.</div>
-<div id="error" style="display:none; color: red;"></div>
+            <h1 class="text-primary fw-bold align-self-center">Upload PDF</h1>
+            <div class="d-flex flex-row gap-4 align-items-center">
+                <img src="~/images/folder-solid.svg" alt="Logo" class="icon"/>
+                <p class="mt-2">For uploading PDFs and adding them to the public repository.</p>
+            </div>
+
+            <form class="d-flex flex-column gap-3" id="uploadPublicForm" enctype="multipart/form-data">
+
+                <div class="form-group d-flex flex-row gap-3">
+                    <label id="browse" class="btn btn-primary" for="file">Browse...</label>
+                    <input class="pdf-input" type="file" id="file" name="file" required/>
+                    <input id="browseFileShown" class="form-control form-bg-color pdf-name" type="text" value="File name" aria-label="Disabled input example" disabled readonly>
+                </div>
+
+                <div class="d-flex gap-lg-3 gap-1">
+                    <p class="text-break w-75">Tags make it easier for students to sort out the materials they need.
+                        Add relevant tags to your PDF using the drop table.</p>
+                    <div class="form-group w-50">
+                        <select class="form-control form-bg-color" id="tagName" name="tagName" required>
+                            <option value="" disabled selected>Select your tag</option>
+                            @foreach (var tag in ViewBag.Tags)
+                            {
+                                <option value="@tag.Value">@tag.Text</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-start align-items-center gap-4">
+                    <button class="btn btn-primary" type="submit">Upload Public PDF</button>
+                    <div id="notification" class="fw-bold notification">File uploaded successfully.</div>
+                    <div id="error" class="fw-bold error"></div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+}
 
 @section Scripts {
     <script>
+        document.getElementById("file").addEventListener("change", function () {
+            var selectedFile = document.getElementById("file").files[0].name;
+            document.getElementById("browseFileShown").setAttribute("value", selectedFile.toString());
+        })
+        
+        
         document.getElementById('uploadPrivateForm')?.addEventListener('submit', async function (event) {
             event.preventDefault();
 
@@ -89,5 +141,7 @@
                 document.getElementById('notification').style.display = 'none';
             }
         });
+    
+    
     </script>
 }

@@ -1,83 +1,184 @@
 @model List<DuckI.Dtos.PublicPdfDto>
 
-<h2>List of Public PDFs</h2>
+<link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true">
 
-<div>
-    <select id="tagFilter" class="form-control">
-        <option value="">All Tags</option>
-    </select>
-    <button id="filterButton" class="btn btn-primary mt-2">Filter</button>
+<div class="container d-flex justify-content-center pt-5 row-cols-1">
+    
+    <div class="d-flex flex-column justify-content-center gap-3">
+        
+        <h1 class="fw-bold text-primary align-self-center">List of Public PDFs</h1>
+        
+        <div class="d-flex gap-4">
+            <div class="d-flex gap-3 align-items-center">
+                <img src="~/images/globe-solid.svg" alt="Logo" class="icon"/>
+                <p class="text-break mt-2">Public PDFs are uploaded by Educators and serve as a great source
+                    of information constantly checked by the Reviewer team. Remember: you can leave
+                    review for a public PDF to improve the overall user experience!</p>
+            </div>
+            <div class="d-flex gap-3 align-items-center">
+                <img src="~/images/triangle-exclamation-solid.svg" alt="Logo" class="icon"/>
+                @if (User.IsInRole("Reviewer"))
+                {
+                    <p class="text-break mt-2">Reviewer view! You can use this page to go through the material
+                        and check their validity.</p>
+                }
+                else if (User.IsInRole("Educator"))
+                {
+                    <p class="text-break mt-2">Educator view! You can use this page to go view the material you have uploaded.</p>
+                }
+                else if (User.IsInRole("SuperStudent"))
+                {
+                    <p class="text-break mt-2">Student view! You can use this page to go through the material, flag it or rate it.</p>
+                }
+            </div>
+        </div>
+        
+        <div class="d-flex gap-3 align-items-center">
+            <p class="text-break align-self-center mt-2">Filter by tag to find exactly what you need</p>
+            <div class="d-flex gap-3 align-self-center row-cols-2">
+                <select id="tagFilter" class="form-control form-bg-color align-self-center">
+                    <option value="">All tags</option>
+                </select>
+                <button id="filterButton" class="btn btn-primary align-self-center">Filter</button>
+            </div>
+        </div>
+
+        <div class="d-flex gap-3 align-items-center">
+            <p class="text-break align-self-center mt-2">Sort the PDFs alphabetically</p>
+            <button id="sortButton" class="btn btn-primary align-self-center">Sort</button>
+        </div>
+
+        <span id="flag-message" class="text-center flag-message fw-bold" style="display:none;"></span>
+
+        <div class="table-size bg-table rounded">
+            <table class="table my-3 d-table">
+                <tbody id="pdfTableBody" class="d-flex flex-column gap-2">
+                @foreach (var pdf in Model)
+                {
+                    <tr>
+                        <td class="d-flex mx-2 gap-4 table-primary align-items-center rounded text-light" style="min-height: 4.5em">
+                            <form class="element-width1 w-100" action="@Url.Action("OpenPublicPdf", "Pdf")" method="post" target="_blank">
+                                <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
+                                <button type="submit" class="btn-link name-size-1 table-primary text-light border-0">@pdf.PdfName</button>
+                            </form>
+                            <div class="name-size-2" style="min-width: 17em">
+                                @pdf.EducatorUsername
+                            </div>
+                            @if (pdf.Rating > 0)
+                            {
+                                @if (User.IsInRole("SuperStudent"))
+                                {
+                                    <div id="rating-1" class="element-width2 positive-rating fw-bold">
+                                        +@pdf.Rating
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="rating-1" class="element-width2 positive-rating fw-bold w-100">
+                                        +@pdf.Rating
+                                    </div>
+                                }
+                            }
+                            else if (pdf.Rating == 0)
+                            {
+                                @if (User.IsInRole("SuperStudent"))
+                                {
+                                    <div id="rating-1" class="element-width2 positive-rating fw-bold">
+                                        @pdf.Rating
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="rating-1" class="element-width2 positive-rating fw-bold w-100">
+                                        @pdf.Rating
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                @if (User.IsInRole("SuperStudent"))
+                                {
+                                    <div id="rating-2" class="element-width2 negative-rating fw-bold">
+                                        @pdf.Rating
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="rating-2" class="element-width2 negative-rating fw-bold w-100">
+                                        @pdf.Rating
+                                    </div>
+                                }
+                            }
+                            <div class="d-flex gap-0 bg-light text-primary rounded align-items-center w-75">
+                                <img src="~/images/tag-solid.svg" alt="Logo" class="icon3 p-1"/>
+                                <div class="element-width3 name-size-3">@pdf.TagName</div>
+                            </div>
+
+                            @if (User.IsInRole("Reviewer"))
+                            {
+                                <form action="@Url.Action("DeletePublicPdfReviewer", "Pdf")" method="post" class="d-flex gap-3 align-items-center">
+                                    <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
+                                    <textarea class="resize-disable rounded" name="description" placeholder="Reason for deletion" rows="2" cols="30" required></textarea>
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            }
+
+                            @if (User.IsInRole("SuperStudent"))
+                            {
+                                <form class="flag-form w-50" data-pdf-id="@pdf.PublicPdfId">
+                                    <input type="hidden" name="publicPdfId" value="@pdf.PublicPdfId"/>
+                                    <button type="submit" class="btn btn-warning">Flag this PDF</button>
+                                </form>
+
+                                <form action="@Url.Action("RatePdf", "Pdf")" method="post">
+                                    <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
+                                    <input type="hidden" name="isUpvote" value="true" />
+                                    <button type="submit" class="btn btn-success">Upvote</button>
+                                </form>
+
+                                <form action="@Url.Action("RatePdf", "Pdf")" method="post">
+                                    <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
+                                    <input type="hidden" name="isUpvote" value="false" />
+                                    <button type="submit" class="btn btn-danger">Downvote</button>
+                                </form>
+                            }
+                        </td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        
+        
+    </div>
 </div>
-
-<table class="table">
-    <thead>
-    <tr>
-        <th>PDF Name</th>
-        <th>Educator Username</th>
-        <th>Rating</th>
-        <th>Tag Name</th>
-        @if (User.IsInRole("SuperStudent") || User.IsInRole("Reviewer"))
-        {
-            <th>Action</th>
-            <th></th>
-            <th></th>
-        }
-    </tr>
-    </thead>
-    <tbody id="pdfTableBody">
-    @foreach (var pdf in Model)
-    {
-        <tr>
-            <td>
-                <form action="@Url.Action("OpenPublicPdf", "Pdf")" method="post" target="_blank">
-                    <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
-                    <button type="submit" class="btn-link">@pdf.PdfName</button>
-                </form>
-            </td>
-            <td>@pdf.EducatorUsername</td>
-            <td>@pdf.Rating</td>
-            <td>@pdf.TagName</td>
-            @if (User.IsInRole("SuperStudent"))
-            {
-                <td>
-                    <form class="flag-form" data-pdf-id="@pdf.PublicPdfId">
-                        <input type="hidden" name="publicPdfId" value="@pdf.PublicPdfId"/>
-                        <button type="submit" class="btn btn-warning">Flag This Pdf</button>
-                    </form>
-                    <span class="flag-message" style="display:none; color:green;">Successfully added</span>
-                </td>
-                <td>
-                    <form action="@Url.Action("RatePdf", "Pdf")" method="post" style="display:inline;">
-                        <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
-                        <input type="hidden" name="isUpvote" value="true" />
-                        <button type="submit" class="btn btn-success">Upvote</button>
-                    </form>
-                </td>
-                <td>
-                    <form action="@Url.Action("RatePdf", "Pdf")" method="post" style="display:inline;">
-                        <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
-                        <input type="hidden" name="isUpvote" value="false" />
-                        <button type="submit" class="btn btn-warning">Downvote</button>
-                    </form>
-                </td>
-            }
-            @if (User.IsInRole("Reviewer"))
-            {
-            <td>
-                <form action="@Url.Action("DeletePublicPdfReviewer", "Pdf")" method="post" style="display:inline;">
-                    <input type="hidden" name="pdfId" value="@pdf.PublicPdfId" />
-                    <textarea name="description" placeholder="Enter description" required></textarea>
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-            </td>
-            }
-        </tr>
-    }
-    </tbody>
-</table>
 
 @section Scripts {
     <script>
+        document.getElementById("sortButton").addEventListener("click", function () {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("pdfTableBody");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 0; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[0].querySelector('form:nth-child(1)').querySelector("button").innerText.trim().toLowerCase();
+                    y = rows[i + 1].getElementsByTagName("TD")[0].querySelector('form:nth-child(1)').querySelector("button").innerText.trim().toLowerCase();
+                    if (x > y) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        })
+        
         document.addEventListener('DOMContentLoaded', async function() {
             const response = await fetch('/Pdf/GetAllTags', {
                 method: 'GET'
@@ -93,11 +194,11 @@
         });
 
         document.getElementById('filterButton').addEventListener('click', function() {
-            const selectedTag = document.getElementById('tagFilter').value.toLowerCase();
+            const selectedTag = document.getElementById('tagFilter').value.toLowerCase().trim();
             const rows = document.querySelectorAll('#pdfTableBody tr');
 
             rows.forEach(row => {
-                const tagName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                const tagName = row.querySelector('td').querySelector('div:nth-child(4)').textContent.toLowerCase().trim();
                 if (selectedTag === "" || tagName === selectedTag) {
                     row.style.display = "";
                 } else {
@@ -116,14 +217,21 @@
                 });
 
                 if (response.ok) {
-                    this.nextElementSibling.style.display = 'block';
+                    document.getElementById("flag-message").style.display = "block";
+                    document.getElementById("flag-message").style.color = "green";
+                    document.getElementById("flag-message").innerHTML = "Successfully added!"
                 } else if (response.status >= 400 && response.status < 500) {
-                    alert('The selected pdf has already been flagged!');
+                    document.getElementById("flag-message").style.display = "block";
+                    document.getElementById("flag-message").style.color = "orangered";
+                    document.getElementById("flag-message").innerHTML = "The selected PDF has already been flagged!"
                 } else {
-                    alert('Failed to flag the PDF.');
+                    document.getElementById("flag-message").style.display = "block";
+                    document.getElementById("flag-message").style.color = "orangered";
+                    document.getElementById("flag-message").innerHTML = "Failed to flag the PDF."
                 }
             });
         });
     
+    
     </script>
-}
+    }

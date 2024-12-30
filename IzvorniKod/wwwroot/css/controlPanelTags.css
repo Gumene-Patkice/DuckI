@@ -36,3 +36,12 @@
 .form-bg-color, .form-bg-color:hover, .form-bg-color:active, .form-bg-color:focus {
     background: #CCD5FF;
 }
+
+input::placeholder {
+    color: #6176e8 !important;
+    opacity: 0.7 !important;
+}
+
+::-ms-input-placeholder {
+    color: #6176e8 !important;
+}
