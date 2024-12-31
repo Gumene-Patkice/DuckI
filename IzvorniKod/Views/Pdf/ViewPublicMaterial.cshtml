@@ -30,12 +30,16 @@
                 {
                     <p class="text-break mt-2">Student view! You can use this page to go through the material, flag it or rate it.</p>
                 }
+                else if (User.IsInRole("Admin"))
+                {
+                    <p class="text-break mt-2">Admin view! You can use this page to go view the public material.</p>
+                }
             </div>
         </div>
         
         <div class="d-flex gap-3 align-items-center">
             <p class="text-break align-self-center mt-2">Filter by tag to find exactly what you need</p>
-            <div class="d-flex gap-3 align-self-center row-cols-2">
+            <div class="d-flex gap-3 align-self-center w-25 row-cols-4">
                 <select id="tagFilter" class="form-control form-bg-color align-self-center">
                     <option value="">All tags</option>
                 </select>
@@ -164,6 +168,7 @@
 
 @section Scripts {
     <script>
+    
         document.getElementById("sortButton").addEventListener("click", function () {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("pdfTableBody");
@@ -202,12 +207,15 @@
         });
 
         document.getElementById('filterButton').addEventListener('click', function() {
+            if (document.getElementById("no-pdf")) {
+                document.getElementById("no-pdf").remove();
+            }
+            
             const selectedTag = document.getElementById('tagFilter').value.toLowerCase().trim();
             const rows = document.querySelectorAll('#pdfTableBody tr');
 
             rows.forEach(row => {
                 const tagName = row.querySelector('td').querySelector('div:nth-child(4)').textContent.toLowerCase().trim();
-                const idName = row.getAttribute("id")
                 if (selectedTag === "" || tagName === selectedTag) {
                     row.style.display = "";
                 } else {
@@ -239,6 +247,22 @@
                     document.getElementById("flag-message").innerHTML = "Failed to flag the PDF."
                 }
             });
+        });
+
+        document.getElementById('filterButton').addEventListener('click', function() {
+            var a = document.querySelectorAll("#pdfTableBody tr");
+            let count = 0;
+            for (let b of a) {
+                if (b.style.display !== "none")
+                    count++;
+            }
+            if (count === 0) {
+                const msg = document.createElement("h2");
+                msg.setAttribute("class", "text-primary");
+                msg.setAttribute("id", "no-pdf");
+                msg.innerHTML = "No PDFs available";
+                document.getElementById("pdfTableBody").appendChild(msg);
+            }
         });
     
     
