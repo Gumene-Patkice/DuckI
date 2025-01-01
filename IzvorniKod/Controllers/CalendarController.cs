@@ -25,7 +25,7 @@ public class CalendarController : ControllerBase
     }
     
     ///<summary>Get calendar file route</summary>
-    [Authorize]
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
     [HttpGet("getcalendar")]
     public async Task<IActionResult> GetCalendar()
     {
@@ -42,7 +42,7 @@ public class CalendarController : ControllerBase
         return File(fileBytes, "text/csv", $"{userId}.csv");
     }
     
-    [Authorize]
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
     [HttpPost("addevent")]
     public async Task<IActionResult> AddEvent([FromQuery] string eventDate, [FromQuery] string eventDescription)
     {
@@ -57,7 +57,7 @@ public class CalendarController : ControllerBase
         return Ok("Event added successfully.");
     }
     
-    [Authorize]
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
     [HttpDelete("deleteevent")]
     public async Task<IActionResult> DeleteEvent([FromQuery] string eventDate, [FromQuery] string eventDescription)
     {
