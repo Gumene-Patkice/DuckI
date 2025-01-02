@@ -15,6 +15,8 @@ public interface ICalendarService
 {
     Task UploadCalendarAsync(IFormFile file, string userId); // this method doesn't belong to api/calendars, but it is used in HomeController
     Task<byte[]> GetCalendarAsync(string userId);
+    Task AddEventToCalendarAsync(DateTime eventDate, string eventDescription, string userId);
+    Task DeleteEventFromCalendarAsync(DateTime eventDate, string eventDescription, string userId);
 }
 
 /// <summary>
@@ -48,6 +50,29 @@ public class CalendarService : ICalendarService
             if (fileExtension != ".csv")
             {
                 throw new InvalidOperationException("Invalid file type. Only .csv files are allowed.");
+            }
+            
+            // read the file and check if the .csv is in the correct format
+            var dateEvents = new Dictionary<DateTime, int>();
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    var values = line.Split(',');
+
+                    if (values.Length != 2)
+                    {
+                        throw new InvalidOperationException("Invalid CSV format.");
+                    }
+
+                    // out var is used to store eventDate for later use inside this while block
+                    // if the date is in the correct format
+                    if (!DateTime.TryParse(values[0], out var eventDate))
+                    {
+                        throw new InvalidOperationException("Invalid date format in CSV.");
+                    }
+                }
             }
             
             // get a record from UserCalendars which will be used to check if the user with userId already has a calendar
@@ -143,5 +168,95 @@ public class CalendarService : ICalendarService
 
         // return the file as a byte array
         return await System.IO.File.ReadAllBytesAsync(filePath);
+    }
+
+    public async Task AddEventToCalendarAsync(DateTime eventDate, string eventDescription, string userId)
+    {
+        var userCalendar = await _context.UserCalendars
+            .Include(uc => uc.Calendar)
+            .FirstOrDefaultAsync(uc => uc.UserId == userId);
+
+        if (userCalendar == null || userCalendar.Calendar == null)
+        {
+            throw new InvalidOperationException("User calendar not found.");
+        }
+
+        var filePath = userCalendar.Calendar.CsvPath;
+        if (!System.IO.File.Exists(filePath))
+        {
+            throw new InvalidOperationException("Calendar file not found.");
+        }
+
+        var lines = new List<string>();
+
+        using (var reader = new StreamReader(filePath))
+        {
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                lines.Add(line);
+            }
+        }
+
+        lines.Add($"{eventDate.ToString("yyyy-MM-dd")},{eventDescription}");
+
+        using (var writer = new StreamWriter(filePath))
+        {
+            foreach (var line in lines)
+            {
+                await writer.WriteLineAsync(line);
+            }
+        }
+    }
+
+    public async Task DeleteEventFromCalendarAsync(DateTime eventDate, string eventDescription, string userId)
+    {
+        var userCalendar = await _context.UserCalendars
+            .Include(uc => uc.Calendar)
+            .FirstOrDefaultAsync(uc => uc.UserId == userId);
+
+        if (userCalendar == null || userCalendar.Calendar == null)
+        {
+            throw new InvalidOperationException("Calendar not found.");
+        }
+
+        var filePath = userCalendar.Calendar.CsvPath;
+        if (!System.IO.File.Exists(filePath))
+        {
+            throw new FileNotFoundException("Calendar file not found.");
+        }
+
+        var lines = new List<string>();
+        var eventLine = $"{eventDate:yyyy-MM-dd},{eventDescription}";
+
+        var counter = 0;
+        using (var reader = new StreamReader(filePath))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                if (!line.Equals(eventLine, StringComparison.OrdinalIgnoreCase))
+                {
+                    lines.Add(line);
+                }
+                else
+                {
+                    counter++;
+                }
+            }
+        }
+
+        if (counter == 0)
+        {
+            throw new InvalidOperationException("Event not found.");
+        }
+
+        using (var writer = new StreamWriter(filePath))
+        {
+            foreach (var line in lines)
+            {
+                await writer.WriteLineAsync(line);
+            }
+        }
     }
 }
