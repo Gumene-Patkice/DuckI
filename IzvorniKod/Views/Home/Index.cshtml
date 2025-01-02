@@ -9,7 +9,7 @@
     <h1 class="display-4">Welcome To DuckI</h1>
 </div>
 
-@if (User.IsInRole("Student"))
+@if (User.IsInRole("SuperStudent") || User.IsInRole("Educator") || User.IsInRole("Admin") || User.IsInRole("Reviewer"))
 {
     <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
     
