@@ -23,8 +23,14 @@
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.10" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.10" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.6" />
         <PackageReference Include="Mscc.GenerativeAI" Version="1.9.5" />
+        <PackageReference Include="NUnit" Version="4.3.0" />
+        <PackageReference Include="Selenium.Support" Version="4.27.0" />
+        <PackageReference Include="Selenium.WebDriver" Version="4.27.0" />
+        <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="132.0.6834.5700-beta" />
+        <PackageReference Include="WebDriverManager" Version="2.17.5" />
     </ItemGroup>
 
     <ItemGroup>
