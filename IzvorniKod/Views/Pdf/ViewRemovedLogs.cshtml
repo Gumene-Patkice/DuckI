@@ -1,25 +1,59 @@
 ﻿@model List<DuckI.Models.RemovedLog>
 
-<h2>Removed Logs</h2>
+<link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true">
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Remove Log ID</th>
-        <th>Reviewer</th>
-        <th>Description</th>
-        <th>File Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var log in Model)
-    {
-    <tr>
-        <td>@log.RemoveLogId</td>
-        <td>@log.Reviewer.UserName</td>
-        <td>@log.Description</td>
-        <td>@log.FileName</td>
-    </tr>
-    }
-    </tbody>
-</table>
+<div class="container d-flex justify-content-center pt-5 row-cols-1">
+
+    <div class="d-flex flex-column justify-content-center gap-4">
+
+        <h1 class="fw-bold text-primary align-self-center">Removed PDFs</h1>
+
+        <div class="d-flex gap-3 align-items-center">
+            <img src="~/images/trash-can-regular-blue.svg" alt="Logo" class="icon"/>
+            <p class="text-break mt-3">List of removed PDFs</p>
+        </div>
+
+        <div class="table-size-2 bg-table rounded">
+            <table class="table my-4 d-table">
+                <tbody id="pdfTableBody" class="d-flex flex-column gap-2">
+                <tr class="table-head">
+                    <td class="d-flex mx-3 gap-5 bg-secondary align-items-center rounded text-light">
+                        <div style="min-width: 7em">
+                            Removed log ID
+                        </div>
+                        <div class="name-size-2" style="min-width: 17em">
+                            Username
+                        </div>
+                        <div style="min-width: 20em">
+                            Description
+                        </div>
+                        <div class="element-width1 w-100 name-size-1">
+                            File name
+                        </div>
+                    </td>
+                </tr>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td class="d-flex mx-3 gap-5 table-primary align-items-center rounded text-light">
+                            <div style="min-width: 7em">
+                                @log.RemoveLogId
+                            </div>
+                            <div class="name-size-2" style="min-width: 17em">
+                                @log.Reviewer.UserName
+                            </div>
+                            <div style="min-width: 20em">
+                                <textarea class="resize-disable rounded desc" name="description" rows="3" cols="35" disabled required>@log.Description</textarea>
+                            </div>
+                            <div class="element-width1 w-100 name-size-1">
+                                @log.FileName
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

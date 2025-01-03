@@ -1,0 +1,88 @@
+﻿.icon {
+    width: 50px;
+}
+
+.icon3 {
+    width: 30px;
+}
+
+.pdf-input {
+    display: none;
+}
+
+.form-bg-color, .form-bg-color:disabled, .form-bg-color:hover, .form-bg-color:active, .form-bg-color:focus, .bg-table {
+    background: #CCD5FF;
+}
+
+.desc {
+    background-color: white;
+}
+
+.notification {
+    display: none;
+    color: limegreen;
+}
+
+.error {
+    display: none;
+    color: orangered;
+}
+
+.name-size-1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 30ch;
+}
+
+.name-size-2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 30ch;
+}
+
+.name-size-3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 15ch;
+}
+
+.resize-disable {
+    resize: none;
+}
+
+.table-size {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.table-size-2 {
+    max-height: 550px;
+    overflow-y: auto;
+}
+
+.positive-rating {
+    color: lawngreen;
+}
+
+.negative-rating {
+    color: red;
+}
+
+.element-width1 {
+    min-width: 17.5em
+}
+
+.element-width2 {
+    min-width: 2em
+}
+
+.element-width3 {
+    min-width: 10em
+}
+
+.table-head {
+    position: sticky; top: 0;
+}

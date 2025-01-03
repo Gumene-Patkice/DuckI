@@ -1,0 +1,47 @@
+﻿.icon {
+    width: 70px;
+}
+
+.icon2 {
+    width: 30px;
+}
+
+.p-text {
+    line-height: 1.2em;
+}
+
+.tag-ul {
+    height: 350px;
+    overflow-y: auto;
+    list-style-type: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.tag-li {
+    background-color: #CCD5FF;
+    word-spacing: 15px;
+}
+
+.tag-span {
+    display: inline-block;
+    word-spacing: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50ch;
+    vertical-align: middle;
+}
+
+.form-bg-color, .form-bg-color:hover, .form-bg-color:active, .form-bg-color:focus {
+    background: #CCD5FF;
+}
+
+input::placeholder {
+    color: #6176e8 !important;
+    opacity: 0.7 !important;
+}
+
+::-ms-input-placeholder {
+    color: #6176e8 !important;
+}
