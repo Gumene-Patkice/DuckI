@@ -7,21 +7,19 @@ using WebDriverManager.DriverConfigs.Impl;
 namespace DuckI.Tests
 {
     [TestFixture]
-    public class TestSuite
+    class TestSuite
     {
         // Radimo usera, nema delete metode dobre pa se generatea random username, be warned runnanje testova n puta
         // kreira n usera
         private IWebDriver _driver;
         private string _testEmail = $"testuser_{Guid.NewGuid()}@exampletest.com";
         private string _testPassword = "Test@1234";
-        private HttpClient _httpClient;
 
         [SetUp]
         public void SetUp()
         {
             new DriverManager().SetUpDriver(new ChromeConfig());
             _driver = new ChromeDriver();
-            _httpClient = new HttpClient();
         }
 
         [TearDown]
