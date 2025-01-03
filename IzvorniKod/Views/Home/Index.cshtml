@@ -9,7 +9,7 @@
     <h1 class="display-4">Welcome To DuckI</h1>
 </div>
 
-@if (User.IsInRole("Student"))
+@if (User.IsInRole("SuperStudent") || User.IsInRole("Educator") || User.IsInRole("Admin") || User.IsInRole("Reviewer"))
 {
     <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
     
@@ -178,6 +178,13 @@
     </div>
 }
 
+@*
+<!-- Delete Event Button Example for Frontend team-->
+<div class="text-center">
+    <button id="deleteEventButton" class="btn btn-primary mt-3">Delete Event</button>
+</div>
+*@
+
 @* This script attaches getcalendar route to the fetch calendar button and changes content of calendarContent div *@
 @section Scripts {
     <script src="~/js/index.js" asp-append-version="true"></script>
@@ -249,13 +256,13 @@
             </text>
         }
                 
-        // for calendars; seperate these two comment sections in two different scripts
-        // for more info contat Jan or Jakov
+        // check if the calendar is succesfully uploaded
         @if (uploadSuccess == true)
         {
             <text>alert('File successfully updated!');</text>
         }
         
+        // for unflagging for SuperStudents
         @if (User.IsInRole("SuperStudent"))
         {
             <text>
@@ -277,9 +284,27 @@
                     });
                 });        
             </text>
-        }
-        // for unflagging; seperate these two comment sections in two different scripts
-        // for more info contat Jan or Jakov
-            
+        }   
+        @*
+        // Example of using the delete route (same for add route) for frontend team
+        document.getElementById('deleteEventButton').addEventListener('click', async function() {
+            const eventDate = prompt("Enter event date (YYYY-MM-DD):");
+            const eventDescription = prompt("Enter event description:");
+
+            if (eventDate && eventDescription) {
+                const response = await fetch(`/api/calendars/deleteevent?eventDate=${encodeURIComponent(eventDate)}&eventDescription=${encodeURIComponent(eventDescription)}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Event deleted successfully.');
+                } else {
+                    alert('Failed to delete event.');
+                }
+            } else {
+                alert('Event date and description are required.');
+            }
+        });
+        *@
     </script>
 }

@@ -209,7 +209,7 @@ public class PdfController : Controller
     /// <summary>
     /// Used in javascript Index view and ViewPublicMaterial view to get all tags.
     /// </summary>
-    [Authorize(Roles="Educator,SuperStudent,Reviewer")]
+    [Authorize(Roles="Educator,SuperStudent,Reviewer,Admin")]
     [HttpGet]
     public async Task<IActionResult> GetAllTags()
     {
@@ -293,4 +293,26 @@ public class PdfController : Controller
         var removedLogs = await _managePdfService.GetAllRemovedLogsAsync(educatorId);
         return View(removedLogs);
     }
+    
+    [Authorize(Roles="SuperStudent,Educator")]
+    [HttpGet]
+    public async Task<IActionResult> FetchPdfByName([FromQuery] string pdfName, [FromQuery] bool isPublic)
+    {
+        var userId = _userManager.GetUserId(User);
+        if (string.IsNullOrEmpty(pdfName))
+        {
+            return BadRequest("PDF name is required.");
+        }
+
+        try
+        {
+            var exists = await _managePdfService.FetchPdfByNameAsync(pdfName, userId, isPublic);
+            return Ok(exists);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+    
 }

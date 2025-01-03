@@ -57,7 +57,7 @@ public class HomeController : Controller
         return View();
     }
     
-    [Authorize]
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
     public IActionResult Calendar()
     {
         return View();
@@ -91,7 +91,7 @@ public class HomeController : Controller
     }
 
     ///<summary>Render UploadCalendar view</summary>
-    [Authorize]
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
     [HttpGet]
     public IActionResult UploadCalendar()
     {
@@ -99,7 +99,7 @@ public class HomeController : Controller
     }
 
     ///<summary>Upload a calendar file route</summary>
-    [Authorize]
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
     [HttpPost]
     public async Task<IActionResult> UploadCalendar(IFormFile file)
     {

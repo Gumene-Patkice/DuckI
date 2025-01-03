@@ -54,88 +54,91 @@ public class UploadPdfService : IUploadPdfService
         
         if (existingPdf != null) 
         { 
-            // Replace the existing PDF
-            using (var stream = new FileStream(filePath, FileMode.Create)) 
-            { 
-                await file.CopyToAsync(stream);
-            }
+            var privatePdf = await _context.PrivatePdfs
+                .Include(p => p.PrivatePdfTag)
+                .Include(p => p.StudentPdf)
+                .FirstOrDefaultAsync(p => p.PrivatePdfId == existingPdf.PrivatePdfId);
             
-            // Update the tag if it is different
-            var existingTag = await _context.PrivatePdfTags.FirstOrDefaultAsync(pt => pt.PrivatePdfId == existingPdf.PrivatePdfId);
-            var newTag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName);
-            if (newTag == null)
+            if (privatePdf == null)
             {
-                throw new InvalidOperationException("That tag doesn't exist!");
+                throw new InvalidOperationException("Private PDF not found.");
             }
 
-            if (existingTag.TagId != newTag.TagId)
+            File.Delete(privatePdf.PdfPath);
+            
+            if (privatePdf.PrivatePdfTag != null)
             {
-                existingTag.TagId = newTag.TagId;
-                _context.PrivatePdfTags.Update(existingTag);
-                await _context.SaveChangesAsync();
+                _context.PrivatePdfTags.Remove(privatePdf.PrivatePdfTag);
             }
+
+            if (privatePdf.StudentPdf != null)
+            {
+                _context.StudentPdfs.Remove(privatePdf.StudentPdf);
+            }
+
+            _context.PrivatePdfs.Remove(privatePdf);
+
+            await _context.SaveChangesAsync();
         }
-        else 
+        
+        // Create new file
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) 
         { 
-            // Create new file
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/PrivatePdfs"))) 
-                { 
-                    Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, 
-                        "Data/Files/PrivatePdfs"));
-                }
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\PrivatePdfs"))) 
-                { 
-                    Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, 
-                        "Data/Files/PrivatePdfs"));
-                }
-            }
-            
-            using (var stream = new FileStream(filePath, FileMode.Create)) 
+            if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data/Files/PrivatePdfs"))) 
             { 
-                await file.CopyToAsync(stream);
+                Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, 
+                    "Data/Files/PrivatePdfs"));
             }
-
-            // Update PrivatePdfs table
-            var privatePdf = new PrivatePdf 
-            { 
-                PdfPath = filePath, 
-                PdfName = file.FileName
-            }; 
-            
-            _context.PrivatePdfs.Add(privatePdf);
-            await _context.SaveChangesAsync(); 
-            
-            // Update StudentPdfs table
-            var studentPdf = new StudentPdf 
-            { 
-                UserId = userId, 
-                PrivatePdfId = privatePdf.PrivatePdfId
-            }; 
-            
-            _context.StudentPdfs.Add(studentPdf); 
-            await _context.SaveChangesAsync();
-
-            // Update PrivatePdfTags table
-            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName); 
-            if (tag == null)
-            {
-                throw new InvalidOperationException("That tag doesn't exists!");
-            }
-            
-            var privatePdfTag = new PrivatePdfTag 
-            { 
-                TagId = tag.TagId,
-                PrivatePdfId = privatePdf.PrivatePdfId
-            }; 
-            
-            _context.PrivatePdfTags.Add(privatePdfTag); 
-            await _context.SaveChangesAsync();
         }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+        { 
+            if (!Directory.Exists(Path.Combine(_webHostEnvironment.ContentRootPath, "Data\\Files\\PrivatePdfs"))) 
+            { 
+                Directory.CreateDirectory(Path.Combine(_webHostEnvironment.ContentRootPath, 
+                    "Data\\Files\\PrivatePdfs"));
+            }
+        }
+        
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        // Update PrivatePdfs table
+        var privatePdfForUpload = new PrivatePdf 
+        { 
+            PdfPath = filePath, 
+            PdfName = file.FileName
+        };
+        
+        _context.PrivatePdfs.Add(privatePdfForUpload); 
+        await _context.SaveChangesAsync();
+        
+        // Update StudentPdfs table
+        var studentPdf = new StudentPdf 
+        { 
+            UserId = userId, 
+            PrivatePdfId = privatePdfForUpload.PrivatePdfId
+        };
+        
+        _context.StudentPdfs.Add(studentPdf); 
+        await _context.SaveChangesAsync();
+
+        // Update PrivatePdfTags table
+        var tag = await _context.Tags.FirstOrDefaultAsync(t => t.TagName == tagName); 
+        if (tag == null) 
+        { 
+            throw new InvalidOperationException("That tag doesn't exists!");
+        }
+        
+        var privatePdfTag = new PrivatePdfTag 
+        { 
+            TagId = tag.TagId, 
+            PrivatePdfId = privatePdfForUpload.PrivatePdfId
+        };
+        
+        _context.PrivatePdfTags.Add(privatePdfTag); 
+        await _context.SaveChangesAsync();
     }
 
     /// <summary>

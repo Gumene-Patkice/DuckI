@@ -25,7 +25,7 @@ public class CalendarController : ControllerBase
     }
     
     ///<summary>Get calendar file route</summary>
-    [Authorize]
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
     [HttpGet("getcalendar")]
     public async Task<IActionResult> GetCalendar()
     {
@@ -40,5 +40,42 @@ public class CalendarController : ControllerBase
 
         // return the calendar file, if it is found
         return File(fileBytes, "text/csv", $"{userId}.csv");
+    }
+    
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
+    [HttpPost("addevent")]
+    public async Task<IActionResult> AddEvent([FromQuery] string eventDate, [FromQuery] string eventDescription)
+    {
+        var userId = _userManager.GetUserId(User);
+
+        if (!DateTime.TryParse(eventDate, out var parsedEventDate))
+        {
+            return BadRequest("Invalid date format.");
+        }
+
+        await _calendarService.AddEventToCalendarAsync(parsedEventDate, eventDescription, userId);
+        return Ok("Event added successfully.");
+    }
+    
+    [Authorize(Roles = "Admin,SuperStudent,Educator,Reviewer")]
+    [HttpDelete("deleteevent")]
+    public async Task<IActionResult> DeleteEvent([FromQuery] string eventDate, [FromQuery] string eventDescription)
+    {
+        var userId = _userManager.GetUserId(User);
+
+        if (!DateTime.TryParse(eventDate, out var parsedEventDate))
+        {
+            return BadRequest("Invalid date format.");
+        }
+
+        try
+        {
+            await _calendarService.DeleteEventFromCalendarAsync(parsedEventDate, eventDescription, userId);
+            return Ok("Event deleted successfully.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }
