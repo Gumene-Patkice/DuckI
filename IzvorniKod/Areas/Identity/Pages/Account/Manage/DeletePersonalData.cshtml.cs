@@ -5,6 +5,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using DuckI.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,15 +18,18 @@ namespace DuckI.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly ManageUsersController _manageUsersController;
 
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            ManageUsersController manageUsersController)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _manageUsersController = manageUsersController;
         }
 
         /// <summary>
@@ -85,13 +89,9 @@ namespace DuckI.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
-
-            var result = await _userManager.DeleteAsync(user);
+            
             var userId = await _userManager.GetUserIdAsync(user);
-            if (!result.Succeeded)
-            {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user.");
-            }
+            await _manageUsersController.DeleteUserData(userId);
 
             await _signInManager.SignOutAsync();
 
