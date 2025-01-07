@@ -1,0 +1,51 @@
+﻿h2 {
+    font-size: 1.7rem;
+}
+
+p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* ---------------------------------------------------- tjedan ---------------------------------------------------- */
+#day-row {
+    width: auto;
+    align-content: center;
+}
+
+#day-header {
+    background-color: #5172FF;
+    border-radius: 5%;
+}
+
+#day-event {
+    border: 1px gray solid;
+    border-radius: 5%;
+}
+
+/* ---------------------------------------------------- svi events ---------------------------------------------------- */
+#event-row {
+    border: 1px gray solid;
+    border-radius: 5%;
+    background-color: lightgray;
+    align-content: center;
+    width: 51.3%;
+}
+
+#date-col {
+    font-weight: bold;
+}
+
+#event-col{
+    font-weight: bold;
+}
+
+/* ---------------------------------------------------- ostalo ---------------------------------------------------- */
+
+#day-header,
+#day-event,
+#date-col,
+#event-col {
+    margin: 0; /* Remove default margins */
+    padding: 0.5rem; /* Add padding for better appearance */
+}

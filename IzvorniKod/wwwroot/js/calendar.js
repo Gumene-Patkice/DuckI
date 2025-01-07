@@ -17,44 +17,36 @@ async function renderCalendar() {
   const response = await fetch(`/api/calendars/getcalendar`);
 
   if (response.ok) {
-    // Show the calendar controls (buttons, headers, etc.)
     document.getElementById("calendarContainer").style.display = "block";
-
-    // Clear the calendar grid
     document.getElementById("calendarGrid").innerHTML = "";
 
-    // Get the days in the month and the starting day
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const firstDayOfMonth = new Date(year, month, 1).getDay();
     const offset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
     let weekRow = document.createElement("div");
-    weekRow.classList.add("row", "g-0"); // Create the first row for the initial offset cells
+    weekRow.classList.add("row", "g-0");
     document.getElementById("calendarGrid").appendChild(weekRow);
 
-    // Fill in empty cells for days before the start of the month
     for (let i = 0; i < offset; i++) {
       weekRow.appendChild(createEmptyDayCell());
     }
 
-    // Fill in the actual days of the month, creating new rows for each week
     for (let day = 1; day <= daysInMonth; day++) {
       if ((offset + day - 1) % 7 === 0 && day !== 1) {
-        // Start a new row every 7 cells
         weekRow = document.createElement("div");
         weekRow.classList.add("row", "g-0");
         document.getElementById("calendarGrid").appendChild(weekRow);
       }
-      weekRow.appendChild(createDayCell(day));
+      const dayCell = createDayCell(day);
+      weekRow.appendChild(dayCell);
     }
 
-    // Add empty cells to complete the last row, if needed
     const remainingCells = 7 - weekRow.children.length;
     for (let i = 0; i < remainingCells; i++) {
       weekRow.appendChild(createEmptyDayCell());
     }
 
-    // Parse CSV and populate events
     const csvContent = await response.text();
     const eventData = parseCSV(csvContent);
     eventData.forEach((event) => {
@@ -65,16 +57,81 @@ async function renderCalendar() {
           `#calendarGrid .day-cell[data-day="${eventDay}"]`,
         );
         if (dayCell) {
+          dayCell.classList.add("has-event");
           const eventDiv = document.createElement("div");
           eventDiv.classList.add("event-text");
           eventDiv.innerText = event.event;
+
+          const deleteButton = document.createElement("button");
+          deleteButton.classList.add("btn", "btn-danger", "btn-sm");
+          deleteButton.innerText = "Delete";
+          deleteButton.addEventListener("click", async () => {
+            const response = await fetch(
+              `/api/calendars/deleteevent?eventDate=${encodeURIComponent(
+                event.date,
+              )}&eventDescription=${encodeURIComponent(event.event)}`,
+              { method: "DELETE" },
+            );
+            if (response.ok) {
+              alert("Event deleted successfully.");
+              eventDiv.remove();
+              dayCell.classList.remove("has-event");
+              addAddEventButton(dayCell, eventDay); // Add the "Add Event" button back
+            } else {
+              alert("Failed to delete event.");
+            }
+          });
+
+          eventDiv.appendChild(deleteButton);
           dayCell.querySelector(".event-container").appendChild(eventDiv);
         }
+      }
+    });
+
+    // Add loop through all day cells and if not has-event then add event button
+    document.querySelectorAll("#calendarGrid .day-cell").forEach((dayCell) => {
+      if (
+        !dayCell.classList.contains("has-event") &&
+        !dayCell.classList.contains("empty-day-cell")
+      ) {
+        const day = dayCell.getAttribute("data-day");
+        addAddEventButton(dayCell, day);
       }
     });
   } else {
     alert("Failed to fetch calendar.");
   }
+}
+
+// Helper function to add "Add Event" button to a day cell
+function addAddEventButton(dayCell, day) {
+  const addButton = document.createElement("button");
+  addButton.innerText = "Add Event";
+  addButton.classList.add("btn", "btn-success", "btn-sm", "add-event-btn");
+  addButton.style.position = "absolute";
+  addButton.style.bottom = "5px";
+  addButton.style.right = "5px";
+  addButton.style.display = "none";
+
+  addButton.addEventListener("click", () => {
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
+
+    document.getElementById("eventDate").value = `${year}-${String(
+      month,
+    ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    document.getElementById("eventForm").style.display = "block";
+  });
+
+  dayCell.appendChild(addButton);
+
+  dayCell.addEventListener("mouseenter", () => {
+    addButton.style.display = "block";
+  });
+  dayCell.addEventListener("mouseleave", () => {
+    addButton.style.display = "none";
+  });
 }
 
 function changeMonth(delta) {
@@ -102,6 +159,7 @@ function createEmptyDayCell() {
     "justify-content-start",
     "p-2",
     "day-cell",
+    "empty-day-cell",
   );
 
   // Add a placeholder element to maintain consistent layout
@@ -125,12 +183,12 @@ function createDayCell(day) {
   );
   dayCell.setAttribute("data-day", day);
 
-  // Create the day number element and append it
+  // Dodajte broj dana
   const dayNumber = document.createElement("strong");
   dayNumber.innerText = day;
   dayCell.appendChild(dayNumber);
 
-  // Create the event container (initially empty)
+  // Dodajte kontejner za događaje
   const eventContainer = document.createElement("div");
   eventContainer.classList.add(
     "event-container",
@@ -168,4 +226,53 @@ function updateMonthLabel() {
 // Render the calendar as soon as the DOM content is loaded
 document.addEventListener("DOMContentLoaded", () => {
   renderCalendar();
+
+  document.addEventListener("click", (e) => {
+    const dayCell = e.target.closest(".day-cell:not(.has-event)");
+    if (dayCell) {
+      const day = dayCell.getAttribute("data-day");
+      const month = currentDate.getMonth() + 1;
+      const year = currentDate.getFullYear();
+      document.getElementById("eventDate").value = `${year}-${String(
+        month,
+      ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const eventForm = document.getElementById("eventForm");
+  const createEventForm = document.getElementById("createEventForm");
+
+  createEventForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const eventDate = document.getElementById("eventDate").value;
+    const eventDescription = document.getElementById("eventDescription").value;
+
+    if (eventDate && eventDescription) {
+      const response = await fetch(
+        `/api/calendars/addevent?eventDate=${encodeURIComponent(
+          eventDate,
+        )}&eventDescription=${encodeURIComponent(eventDescription)}`,
+        {
+          method: "POST",
+        },
+      );
+      if (response.ok) {
+        alert("Event created successfully!");
+        renderCalendar();
+        eventForm.style.display = "none";
+      } else {
+        alert("Failed to create event.");
+      }
+    } else {
+      alert("Both date and description are required.");
+    }
+  });
+
+  // Dodajte zatvaranje forme
+  document.getElementById("cancelEventForm").addEventListener("click", () => {
+    eventForm.style.display = "none";
+  });
 });

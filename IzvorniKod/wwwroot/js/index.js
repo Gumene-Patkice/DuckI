@@ -1,125 +1,145 @@
-﻿let currentDate = new Date(); // Initialize with the current date
+﻿document.addEventListener("DOMContentLoaded", async function () {
+  await loadCurrentWeekAndNextEvents();
+});
 
-document.getElementById('fetchCalendarButton').addEventListener('click', () => renderCalendar());
-document.getElementById('prevMonthButton').addEventListener('click', () => changeMonth(-1));
-document.getElementById('nextMonthButton').addEventListener('click', () => changeMonth(1));
+async function loadCurrentWeekAndNextEvents() {
+  const response = await fetch(`/api/calendars/getcalendar`);
+  if (!response.ok) {
+    alert("Failed to fetch calendar.");
+    return;
+  }
 
-async function renderCalendar() {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+  const csvContent = await response.text();
+  const events = parseCSV(csvContent);
 
-    // Update the displayed month name
-    updateMonthLabel();
+  const now = new Date();
+  const currentWeekEvents = getCurrentWeekEvents(events, now);
 
-    const response = await fetch(`/api/calendars/getcalendar`);
-
-    if (response.ok) {
-        // Show the calendar controls (buttons, headers, etc.)
-        document.getElementById('calendarContainer').style.display = 'block';
-
-        // Clear the calendar grid
-        document.getElementById('calendarGrid').innerHTML = '';
-
-        // Get the days in the month and the starting day
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const firstDayOfMonth = new Date(year, month, 1).getDay();
-        const offset = (firstDayOfMonth === 0) ? 6 : firstDayOfMonth - 1;
-
-        let weekRow = document.createElement('div');
-        weekRow.classList.add('row', 'g-0'); // Create the first row for the initial offset cells
-        document.getElementById('calendarGrid').appendChild(weekRow);
-
-        // Fill in empty cells for days before the start of the month
-        for (let i = 0; i < offset; i++) {
-            weekRow.appendChild(createEmptyDayCell());
-        }
-
-        // Fill in the actual days of the month, creating new rows for each week
-        for (let day = 1; day <= daysInMonth; day++) {
-            if ((offset + day - 1) % 7 === 0 && day !== 1) { // Start a new row every 7 cells
-                weekRow = document.createElement('div');
-                weekRow.classList.add('row', 'g-0');
-                document.getElementById('calendarGrid').appendChild(weekRow);
-            }
-            weekRow.appendChild(createDayCell(day));
-        }
-
-        // Add empty cells to complete the last row, if needed
-        const remainingCells = 7 - weekRow.children.length;
-        for (let i = 0; i < remainingCells; i++) {
-            weekRow.appendChild(createEmptyDayCell());
-        }
-
-        // Parse CSV and populate events
-        const csvContent = await response.text();
-        const eventData = parseCSV(csvContent);
-        eventData.forEach(event => {
-            const eventDate = new Date(event.date);
-            if (eventDate.getFullYear() === year && eventDate.getMonth() === month) {
-                const eventDay = eventDate.getDate();
-                const dayCell = document.querySelector(`#calendarGrid .day-cell[data-day="${eventDay}"]`);
-                if (dayCell) {
-                    const eventDiv = document.createElement('div');
-                    eventDiv.classList.add('event-text');
-                    eventDiv.innerText = event.event;
-                    dayCell.querySelector('.event-container').appendChild(eventDiv);
-                }
-            }
-        });
-    } else {
-        alert('Failed to fetch calendar.');
-    }
-}
-
-function changeMonth(delta) {
-    currentDate.setMonth(currentDate.getMonth() + delta);
-    renderCalendar();
+  renderCurrentWeek(currentWeekEvents);
+  renderNextEvents(events); // Pass all events to renderNextEvents
 }
 
 function parseCSV(data) {
-    return data.split('\n').filter(line => line.trim() !== '').map(line => {
-        const [date, event] = line.split(',');
-        return { date, event };
+  return data
+    .split("\n")
+    .filter((line) => line.trim() !== "")
+    .map((line) => {
+      const [date, event] = line.split(",");
+      return { date: new Date(date), event };
     });
 }
 
-function createEmptyDayCell() {
-    const emptyCell = document.createElement('div');
-    emptyCell.classList.add('col', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-start', 'p-2', 'day-cell');
+function getCurrentWeekEvents(events, now) {
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Monday
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6); // Sunday
 
-    // Add a placeholder element to maintain consistent layout
-    const placeholder = document.createElement('div');
-    placeholder.classList.add('day-placeholder');
-    emptyCell.appendChild(placeholder);
-
-    return emptyCell;
+  return events.filter(
+    (event) => event.date >= startOfWeek && event.date <= endOfWeek,
+  );
 }
 
-function createDayCell(day) {
-    const dayCell = document.createElement('div');
-    dayCell.classList.add('col', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-start', 'p-2', 'day-cell');
-    dayCell.setAttribute('data-day', day);
+function renderCurrentWeek(events) {
+  const weekContainer = document.getElementById("weekEvents");
+  weekContainer.innerHTML = "";
 
-    // Create the day number element and append it
-    const dayNumber = document.createElement('strong');
-    dayNumber.innerText = day;
-    dayCell.appendChild(dayNumber);
+  const daysOfWeek = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  const startOfWeek = new Date();
+  startOfWeek.setDate(new Date().getDate() - new Date().getDay() + 1); // Monday
 
-    // Create the event container (initially empty)
-    const eventContainer = document.createElement('div');
-    eventContainer.classList.add('event-container', 'd-flex', 'flex-column', 'align-items-center', 'w-100');
-    dayCell.appendChild(eventContainer);
+  daysOfWeek.forEach((day, index) => {
+    const dayDate = new Date(startOfWeek);
+    dayDate.setDate(startOfWeek.getDate() + index);
 
-    return dayCell;
+    const dayEvent = events.find(
+      (event) => event.date.toDateString() === dayDate.toDateString(),
+    );
+
+    const dayRow = document.createElement("div");
+    dayRow.classList.add(
+      "row",
+      "mb-2",
+      "d-flex",
+      "justify-content-start",
+      "gap-1",
+    );
+    dayRow.id = "day-row";
+
+    const dayHeader = document.createElement("div");
+    dayHeader.classList.add("col-1", "fw-bold", "text-center", "text-light");
+    dayHeader.id = "day-header";
+    dayHeader.innerText = `${day}`;
+
+    const dayEventDiv = document.createElement("div");
+    dayEventDiv.classList.add("col-5");
+    if (dayEvent) {
+      dayEventDiv.innerText = dayEvent.event;
+    } else {
+      dayEventDiv.innerText = "";
+    }
+    dayEventDiv.id = "day-event";
+
+    dayRow.appendChild(dayHeader);
+    dayRow.appendChild(dayEventDiv);
+    weekContainer.appendChild(dayRow);
+  });
 }
 
-function updateMonthLabel() {
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-    const month = currentDate.getMonth();
-    const year = currentDate.getFullYear();
-    const monthLabel = document.getElementById('monthLabel');
-    monthLabel.innerText = `${monthNames[month]} ${year}`;
+function renderNextEvents(events) {
+  const eventContainer = document.getElementById("nextEvents");
+  eventContainer.innerHTML = "";
+
+  // Sort events by date in ascending order
+  const sortedEvents = events
+    .filter((event) => event.date >= new Date()) // Only future events
+    .sort((a, b) => a.date - b.date);
+
+  // Get the next 5 events
+  const nextEvents = sortedEvents.slice(0, 5);
+
+  nextEvents.forEach((event) => {
+    const eventRow = document.createElement("div");
+    eventRow.classList.add("row", "mb-2", "d-flex", "justify-content-between");
+    eventRow.id = "event-row";
+
+    const svgCol = document.createElement("div");
+    svgCol.classList.add("col-1");
+
+    const svgImg = document.createElement("img");
+    svgImg.src = "../images/play-solid.svg";
+    svgImg.alt = "Event Icon";
+    svgImg.classList.add("icon-svg");
+    svgCol.appendChild(svgImg);
+
+    const eventCol = document.createElement("div");
+    eventCol.classList.add("col-6");
+    eventCol.innerText = event.event; // Event description
+    eventCol.id = "event-col";
+
+    const dateCol = document.createElement("div");
+    dateCol.classList.add("col-2", "fw-bold");
+    dateCol.innerText = formatDate(event.date); // Format the event's date
+    dateCol.id = "date-col";
+
+    eventRow.appendChild(svgCol);
+    eventRow.appendChild(eventCol);
+    eventRow.appendChild(dateCol);
+    eventContainer.appendChild(eventRow);
+  });
+
+  // If no upcoming events, show a placeholder message
+  if (nextEvents.length === 0) {
+    const noEventsMessage = document.createElement("div");
+    noEventsMessage.classList.add("text-center", "text-muted");
+    noEventsMessage.innerText = "No upcoming events.";
+    eventContainer.appendChild(noEventsMessage);
+  }
+}
+
+function formatDate(date) {
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Months are zero-based
+  const year = date.getFullYear();
+  return `${day}.${month}.${year}`;
 }

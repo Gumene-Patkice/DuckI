@@ -11,42 +11,18 @@
 
 @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator") || User.IsInRole("Admin") || User.IsInRole("Reviewer"))
 {
-    <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true"/>
     
     <div class="text-center">
         <h1 class="display-4">User</h1>
         <p>Enjoy your stay!</p>
     </div>
-    <div class="text-center">
-        <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
-    </div>
-    <div class="text-center">
-        <button id="fetchCalendarButton" class="btn btn-primary mt-3">Fetch Calendar</button>
-    </div>
 
-    <!-- Calendar Container -->
-    <div id="calendarContainer" class="container mt-3" style="display:none;">
-        <div class="d-flex justify-content-between mb-2">
-            <button id="prevMonthButton" class="btn btn-primary">Previous Month</button>
-
-            <span id="monthLabel" class="d-flex align-items-center justify-content-center" style="font-size: 1.2em;"></span>
-
-            <button id="nextMonthButton" class="btn btn-primary">Next Month</button>
-        </div>
-
-        <!-- Days of the week headers -->
-        <div class="row text-center">
-            <div class="col">MON</div>
-            <div class="col">TUE</div>
-            <div class="col">WED</div>
-            <div class="col">THU</div>
-            <div class="col">FRI</div>
-            <div class="col">SAT</div>
-            <div class="col">SUN</div>
-        </div>
-
-        <!-- Calendar grid using Bootstrap row-cols-7 -->
-        <div id="calendarGrid" class="row row-cols-7 g-0"></div>
+    <div class="container-fluid flex-column justify-content-between">
+        <div id="weekEvents" class="container-fluid"></div>
+        <p>Your next assignments:</p>
+        <div id="nextEvents" class="container-fluid"></div>
     </div>
 }
 
@@ -60,7 +36,7 @@
             </select>
             <button id="filterButton" class="btn btn-primary mt-2">Filter</button>
         </div>
-        <table class="table">
+        <table class="table my-4 d-table">
             <thead>
             <tr>
                 <th>PDF Name</th>
@@ -78,10 +54,10 @@
             @foreach (var pdf in Model)
             {
                 <tr>
-                    <td>
-                        <form action="@(pdf.IsPublic ? Url.Action("OpenPublicPdf", "Pdf") : Url.Action("OpenPrivatePdf", "Pdf"))" method="post" target="_blank">
+                    <td class="d-flex mx-3 gap-4 table-primary align-items-center rounded text-light" style="min-height: 4.5em">
+                        <form class="element-width1 w-100" action="@(pdf.IsPublic ? Url.Action("OpenPublicPdf", "Pdf") : Url.Action("OpenPrivatePdf", "Pdf"))" method="post" target="_blank">
                             <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                            <button type="submit" class="btn-link">@pdf.PdfName</button>
+                            <button type="submit" class="btn-link name-size-1 table-primary text-light border-0">@pdf.PdfName</button>
                         </form>
                     </td>
                     <td>@(pdf.IsPublic ? pdf.EducatorUsername : "You" )</td>
@@ -178,12 +154,10 @@
     </div>
 }
 
-@*
 <!-- Delete Event Button Example for Frontend team-->
 <div class="text-center">
     <button id="deleteEventButton" class="btn btn-primary mt-3">Delete Event</button>
 </div>
-*@
 
 @* This script attaches getcalendar route to the fetch calendar button and changes content of calendarContent div *@
 @section Scripts {
@@ -284,8 +258,9 @@
                     });
                 });        
             </text>
-        }   
-        @*
+        }
+
+    
         // Example of using the delete route (same for add route) for frontend team
         document.getElementById('deleteEventButton').addEventListener('click', async function() {
             const eventDate = prompt("Enter event date (YYYY-MM-DD):");
@@ -305,6 +280,5 @@
                 alert('Event date and description are required.');
             }
         });
-        *@
     </script>
 }
