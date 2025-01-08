@@ -35,9 +35,12 @@ p {
     min-width: fit-content;
 }
 
-#day-header, #day-event {
-    margin: 0;
-    padding: 0.5rem;
+td > div:not(:first-of-type) {
+    display: none;
+}
+
+td:hover > div {
+    display: flex;
 }
 
 /* ---------------------------------------------------- tjedan ---------------------------------------------------- */
@@ -57,4 +60,9 @@ p {
     overflow-y: scroll;
     text-overflow: ellipsis;
     max-width: inherit;
+}
+
+#day-header, #day-event {
+    margin: 0;
+    padding: 0.5rem;
 }

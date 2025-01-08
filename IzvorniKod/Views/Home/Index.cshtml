@@ -23,7 +23,14 @@
         @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator"))
         {
             <div class="container">
-                <h2>List of Private and Flagged PDFs</h2>
+                @if (User.IsInRole("SuperStudent"))
+                {
+                    <h2>List of your Private and Flagged PDFs</h2>
+                }
+                @if (User.IsInRole("Educator"))
+                {
+                    <h2>List of your Public PDFs</h2>
+                }
 
                 <div class="d-flex gap-3 align-items-center">
                     <p class="text-break align-self-center mt-2">Filter by tag to find exactly what you need</p>
@@ -51,90 +58,120 @@
                 <div class="bg-table rounded">
                     <table class="table my-4 d-table">
                         <tbody id="pdfTableBody" class="d-flex flex-column gap-2">
-                            @foreach (var pdf in Model)
-                            {
-                                <tr>
-                                    <td class="d-flex flex-column mx-3 my-2 gap-0 table-primary align-items-center rounded text-light" style="min-height: 4.5em">
-                                        <div class="d-flex mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
-                                            <form action="@(pdf.IsPublic ? Url.Action("OpenPublicPdf", "Pdf") : Url.Action("OpenPrivatePdf", "Pdf"))" method="post" target="_blank">
-                                                <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
-                                                <button type="submit" class="btn-link name-size-1 table-primary text-light border-0">@pdf.PdfName</button>
-                                            </form>
-                                            @if (User.IsInRole("SuperStudent"))
-                                            {
-                                                <div class="name-size-2" style="min-width: 17em">
-                                                    @(pdf.IsPublic ? pdf.EducatorUsername : "You" )
-                                                </div>
-                                            }
+                        @foreach (var pdf in Model)
+                        {
+                            <tr>
+                                <td class="d-flex flex-column mx-3 my-2 gap-0 table-primary align-items-center rounded text-light" style="min-height: 4.5em">
+                                    <div class="d-flex mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
+                                        <form action="@(pdf.IsPublic ? Url.Action("OpenPublicPdf", "Pdf") : Url.Action("OpenPrivatePdf", "Pdf"))" method="post" target="_blank">
+                                            <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                            <button type="submit" class="btn-link name-size-1 table-primary text-light border-0">@pdf.PdfName</button>
+                                        </form>
+                                        <div class="d-flex gap-0 bg-light text-primary rounded align-items-center w-75">
+                                            <img src="~/images/tag-solid.svg" alt="Logo" class="icon3 p-1"/>
+                                            <div class="element-width3 name-size-3">@pdf.TagName</div>
                                         </div>
+                                    </div>
 
-                                        <div class="d-flex mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
-                                            <div>@(pdf.IsPublic ? "Public" : "Private")</div>
-                                            <div id="rating-1" class="element-width2 @((pdf.Rating > 0) ? "positive-rating" : "negative-rating") fw-bold w-100">
-                                                @(pdf.Rating > 0 ? "+" : "")@pdf.Rating
-                                            </div>
-                                            <div class="d-flex gap-0 bg-light text-primary rounded align-items-center w-75">
-                                                <img src="~/images/tag-solid.svg" alt="Logo" class="icon3 p-1"/>
-                                                <div class="element-width3 name-size-3">@pdf.TagName</div>
-                                            </div>
-
-                                            @if (User.IsInRole("Reviewer"))
-                                            {
-                                                <form action="@Url.Action("DeletePublicPdfReviewer", "Pdf")" method="post" class="d-flex gap-3 align-items-center">
-                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
-                                                    <textarea class="resize-disable rounded" name="description" placeholder="Reason for deletion" rows="2" cols="30" required></textarea>
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                </form>
-                                            }
-                                        </div>
-
+                                    <div class="mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
                                         @if (User.IsInRole("SuperStudent"))
                                         {
-                                            <div class="d-flex mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
-                                                @if (pdf.IsPublic)
-                                                {
-                                                    <form class="unflag-form" data-pdf-id="@pdf.PdfId" style="display:inline;">
-                                                        <input type="hidden" name="publicPdfId" value="@pdf.PdfId" />
-                                                        <button type="submit" class="btn btn-danger">Unflag</button>
-                                                    </form>
-                                                    <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
-                                                        <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                                                        <input type="hidden" name="isUpvote" value="true" />
-                                                        <button type="submit" class="btn btn-success">Upvote</button>
-                                                    </form>
-                                                    <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
-                                                        <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                                                        <input type="hidden" name="isUpvote" value="false" />
-                                                        <button type="submit" class="btn btn-warning">Downvote</button>
-                                                    </form>
-                                                }
-                                                else
-                                                {
-                                                    <form action="@Url.Action("DeletePrivatePdf", "Pdf")" method="post" style="display:inline;">
-                                                        <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                                                        <button type="submit" class="btn btn-danger">Delete</button>
-                                                    </form>
-                                                }
-                                                <form action="@Url.Action("CreateTask", "Task")" method="post" style="display:inline;">
-                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                                                    <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")" />
-                                                    <button type="submit" class="btn btn-primary">Create Task</button>
-                                                </form>
+                                            <div class="name-size-2 text-center" style="min-width: 17em">
+                                                @(pdf.IsPublic ? pdf.EducatorUsername : "You")
                                             </div>
                                         }
-                                        
+                                        <div>@(pdf.IsPublic ? "Public" : "Private")</div>
+                                        @if (pdf.Rating > 0)
+                                        {
+                                            @if (User.IsInRole("SuperStudent"))
+                                            {
+                                                <div id="rating-1" class="element-width2 positive-rating fw-bold">
+                                                    +@pdf.Rating
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div id="rating-1" class="element-width2 positive-rating fw-bold w-100">
+                                                    +@pdf.Rating
+                                                </div>
+                                            }
+                                        }
+                                        else if (pdf.Rating == 0)
+                                        {
+                                            @if (User.IsInRole("SuperStudent"))
+                                            {
+                                                <div id="rating-1" class="element-width2 positive-rating fw-bold">
+                                                    @pdf.Rating
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div id="rating-1" class="element-width2 positive-rating fw-bold w-100">
+                                                    @pdf.Rating
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @if (User.IsInRole("SuperStudent"))
+                                            {
+                                                <div id="rating-2" class="element-width2 negative-rating fw-bold">
+                                                    @pdf.Rating
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div id="rating-2" class="element-width2 negative-rating fw-bold w-100">
+                                                    @pdf.Rating
+                                                </div>
+                                            }
+                                        }
+
                                         @if (User.IsInRole("Educator"))
                                         {
-                                            <div class="d-flex mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
-                                                <form action="@Url.Action("DeletePublicPdf", "Pdf")" method="post" style="display:inline;">
-                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                                            <form action="@Url.Action("DeletePublicPdf", "Pdf")" method="post" style="display:inline;"><input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        }
+                                    </div>
+
+                                    @if (User.IsInRole("SuperStudent"))
+                                    {
+                                        <div class="mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
+                                            @if (pdf.IsPublic)
+                                            {
+                                                <form class="unflag-form" data-pdf-id="@pdf.PdfId" style="display:inline;">
+                                                    <input type="hidden" name="publicPdfId" value="@pdf.PdfId"/>
+                                                    <button type="submit" class="btn btn-danger">Unflag</button>
+                                                </form>
+                                                <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
+                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                                    <input type="hidden" name="isUpvote" value="true"/>
+                                                    <button type="submit" class="btn btn-success">Upvote</button>
+                                                </form>
+                                                <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
+                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                                    <input type="hidden" name="isUpvote" value="false"/>
+                                                    <button type="submit" class="btn btn-warning">Downvote</button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form action="@Url.Action("DeletePrivatePdf", "Pdf")" method="post" style="display:inline;">
+                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
-                                            </div>
-                                        }
-                                    </td>
-                                </tr>
-                            }
+                                            }
+                                            <form action="@Url.Action("CreateTask", "Task")" method="post" style="display:inline;">
+                                                <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                                <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")"/>
+                                                <button type="submit" class="btn btn-primary">Create Task</button>
+                                            </form>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
                         </tbody>
                     </table>
                 </div>
@@ -143,10 +180,6 @@
 
         <div class="container flex-column justify-content-between">
             <div id="weekEvents" class="container-fluid"></div>
-            @*
-            <p>Your next assignments:</p>
-            <div id="nextEvents" class="container-fluid"></div>
-            *@
         </div>
     </div>
 }
@@ -260,26 +293,5 @@
                 });
             </text>
         }
-        @*
-        // Example of using the delete route (same for add route) for frontend team
-        document.getElementById('deleteEventButton').addEventListener('click', async function() {
-            const eventDate = prompt("Enter event date (YYYY-MM-DD):");
-            const eventDescription = prompt("Enter event description:");
-
-            if (eventDate && eventDescription) {
-                const response = await fetch(`/api/calendars/deleteevent?eventDate=${encodeURIComponent(eventDate)}&eventDescription=${encodeURIComponent(eventDescription)}`, {
-                    method: 'DELETE'
-                });
-
-                if (response.ok) {
-                    alert('Event deleted successfully.');
-                } else {
-                    alert('Failed to delete event.');
-                }
-            } else {
-                alert('Event date and description are required.');
-            }
-        });
-        *@
     </script>
 }
