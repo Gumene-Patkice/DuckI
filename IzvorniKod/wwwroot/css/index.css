@@ -1,10 +1,43 @@
-﻿h2 {
+﻿.container:has(> main:first-child) {
+    margin: 0;
+    padding: 0;
+    min-width: 90vw;
+    width: auto;
+    max-width: 94vw;
+}
+
+main {
+    margin: 0 4vw 0;
+    padding: 0;
+    min-width: 92vw;
+    width: 92vw;
+    max-width: 94vw;
+    align-self: center;
+}
+
+h2 {
     font-size: 1.7rem;
 }
 
 p {
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
+}
+
+#main-container {
+    margin: 0;
+    padding: 0;
+    width: auto;
+    max-width: 100vw;
+}
+
+#filterButton {
+    min-width: fit-content;
+}
+
+#day-header, #day-event {
+    margin: 0;
+    padding: 0.5rem;
 }
 
 /* ---------------------------------------------------- tjedan ---------------------------------------------------- */
@@ -21,31 +54,7 @@ p {
 #day-event {
     border: 1px gray solid;
     border-radius: 5%;
-}
-
-/* ---------------------------------------------------- svi events ---------------------------------------------------- */
-#event-row {
-    border: 1px gray solid;
-    border-radius: 5%;
-    background-color: lightgray;
-    align-content: center;
-    width: 51.3%;
-}
-
-#date-col {
-    font-weight: bold;
-}
-
-#event-col{
-    font-weight: bold;
-}
-
-/* ---------------------------------------------------- ostalo ---------------------------------------------------- */
-
-#day-header,
-#day-event,
-#date-col,
-#event-col {
-    margin: 0; /* Remove default margins */
-    padding: 0.5rem; /* Add padding for better appearance */
+    overflow-y: scroll;
+    text-overflow: ellipsis;
+    max-width: inherit;
 }

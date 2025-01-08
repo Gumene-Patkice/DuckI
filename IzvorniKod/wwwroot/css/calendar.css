@@ -1,4 +1,14 @@
-﻿.row {
+﻿.container:has(> main:first-child) {
+    margin: 0 3vw 0;
+    padding: 0;
+    max-width: fit-content;
+}
+
+main {
+    width: auto;
+}
+
+.row {
     margin: 0;
 }
 
@@ -23,10 +33,15 @@ p {
     width: auto;
 }
 
+#eventForm {
+    width: 100%;
+}
+
 #calendarContainer {
     padding: 0;
     width: auto;
     margin: 0;
+    min-width: 70vw;
 }
 
 .btn-primary {

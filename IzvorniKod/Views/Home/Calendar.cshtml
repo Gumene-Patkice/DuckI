@@ -17,22 +17,20 @@
         <div class="text-start">
             <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
         </div>
-
-        <button id="showFormButton" class="btn btn-success mt-3">Add New Event</button>
-
+        
         <div id="eventForm" class="mt-3" style="display: none;">
-            <h4>Add New Event</h4>
+            <h4 class="text-light">Add New Event</h4>
             <form id="createEventForm">
                 <div class="mb-3">
-                    <label for="eventDate" class="form-label">Date (YYYY-MM-DD)</label>
+                    <label for="eventDate" class="form-label text-light">Date</label>
                     <input type="date" class="form-control" id="eventDate" required disabled>
                 </div>
                 <div class="mb-3">
-                    <label for="eventDescription" class="form-label">Event Description</label>
+                    <label for="eventDescription" class="form-label text-light">Event Description</label>
                     <input type="text" class="form-control" id="eventDescription" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Create</button>
-                <button type="button" class="btn btn-secondary" id="cancelEventForm">Cancel</button>
+                <button type="button" class="btn btn-danger text-light" id="cancelEventForm">Cancel</button>
+                <button type="submit" class="btn btn-success text-light">Create</button>
             </form>
         </div>
     </div>

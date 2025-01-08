@@ -11,7 +11,6 @@ async function renderCalendar() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  // Update the displayed month name
   updateMonthLabel();
 
   const response = await fetch(`/api/calendars/getcalendar`);
@@ -49,6 +48,8 @@ async function renderCalendar() {
 
     const csvContent = await response.text();
     const eventData = parseCSV(csvContent);
+
+    // Petlja za dodavanje događaja i Delete dugmeta
     eventData.forEach((event) => {
       const eventDate = new Date(event.date);
       if (eventDate.getFullYear() === year && eventDate.getMonth() === month) {
@@ -62,33 +63,13 @@ async function renderCalendar() {
           eventDiv.classList.add("event-text");
           eventDiv.innerText = event.event;
 
-          const deleteButton = document.createElement("button");
-          deleteButton.classList.add("btn", "btn-danger", "btn-sm");
-          deleteButton.innerText = "Delete";
-          deleteButton.addEventListener("click", async () => {
-            const response = await fetch(
-              `/api/calendars/deleteevent?eventDate=${encodeURIComponent(
-                event.date,
-              )}&eventDescription=${encodeURIComponent(event.event)}`,
-              { method: "DELETE" },
-            );
-            if (response.ok) {
-              alert("Event deleted successfully.");
-              eventDiv.remove();
-              dayCell.classList.remove("has-event");
-              addAddEventButton(dayCell, eventDay); // Add the "Add Event" button back
-            } else {
-              alert("Failed to delete event.");
-            }
-          });
-
-          eventDiv.appendChild(deleteButton);
           dayCell.querySelector(".event-container").appendChild(eventDiv);
+          addDeleteEventButton(dayCell, event.date, event.event); // Dodavanje Delete dugmeta
         }
       }
     });
 
-    // Add loop through all day cells and if not has-event then add event button
+    // Petlja za dodavanje Add Event dugmeta na ćelije bez događaja
     document.querySelectorAll("#calendarGrid .day-cell").forEach((dayCell) => {
       if (
         !dayCell.classList.contains("has-event") &&
@@ -131,6 +112,41 @@ function addAddEventButton(dayCell, day) {
   });
   dayCell.addEventListener("mouseleave", () => {
     addButton.style.display = "none";
+  });
+}
+
+function addDeleteEventButton(dayCell, eventDate, eventDescription) {
+  const deleteButton = document.createElement("button");
+  deleteButton.classList.add("btn", "btn-danger", "btn-sm", "delete-btn");
+  deleteButton.innerText = "Delete Event";
+  deleteButton.style.position = "absolute";
+  deleteButton.style.bottom = "5px";
+  deleteButton.style.right = "5px";
+  deleteButton.style.display = "none";
+
+  deleteButton.addEventListener("click", async () => {
+    const response = await fetch(
+      `/api/calendars/deleteevent?eventDate=${encodeURIComponent(
+        eventDate,
+      )}&eventDescription=${encodeURIComponent(eventDescription.trim())}`,
+      { method: "DELETE" },
+    );
+    if (response.ok) {
+      alert("Event deleted successfully.");
+      dayCell.classList.remove("has-event");
+      renderCalendar();
+    } else {
+      alert("Failed to delete event.");
+    }
+  });
+
+  dayCell.appendChild(deleteButton);
+
+  dayCell.addEventListener("mouseenter", () => {
+    deleteButton.style.display = "block";
+  });
+  dayCell.addEventListener("mouseleave", () => {
+    deleteButton.style.display = "none";
   });
 }
 

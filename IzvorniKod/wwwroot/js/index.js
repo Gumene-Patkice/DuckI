@@ -16,7 +16,6 @@ async function loadCurrentWeekAndNextEvents() {
   const currentWeekEvents = getCurrentWeekEvents(events, now);
 
   renderCurrentWeek(currentWeekEvents);
-  renderNextEvents(events); // Pass all events to renderNextEvents
 }
 
 function parseCSV(data) {
@@ -72,7 +71,7 @@ function renderCurrentWeek(events) {
     dayHeader.innerText = `${day}`;
 
     const dayEventDiv = document.createElement("div");
-    dayEventDiv.classList.add("col-5");
+    dayEventDiv.classList.add("col-10");
     if (dayEvent) {
       dayEventDiv.innerText = dayEvent.event;
     } else {
@@ -84,57 +83,6 @@ function renderCurrentWeek(events) {
     dayRow.appendChild(dayEventDiv);
     weekContainer.appendChild(dayRow);
   });
-}
-
-function renderNextEvents(events) {
-  const eventContainer = document.getElementById("nextEvents");
-  eventContainer.innerHTML = "";
-
-  // Sort events by date in ascending order
-  const sortedEvents = events
-    .filter((event) => event.date >= new Date()) // Only future events
-    .sort((a, b) => a.date - b.date);
-
-  // Get the next 5 events
-  const nextEvents = sortedEvents.slice(0, 5);
-
-  nextEvents.forEach((event) => {
-    const eventRow = document.createElement("div");
-    eventRow.classList.add("row", "mb-2", "d-flex", "justify-content-between");
-    eventRow.id = "event-row";
-
-    const svgCol = document.createElement("div");
-    svgCol.classList.add("col-1");
-
-    const svgImg = document.createElement("img");
-    svgImg.src = "../images/play-solid.svg";
-    svgImg.alt = "Event Icon";
-    svgImg.classList.add("icon-svg");
-    svgCol.appendChild(svgImg);
-
-    const eventCol = document.createElement("div");
-    eventCol.classList.add("col-6");
-    eventCol.innerText = event.event; // Event description
-    eventCol.id = "event-col";
-
-    const dateCol = document.createElement("div");
-    dateCol.classList.add("col-2", "fw-bold");
-    dateCol.innerText = formatDate(event.date); // Format the event's date
-    dateCol.id = "date-col";
-
-    eventRow.appendChild(svgCol);
-    eventRow.appendChild(eventCol);
-    eventRow.appendChild(dateCol);
-    eventContainer.appendChild(eventRow);
-  });
-
-  // If no upcoming events, show a placeholder message
-  if (nextEvents.length === 0) {
-    const noEventsMessage = document.createElement("div");
-    noEventsMessage.classList.add("text-center", "text-muted");
-    noEventsMessage.innerText = "No upcoming events.";
-    eventContainer.appendChild(noEventsMessage);
-  }
 }
 
 function formatDate(date) {
