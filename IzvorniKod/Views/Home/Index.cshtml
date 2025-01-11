@@ -22,7 +22,7 @@
     <div id="main-container" class="container justify-content-between gap-4 d-flex pt-4 row-cols-2">
         @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator"))
         {
-            <div class="container">
+            <div id="pdf-container" class="container">
                 @if (User.IsInRole("SuperStudent"))
                 {
                     <h2>List of your Private and Flagged PDFs</h2>
@@ -32,9 +32,9 @@
                     <h2>List of your Public PDFs</h2>
                 }
 
-                <div class="d-flex gap-3 align-items-center">
-                    <p class="text-break align-self-center mt-2">Filter by tag to find exactly what you need</p>
-                    <div class="d-flex gap-3 align-self-center w-25 row-cols-4">
+                <div id="filter-container" class="d-flex gap-3">
+                    <p class="text-break mt-2">Filter by tag to find exactly what you need</p>
+                    <div class="d-flex w-25 row-cols-4">
                         <select id="tagFilter" class="form-control form-bg-color align-self-center">
                             <option value="">All tags</option>
                         </select>
@@ -67,16 +67,16 @@
                                             <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
                                             <button type="submit" class="btn-link name-size-1 table-primary text-light border-0">@pdf.PdfName</button>
                                         </form>
-                                        <div class="d-flex gap-0 bg-light text-primary rounded align-items-center w-75">
+                                        <div class="d-flex gap-0 bg-light text-primary rounded align-items-center">
                                             <img src="~/images/tag-solid.svg" alt="Logo" class="icon3 p-1"/>
-                                            <div class="element-width3 name-size-3">@pdf.TagName</div>
+                                            <div id="tag-name" class="name-size-3">@pdf.TagName</div>
                                         </div>
                                     </div>
 
                                     <div class="mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
                                         @if (User.IsInRole("SuperStudent"))
                                         {
-                                            <div class="name-size-2 text-center" style="min-width: 17em">
+                                            <div id="pdf-author" class="name-size-2 text-center">
                                                 @(pdf.IsPublic ? pdf.EducatorUsername : "You")
                                             </div>
                                         }
@@ -178,9 +178,7 @@
             </div>
         }
 
-        <div class="container flex-column justify-content-between">
-            <div id="weekEvents" class="container-fluid"></div>
-        </div>
+        <div id="weekEvents" class="container"></div>
     </div>
 }
 

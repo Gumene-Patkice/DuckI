@@ -91,3 +91,41 @@ function formatDate(date) {
   const year = date.getFullYear();
   return `${day}.${month}.${year}`;
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  let currentlyOpenRow = null; // Track the currently open row
+
+  const rows = document.querySelectorAll("#pdfTableBody tr");
+
+  rows.forEach((row) => {
+    row.addEventListener("click", function (event) {
+      // Close the previously opened row
+      if (currentlyOpenRow && currentlyOpenRow !== this) {
+        const previousDivs = currentlyOpenRow.querySelectorAll(
+          "td > div:not(:first-of-type)",
+        );
+        previousDivs.forEach((div) => {
+          div.style.display = "none";
+        });
+      }
+
+      // Toggle the visibility of the current row
+      const childDivs = this.querySelectorAll("td > div:not(:first-of-type)");
+      const isAlreadyOpen = Array.from(childDivs).some(
+        (div) => div.style.display === "flex",
+      );
+
+      if (isAlreadyOpen) {
+        childDivs.forEach((div) => {
+          div.style.display = "none";
+        });
+        currentlyOpenRow = null; // Reset currently open row
+      } else {
+        childDivs.forEach((div) => {
+          div.style.display = "flex";
+        });
+        currentlyOpenRow = this; // Update currently open row
+      }
+    });
+  });
+});

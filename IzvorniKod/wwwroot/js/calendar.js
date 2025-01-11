@@ -1,4 +1,9 @@
-﻿let currentDate = new Date(); // Initialize with the current date
+﻿let currentDate = new Date();
+
+let eventForm;
+let createEventForm;
+let eventDateInput;
+let eventDescriptionInput;
 
 document
   .getElementById("prevMonthButton")
@@ -6,6 +11,52 @@ document
 document
   .getElementById("nextMonthButton")
   .addEventListener("click", () => changeMonth(1));
+
+// Render the calendar as soon as the DOM content is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  eventForm = document.getElementById("eventForm");
+  createEventForm = document.getElementById("createEventForm");
+  eventDateInput = document.getElementById("eventDate");
+  eventDescriptionInput = document.getElementById("eventDescription");
+
+  createEventForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const eventDate = eventDateInput.value;
+    const eventDescription = eventDescriptionInput.value;
+
+    if (eventDate && eventDescription) {
+      const response = await fetch(
+        `/api/calendars/addevent?eventDate=${encodeURIComponent(eventDate)}&eventDescription=${encodeURIComponent(eventDescription)}`,
+        {
+          method: "POST",
+        },
+      );
+      if (response.ok) {
+        alert("Event created successfully!");
+        renderCalendar();
+        eventForm.style.display = "none";
+      } else {
+        alert("Failed to create event.");
+      }
+    } else {
+      alert("Both date and description are required.");
+    }
+  });
+
+  // Check if preset date has been removed
+  eventDateInput.addEventListener("input", () => {
+    if (!eventDateInput.value) {
+      eventForm.style.display = "none";
+    }
+  });
+
+  document.getElementById("cancelEventForm").addEventListener("click", () => {
+    eventForm.style.display = "none";
+  });
+
+  renderCalendar();
+});
 
 async function renderCalendar() {
   const year = currentDate.getFullYear();
@@ -64,7 +115,7 @@ async function renderCalendar() {
           eventDiv.innerText = event.event;
 
           dayCell.querySelector(".event-container").appendChild(eventDiv);
-          addDeleteEventButton(dayCell, event.date, event.event); // Dodavanje Delete dugmeta
+          addDeleteEventButton(dayCell, event.date, event.event);
         }
       }
     });
@@ -77,6 +128,8 @@ async function renderCalendar() {
       ) {
         const day = dayCell.getAttribute("data-day");
         addAddEventButton(dayCell, day);
+      } else {
+        dayCell.style.pointerEvents = "none";
       }
     });
   } else {
@@ -86,45 +139,29 @@ async function renderCalendar() {
 
 // Helper function to add "Add Event" button to a day cell
 function addAddEventButton(dayCell, day) {
-  const addButton = document.createElement("button");
-  addButton.innerText = "Add Event";
-  addButton.classList.add("btn", "btn-success", "btn-sm", "add-event-btn");
-  addButton.style.position = "absolute";
-  addButton.style.bottom = "5px";
-  addButton.style.right = "5px";
-  addButton.style.display = "none";
+  const plusSign = document.createElement("div");
+  plusSign.classList.add("plus-sign");
+  plusSign.innerText = "+";
+  dayCell.appendChild(plusSign);
 
-  addButton.addEventListener("click", () => {
+  dayCell.addEventListener("click", () => {
     const month = currentDate.getMonth() + 1;
     const year = currentDate.getFullYear();
 
-    document.getElementById("eventDate").value = `${year}-${String(
-      month,
-    ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-    document.getElementById("eventForm").style.display = "block";
-  });
-
-  dayCell.appendChild(addButton);
-
-  dayCell.addEventListener("mouseenter", () => {
-    addButton.style.display = "block";
-  });
-  dayCell.addEventListener("mouseleave", () => {
-    addButton.style.display = "none";
+    eventDateInput.value = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    eventDescriptionInput.value = ""; // Reset event description
+    eventForm.style.display = "block";
   });
 }
 
 function addDeleteEventButton(dayCell, eventDate, eventDescription) {
   const deleteButton = document.createElement("button");
   deleteButton.classList.add("btn", "btn-danger", "btn-sm", "delete-btn");
-  deleteButton.innerText = "Delete Event";
-  deleteButton.style.position = "absolute";
-  deleteButton.style.bottom = "5px";
-  deleteButton.style.right = "5px";
-  deleteButton.style.display = "none";
+  deleteButton.innerText = "X";
 
   deleteButton.addEventListener("click", async () => {
+    event.stopPropagation();
+
     const response = await fetch(
       `/api/calendars/deleteevent?eventDate=${encodeURIComponent(
         eventDate,
@@ -141,13 +178,6 @@ function addDeleteEventButton(dayCell, eventDate, eventDescription) {
   });
 
   dayCell.appendChild(deleteButton);
-
-  dayCell.addEventListener("mouseenter", () => {
-    deleteButton.style.display = "block";
-  });
-  dayCell.addEventListener("mouseleave", () => {
-    deleteButton.style.display = "none";
-  });
 }
 
 function changeMonth(delta) {
@@ -173,7 +203,8 @@ function createEmptyDayCell() {
     "flex-column",
     "align-items-center",
     "justify-content-start",
-    "p-2",
+    "pt-2",
+    "px-1",
     "day-cell",
     "empty-day-cell",
   );
@@ -194,13 +225,15 @@ function createDayCell(day) {
     "flex-column",
     "align-items-center",
     "justify-content-start",
-    "p-2",
+    "pt-2",
+    "px-1",
     "day-cell",
   );
   dayCell.setAttribute("data-day", day);
 
   // Dodajte broj dana
-  const dayNumber = document.createElement("strong");
+  const dayNumber = document.createElement("div");
+  dayNumber.classList.add("day-number");
   dayNumber.innerText = day;
   dayCell.appendChild(dayNumber);
 
@@ -214,6 +247,18 @@ function createDayCell(day) {
     "w-100",
   );
   dayCell.appendChild(eventContainer);
+
+  // Dodajte funkcionalnost za otvaranje forme za dodavanje događaja
+  dayCell.addEventListener("click", () => {
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
+
+    document.getElementById("eventDate").value = `${year}-${String(
+      month,
+    ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    document.getElementById("eventForm").style.display = "block";
+  });
 
   return dayCell;
 }
@@ -238,57 +283,3 @@ function updateMonthLabel() {
   const monthLabel = document.getElementById("monthLabel");
   monthLabel.innerText = `${monthNames[month]} ${year}`;
 }
-
-// Render the calendar as soon as the DOM content is loaded
-document.addEventListener("DOMContentLoaded", () => {
-  renderCalendar();
-
-  document.addEventListener("click", (e) => {
-    const dayCell = e.target.closest(".day-cell:not(.has-event)");
-    if (dayCell) {
-      const day = dayCell.getAttribute("data-day");
-      const month = currentDate.getMonth() + 1;
-      const year = currentDate.getFullYear();
-      document.getElementById("eventDate").value = `${year}-${String(
-        month,
-      ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-    }
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const eventForm = document.getElementById("eventForm");
-  const createEventForm = document.getElementById("createEventForm");
-
-  createEventForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const eventDate = document.getElementById("eventDate").value;
-    const eventDescription = document.getElementById("eventDescription").value;
-
-    if (eventDate && eventDescription) {
-      const response = await fetch(
-        `/api/calendars/addevent?eventDate=${encodeURIComponent(
-          eventDate,
-        )}&eventDescription=${encodeURIComponent(eventDescription)}`,
-        {
-          method: "POST",
-        },
-      );
-      if (response.ok) {
-        alert("Event created successfully!");
-        renderCalendar();
-        eventForm.style.display = "none";
-      } else {
-        alert("Failed to create event.");
-      }
-    } else {
-      alert("Both date and description are required.");
-    }
-  });
-
-  // Dodajte zatvaranje forme
-  document.getElementById("cancelEventForm").addEventListener("click", () => {
-    eventForm.style.display = "none";
-  });
-});

@@ -1,5 +1,5 @@
 ﻿.container:has(> main:first-child) {
-    margin: 0 3vw 0;
+    margin: 0 1vw 0;
     padding: 0;
     max-width: fit-content;
 }
@@ -30,7 +30,7 @@ p {
 }
 
 #left-div {
-    width: auto;
+    width: 25%;
 }
 
 #eventForm {
@@ -38,10 +38,14 @@ p {
 }
 
 #calendarContainer {
-    padding: 0;
     width: auto;
     margin: 0;
     min-width: 70vw;
+    padding: 0 .75rem 0;
+}
+
+#monthLabel {
+    text-align: center;
 }
 
 .btn-primary {
@@ -52,9 +56,21 @@ p {
 
 .day-cell {
     width: 100%;
-    height: 100px;
+    height: 15vh;
     overflow: hidden;
     position: relative;
+    background-color: #f5f5f5;
+}
+
+.day-cell:has(.plus-sign):hover {
+    background-color: #e8f5e9;
+    cursor: pointer;
+}
+
+.day-cell .plus-sign {
+    font-size: 2.25em;
+    color: black;
+    pointer-events: none;
 }
 
 .day-placeholder {
@@ -64,7 +80,7 @@ p {
 
 /* container eventa u kalendaru */
 .event-container {
-    max-height: 100px;
+    max-height: 75%;
     width: 100%;
     background-color: #5172FF;
     border-radius: 5px;
@@ -80,28 +96,11 @@ p {
     color: white;
     width: 98%;
     text-align: center;
-    max-height: 100px;
+    /*max-height: 100px;*/
     overflow-y: auto;
     padding: 5px;
+    pointer-events: auto;
 }
-
-/*
-.delete-icon {
-    position: absolute;
-    top: 25%;
-    right: 6px;
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    z-index: 10;
-    opacity: 1;
-}
-
-.delete-icon:hover {
-    opacity: 1;
-    transform: scale(1.1);
-}
-*/
 
 #eventForm {
     border: 1px solid #ccc;
@@ -114,18 +113,32 @@ p {
     margin-bottom: 10px;
 }
 
-.add-event-btn {
+.delete-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
     font-size: 0.8em;
-    padding: 2px 5px;
-    display: none;
+    z-index: 10;
+    pointer-events: auto;
 }
 
-.day-cell:hover .add-event-btn {
-    display: block;
+@media (max-width: 768px) {
+    #site-div {
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+    }
+    
+    #left-div {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        width: 100%;
+    }
+    
+    .row {
+        width: 93vw;
+        max-width: 93vw;
+    }
 }
-
-/* promijeniti kasnije da mijenja samo generirane container
-.container {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}*/
