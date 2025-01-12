@@ -121,10 +121,10 @@
                     </td>
                     }
                     <td>
-                        <form action="@Url.Action("CreateTask", "Task")" method="post" style="display:inline;">
+                        <form action="@Url.Action("CreateTask", "Tasks")" method="post" style="display:inline;">
                             <input type="hidden" name="pdfId" value="@pdf.PdfId" />
                             <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")" />
-                            <button type="submit" class="btn btn-primary">Create Task</button>
+                            <button type="submit" class="btn btn-primary">Create Flashcards</button>
                         </form>
                     </td>
                 </tr>

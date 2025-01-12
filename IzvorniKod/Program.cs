@@ -29,9 +29,6 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 // registering the CalendarService
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 
-// registering the ChatService
-builder.Services.AddScoped<IChatService, ChatService>();
-
 // registering the UserRoleStatusesService
 builder.Services.AddScoped<IUserRoleStatusesService, UserRoleStatusesService>();
 
@@ -45,7 +42,7 @@ builder.Services.AddScoped<IUploadPdfService, UploadPdfService>();
 builder.Services.AddScoped<IManagePdfService, ManagePdfService>();
 
 // registering the TaskService
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ITaskService, TasksService>();
 
 // Configuring Identity options for password, lockout, user
 builder.Services.Configure<IdentityOptions>(options =>
