@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="iTextSharp" Version="5.5.13.4" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.10" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.10" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />
@@ -35,6 +36,7 @@
 
     <ItemGroup>
       <Folder Include="Data\Files\Calendars\" />
+      <Folder Include="Data\Files\Flashcards\" />
       <Folder Include="Data\Files\PrivatePdfs\" />
       <Folder Include="Data\Files\PublicPdfs\" />
     </ItemGroup>

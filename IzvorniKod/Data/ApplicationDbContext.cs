@@ -19,6 +19,7 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<FlaggedPdf> FlaggedPdfs { get; set; }
     public DbSet<RatingLog> RatingLogs { get; set; }
     public DbSet<RemovedLog> RemovedLogs { get; set; }
+    public DbSet<Flashcard> Flashcards { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -160,5 +161,11 @@ public class ApplicationDbContext : IdentityDbContext
             .HasOne(rl => rl.Educator)
             .WithMany()
             .HasForeignKey(rl => rl.EducatorId);
+        
+        // one to one; each user has a JSON file of flashcards
+        modelBuilder.Entity<Flashcard>()
+            .HasKey(f => f.UserId);
+        modelBuilder.Entity<Flashcard>()
+            .HasOne(f => f.User).WithMany().HasForeignKey(f => f.UserId);
     }
 }

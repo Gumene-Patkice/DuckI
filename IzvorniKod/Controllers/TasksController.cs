@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DuckI.Controllers;
 
-public class TaskController : Controller
+public class TasksController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ITaskService _taskService;
 
-    public TaskController(UserManager<IdentityUser> userManager, ITaskService taskService)
+    public TasksController(UserManager<IdentityUser> userManager, ITaskService taskService)
     {
         _userManager = userManager;
         _taskService = taskService;
@@ -24,9 +24,10 @@ public class TaskController : Controller
         // isPublic is needed to determine from which table the pdf is fetched
         try
         {
-            var pdf = await _taskService.CreateTask(pdfId, isPublic == "true");
-            // pdf var is a dto which contains information about pdfId, pdfPath and pdfName
-            return Ok("Task created successfully!");
+            var response = await _taskService.CreateTask(pdfId, isPublic == "true");
+            ViewBag.Message = "Task created successfully!";
+            ViewBag.Response = response;
+            return View("../Home/Tasks");
         }
         catch (InvalidOperationException ex)
         {
