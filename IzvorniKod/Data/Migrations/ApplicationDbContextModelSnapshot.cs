@@ -63,6 +63,20 @@ namespace DuckI.Data.Migrations
                     b.ToTable("FlaggedPdfs");
                 });
 
+            modelBuilder.Entity("DuckI.Models.Flashcard", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("JSONPath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Flashcards");
+                });
+
             modelBuilder.Entity("DuckI.Models.PrivatePdf", b =>
                 {
                     b.Property<long>("PrivatePdfId")
@@ -483,6 +497,17 @@ namespace DuckI.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("PublicPdf");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DuckI.Models.Flashcard", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

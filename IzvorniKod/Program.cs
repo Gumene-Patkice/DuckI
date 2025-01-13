@@ -1,3 +1,4 @@
+using DuckI.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DuckI.Data;
@@ -29,9 +30,6 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 // registering the CalendarService
 builder.Services.AddScoped<ICalendarService, CalendarService>();
 
-// registering the ChatService
-builder.Services.AddScoped<IChatService, ChatService>();
-
 // registering the UserRoleStatusesService
 builder.Services.AddScoped<IUserRoleStatusesService, UserRoleStatusesService>();
 
@@ -45,7 +43,19 @@ builder.Services.AddScoped<IUploadPdfService, UploadPdfService>();
 builder.Services.AddScoped<IManagePdfService, ManagePdfService>();
 
 // registering the TaskService
-builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ITaskService, TasksService>();
+
+// registering the ManageUsersService
+builder.Services.AddScoped<IManageUsersService, ManageUsersService>();
+
+// registering the ManageUsersController
+builder.Services.AddScoped<ManageUsersController>();
+
+// registering the service for the security stamp validator (used to logout users after a certain time)
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.FromSeconds(30);
+});
 
 // Configuring Identity options for password, lockout, user
 builder.Services.Configure<IdentityOptions>(options =>

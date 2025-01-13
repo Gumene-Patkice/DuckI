@@ -52,7 +52,7 @@ public class HomeController : Controller
     }
     
     [Authorize]
-    public IActionResult Chat()
+    public IActionResult Tasks()
     {
         return View();
     }

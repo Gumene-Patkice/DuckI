@@ -72,7 +72,6 @@
                                             <div id="tag-name" class="name-size-3">@pdf.TagName</div>
                                         </div>
                                     </div>
-
                                     <div class="mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
                                         @if (User.IsInRole("SuperStudent"))
                                         {
@@ -126,7 +125,6 @@
                                                 </div>
                                             }
                                         }
-
                                         @if (User.IsInRole("Educator"))
                                         {
                                             <form action="@Url.Action("DeletePublicPdf", "Pdf")" method="post" style="display:inline;"><input type="hidden" name="pdfId" value="@pdf.PdfId"/>
@@ -162,10 +160,10 @@
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
                                             }
-                                            <form action="@Url.Action("CreateTask", "Task")" method="post" style="display:inline;">
-                                                <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
-                                                <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")"/>
-                                                <button type="submit" class="btn btn-primary">Create Task</button>
+                                            <form action="@Url.Action("CreateTask", "Tasks")" method="post" style="display:inline;">
+                                                <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                                                <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")" />
+                                                <button type="submit" class="btn btn-primary">Create Flashcards</button>
                                             </form>
                                         </div>
                                     }
