@@ -14,10 +14,10 @@
         </div>
 
         <div class="table-size-2 bg-table rounded">
-            <table class="table my-4 d-table">
+            <table id="tableId" class="table my-4 d-table">
                 <tbody id="pdfTableBody" class="d-flex flex-column gap-2">
-                <tr class="table-head">
-                    <td class="d-flex mx-3 gap-5 bg-secondary align-items-center rounded text-light">
+                <tr id="tableHead" class="table-head">
+                    <td class="d-xxl-flex d-none mx-3 gap-5 bg-secondary align-items-center rounded text-light">
                         <div style="min-width: 7em">
                             Removed log ID
                         </div>
@@ -35,7 +35,7 @@
                 @foreach (var log in Model)
                 {
                     <tr>
-                        <td class="d-flex mx-3 gap-5 table-primary align-items-center rounded text-light">
+                        <td class="d-flex flex-wrap flex-xxl-nowrap mx-3 gap-lg-5 gap-2 table-primary align-items-center rounded text-light">
                             <div style="min-width: 7em">
                                 @log.RemoveLogId
                             </div>
@@ -57,3 +57,8 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script src="~/js/viewRemovedLogs.js" asp-append-version="true"></script>
+}
