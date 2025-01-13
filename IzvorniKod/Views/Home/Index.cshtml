@@ -11,7 +11,8 @@
 
 @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator") || User.IsInRole("Admin") || User.IsInRole("Reviewer"))
 {
-    <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true" />
     
     <div class="text-center">
         <h1 class="display-4">User</h1>
@@ -52,6 +53,12 @@
 
 @if (User.IsInRole("SuperStudent"))
 {
+    <div id="spinnerOverlay" class="spinner-overlay d-none">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    
     <div class="container mt-4">
         <h2>List of Private and Flagged PDFs</h2>
         <div>
@@ -218,6 +225,12 @@
                         } else {
                             row.style.display = "none";
                         }
+                    });
+                });
+
+                document.querySelectorAll('form[action*="CreateTask"]').forEach(form => {
+                    form.addEventListener('submit', function() {
+                        document.getElementById('spinnerOverlay').classList.remove('d-none');
                     });
                 });
             </text>
