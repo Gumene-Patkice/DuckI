@@ -193,7 +193,6 @@
                         method: 'GET'
                     });
                     const tags = await response.json();
-                    console.log('Fetched tags:', tags);
                     const tagFilter = document.getElementById('tagFilter');
                     tags.forEach(tag => {
                         const option = document.createElement('option');

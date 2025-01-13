@@ -24,15 +24,34 @@ function parseCSV(data) {
     .filter((line) => line.trim() !== "")
     .map((line) => {
       const [date, event] = line.split(",");
-      return { date: new Date(date), event };
-    });
+      const parsedDate = new Date(date.trim());
+      if (isNaN(parsedDate)) {
+        console.error(`Invalid date format: ${date}`);
+        return null;
+      }
+      return { date: normalizeDate(parsedDate), event: event.trim() };
+    })
+    .filter((event) => event !== null);
+}
+
+function normalizeDate(date) {
+  const normalized = new Date(date);
+  normalized.setHours(0, 0, 0, 0);
+  return normalized;
 }
 
 function getCurrentWeekEvents(events, now) {
-  const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Monday
+  const startOfWeek = normalizeDate(new Date(now));
+
+  if (startOfWeek.getDay() === 0) {
+    startOfWeek.setDate(startOfWeek.getDate() - 6);
+  } else {
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1);
+  }
+
   const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6); // Sunday
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  endOfWeek.setHours(23, 59, 59, 999);
 
   return events.filter(
     (event) => event.date >= startOfWeek && event.date <= endOfWeek,
@@ -83,13 +102,6 @@ function renderCurrentWeek(events) {
     dayRow.appendChild(dayEventDiv);
     weekContainer.appendChild(dayRow);
   });
-}
-
-function formatDate(date) {
-  const day = date.getDate();
-  const month = date.getMonth() + 1; // Months are zero-based
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
