@@ -5,7 +5,7 @@
 
 <link rel="stylesheet" href="~/css/controlPanelTags.css" asp-append-version="true">
 
-<div class="container d-flex justify-content-center p-5">
+<div class="container d-flex justify-content-center p-lg-5 p-1">
     <div class="d-flex flex-column justify-content-center gap-4">
         <h1 class="fw-bold text-primary">Admin Control Panel</h1>
         <div class="d-flex flex-row gap-5">
@@ -16,27 +16,25 @@
             </div>
         </div>
 
-        <div class="d-flex flex-row gap-5 align-content-center">
-            <div class="d-flex flex-column gap-xl-5 gap-1">
-                <div class="d-flex flex-row gap-5">
-                    <img src="~/images/stamp-solid.svg" alt="Logo" class="icon p-2"/>
-                    <p class="mt-2">For viewing, accepting or denying applications for roles,<br/>click the button to the right.</p>
-                </div>
-                <div class="d-flex flex-row gap-5">
-                    <img src="~/images/tag-solid.svg" alt="Logo" class="icon p-2"/>
-                    <p class="mt-2">For viewing, adding or removing material tags, click<br/>the button to the right.</p>
-                </div>
-                <div class="d-flex flex-row gap-5">
-                    <img src="~/images/users-viewfinder-solid.svg" alt="Logo" class="icon p-2"/>
-                    <p class="mt-2">For viewing or removing all users, click<br/>the button to the right.</p>
-                </div>
-            </div>
-
-            <div class="d-flex flex-column align-self-center gap-5">
+        <div class="d-flex flex-column gap-5 align-content-center">
+            
+            
+            <div class="d-flex gap-4 align-items-center row-cols-lg-2 row-cols-3">
+                <img src="~/images/stamp-solid.svg" alt="Logo" class="icon p-2"/>
+                <p class="mt-2">For viewing, accepting or denying applications for roles,<br/>click the button to the right.</p>
                 <a href="@Url.Action("BrowseRoleApplications", "Admin")" class="btn btn-primary btn-lg mb-4">View Applicant page</a>
+            </div>
+            <div class="d-flex gap-4 align-items-center row-cols-lg-2 row-cols-3">
+                <img src="~/images/tag-solid.svg" alt="Logo" class="icon p-2"/>
+                <p class="mt-2">For viewing, adding or removing material tags, click<br/>the button to the right.</p>
                 <a href="@Url.Action("Tags", "Admin")" class="btn btn-primary btn-lg mb-4">View Tags page</a>
+            </div>
+            <div class="d-flex gap-4 align-items-center row-cols-lg-2 row-cols-3">
+                <img src="~/images/users-viewfinder-solid.svg" alt="Logo" class="icon p-2"/>
+                <p class="mt-2">For viewing or removing all users, click<br/>the button to the right.</p>
                 <a href="@Url.Action("GetAllUsers", "Admin")" class="btn btn-primary btn-lg mb-4">View All users page</a>
             </div>
+            
         </div>
     </div>
 </div>

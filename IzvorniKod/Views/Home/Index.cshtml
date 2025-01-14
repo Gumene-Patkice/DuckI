@@ -15,7 +15,7 @@
     </div>
 
     <div class="text-center">
-        <h1 class="display-4">User</h1>
+        <h1 class="display-4  text-primary">User</h1>
         <p>Enjoy your stay!</p>
     </div>
 
@@ -177,6 +177,12 @@
         }
 
         <div id="weekEvents" class="container"></div>
+    </div>
+}
+else if (User.IsInRole("Student"))
+{
+    <div class="text-center text-primary">
+        <h1 class="display-4">Welcome To DuckI</h1>
     </div>
 }
 else if (!User.IsInRole("Student"))

@@ -169,20 +169,6 @@ async function renderCalendar() {
         dayCell.style.pointerEvents = "none";
       }
     });
-  } else {
-    const element = document.getElementById("flag-message");
-    if (typeof(element) != 'undefined' && element != null)
-    {
-      element.remove()
-    }
-
-    const msg = document.createElement("h5")
-    msg.setAttribute("id", "flag-message")
-    msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
-    msg.style.color = "orangered";
-    msg.style.display = "block";
-    msg.innerHTML = "Failed to load calendar."
-    document.getElementById("uploadBtn").appendChild(msg)
   }
 }
 
