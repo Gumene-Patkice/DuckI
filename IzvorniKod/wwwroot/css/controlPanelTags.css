@@ -29,7 +29,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 50ch;
+    max-width: 43ch;
     vertical-align: middle;
 }
 
@@ -44,4 +44,18 @@ input::placeholder {
 
 ::-ms-input-placeholder {
     color: #6176e8 !important;
+}
+
+.notification {
+    display: none;
+    color: limegreen;
+}
+
+.msg-animation {
+    animation-name: fade;
+    animation-duration: 1s;
+}
+
+@keyframes fade {
+    from {font-size: 2px}
 }

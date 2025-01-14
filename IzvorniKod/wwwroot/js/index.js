@@ -5,10 +5,9 @@
 async function loadCurrentWeekAndNextEvents() {
   const response = await fetch(`/api/calendars/getcalendar`);
   if (!response.ok) {
-    alert("Failed to fetch calendar.");
     return;
   }
-
+  
   const csvContent = await response.text();
   const events = parseCSV(csvContent);
 

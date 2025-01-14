@@ -142,3 +142,12 @@ p {
         max-width: 93vw;
     }
 }
+
+.msg-animation {
+    animation-name: fade;
+    animation-duration: 1s;
+}
+
+@keyframes fade {
+    from {font-size: 2px}
+}
