@@ -51,7 +51,7 @@ public class HomeController : Controller
         return View();
     }
     
-    [Authorize]
+    [Authorize(Roles="SuperStudent")]
     public IActionResult Tasks()
     {
         return View();
