@@ -120,3 +120,11 @@ document.getElementById('filterButton').addEventListener('click', function() {
         document.getElementById("pdfTableBody").appendChild(msg);
     }
 });
+
+if(document.getElementById("pdfTableBody").childElementCount === 0) {
+    const msg = document.createElement("h2");
+    msg.setAttribute("class", "text-primary");
+    msg.setAttribute("id", "no-pdf");
+    msg.innerHTML = "No PDFs available";
+    document.getElementById("pdfTableBody").appendChild(msg);
+}
