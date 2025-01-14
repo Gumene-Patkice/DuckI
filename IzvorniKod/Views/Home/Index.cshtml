@@ -5,15 +5,15 @@
     var uploadSuccess = TempData["UploadSuccess"] as bool?;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome To DuckI</h1>
-</div>
-
 @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator") || User.IsInRole("Admin") || User.IsInRole("Reviewer"))
 {
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true" />
     
+   <div class="text-center text-primary">
+        <h1 class="display-4">Welcome To DuckI</h1>
+    </div>
+   
     @if (User.IsInRole("SuperStudent"))
     {
         <div id="spinnerOverlay" class="spinner-overlay d-none">
@@ -24,7 +24,7 @@
     }
     
     <div class="text-center">
-        <h1 class="display-4">User</h1>
+        <h1 class="display-4  text-primary">User</h1>
         <p>Enjoy your stay!</p>
     </div>
 
@@ -59,7 +59,7 @@
                     </div>
                 }
 
-                <div class="d-flex gap-3 align-items-center">
+                <div id="sortBtn" class="d-flex gap-3 align-items-center">
                     <p class="text-break align-self-center mt-2">Sort the PDFs alphabetically</p>
                     <button id="sortButton" class="btn btn-primary align-self-center">Sort</button>
                 </div>
@@ -188,6 +188,37 @@
         <div id="weekEvents" class="container"></div>
     </div>
 }
+else if (User.IsInRole("Student"))
+{
+    <div class="text-center text-primary">
+        <h1 class="display-4">Welcome To DuckI</h1>
+    </div>
+}
+else if (!User.IsInRole("Student"))
+{
+    <div class="d-flex flex-lg-row flex-column gap-5">
+        <div class="bg-primary w-25 p-2 align-self-center text-center" style="border-radius: 40px">
+            <img src="~/images/duck.png" class="w-75" alt="DuckI">
+        </div>
+        <div class="d-flex gap-4 flex-column ms-5 align-self-center">
+            <span>
+                <h3 class="text-primary">Welcome to DuckI!</h3>
+                <h4>An app made for students, by students.</h4>
+            </span>
+            <span>
+                <p>In this app you can:</p>
+                <ul>
+                    <li>Upload PDFs: Easily upload your study materials in the form of <br/>PDFs</li>
+                    <li>Create Flashcards: Turn your PDFs into flashcards to learn and <br/>review effectively</li>
+                    <li>Organize Your School Life: Upload your school calendar and <br/>
+                        create personalized events to sty on top of your schedule.</li>
+                    <li>Access Public Materials: Explore and download a wide range of <br/>public
+                        resources shard by the DuckI community.</li>
+                </ul>
+            </span>
+        </div>
+    </div>
+}
 
 @section Scripts {
     <script src="~/js/index.js" asp-append-version="true"></script>
@@ -271,7 +302,21 @@
         // check if the calendar is succesfully uploaded
         @if (uploadSuccess == true)
         {
-            <text>alert('File successfully updated!');</text>
+            <text>
+                const element = document.getElementById("flag-message");
+                if (typeof(element) != 'undefined' && element != null)
+                {
+                    element.remove()
+                }
+
+                const msg = document.createElement("span")
+                msg.setAttribute("id", "flag-message")
+                msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+                msg.style.color = "green";
+                msg.style.display = "block";
+                msg.innerHTML = "File successfully uploaded!"
+                document.getElementById("sortBtn").appendChild(msg)
+            </text>
         }
 
         // for unflagging for SuperStudents
@@ -290,7 +335,7 @@
                         if (response.ok) {
                             location.reload();
                         } else {
-                            alert('Failed to unflag the PDF.');
+                            
                             location.reload();
                         }
                     });

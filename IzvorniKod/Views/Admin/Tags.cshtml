@@ -1,3 +1,4 @@
+@using Org.BouncyCastle.Tls
 @{
     ViewData["Title"] = "Tags";
     var tagStatus = TempData["TagAdded"] as bool?;
@@ -23,11 +24,15 @@
                 <label for="tagName">To add tags, enter the name below and click <span class="text-primary">Add</span>:</label>
                 <input type="text" class="form-control form-bg-color" id="tagName" name="tagName" placeholder="Tag name" required />
             </div>
-            <button type="submit" class="btn btn-primary mt-4">Add Tag</button>
+            <button id="formSubmit" type="submit" class="btn btn-primary mt-4">Add Tag</button>
         </form>
         
-        <form asp-action="GetAllTags" asp-controller="Admin" method="post" class="mt-lg-3 mt-0">
+        <form asp-action="GetAllTags" asp-controller="Admin" method="post" class="d-flex gap-3 align-items-center mt-lg-3 mt-0">
             <button type="submit" class="btn btn-primary btn-lg">Show all tags</button>
+            @if (tagStatus == true)
+            {
+                <p id="notification" class="fw-bold d-block notification msg-animation">Tag successfully added!</p>
+            }
         </form>
 
         @if (ViewBag.Tags != null)
@@ -41,13 +46,6 @@
                     }
                 </ul>
             </div>
-        }
-
-        @if (tagStatus == true)
-        {
-            <script>
-        alert('Successfully added tag!');
-    </script>
         }
         
     </div>
