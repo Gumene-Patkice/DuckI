@@ -1,4 +1,14 @@
-﻿.row {
+﻿.container:has(> main:first-child) {
+    margin: 0 1vw 0;
+    padding: 0;
+    max-width: fit-content;
+}
+
+main {
+    width: auto;
+}
+
+.row {
     margin: 0;
 }
 
@@ -15,8 +25,27 @@ p {
     font-size: 0.9rem;
 }
 
+#site-div {
+    width: auto;
+}
+
+#left-div {
+    width: 25%;
+}
+
+#eventForm {
+    width: 100%;
+}
+
 #calendarContainer {
-    padding: 0;
+    width: auto;
+    margin: 0;
+    min-width: 70vw;
+    padding: 0 .75rem 0;
+}
+
+#monthLabel {
+    text-align: center;
 }
 
 .btn-primary {
@@ -27,9 +56,21 @@ p {
 
 .day-cell {
     width: 100%;
-    height: 100px;
+    height: 15vh;
     overflow: hidden;
     position: relative;
+    background-color: #f5f5f5;
+}
+
+.day-cell:has(.plus-sign):hover {
+    background-color: #e8f5e9;
+    cursor: pointer;
+}
+
+.day-cell .plus-sign {
+    font-size: 2.25em;
+    color: black;
+    pointer-events: none;
 }
 
 .day-placeholder {
@@ -39,7 +80,7 @@ p {
 
 /* container eventa u kalendaru */
 .event-container {
-    max-height: 60px;
+    max-height: 75%;
     width: 100%;
     background-color: #5172FF;
     border-radius: 5px;
@@ -47,6 +88,7 @@ p {
 
 /* event u daycell-u */
 .event-text {
+    position: relative;
     font-size: 1.1em;
     white-space: normal;
     overflow-wrap: break-word;
@@ -54,34 +96,49 @@ p {
     color: white;
     width: 98%;
     text-align: center;
-    max-height: 60px;
+    /*max-height: 100px;*/
     overflow-y: auto;
+    padding: 5px;
+    pointer-events: auto;
 }
 
-/* trenutacno ne koristim */
-.event-dot {
-    width: 10px;
-    height: 10px;
-    background-color: red;
-    border-radius: 50%;
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-}
-
-/* trenutacno ne koristim */
-/* event iz popisa eventova */
-.event-item {
-    padding: 6px;
+#eventForm {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
     background-color: #5172FF;
-    border: gray solid thin;
-    border-radius: 10px;
-    font-size: large;
-    font-weight: bold;
 }
 
-/* trenutacno ne koristim */
-/* popis eventova */
-#eventList {
-    margin-top: 20px;
+#showFormButton {
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 0.8em;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+    #site-div {
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+    }
+    
+    #left-div {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        width: 100%;
+    }
+    
+    .row {
+        width: 93vw;
+        max-width: 93vw;
+    }
 }

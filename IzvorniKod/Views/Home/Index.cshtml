@@ -11,185 +11,179 @@
 
 @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator") || User.IsInRole("Admin") || User.IsInRole("Reviewer"))
 {
-    <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
-    
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true" />
+
     <div class="text-center">
         <h1 class="display-4">User</h1>
         <p>Enjoy your stay!</p>
     </div>
-    <div class="text-center">
-        <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
-    </div>
-    <div class="text-center">
-        <button id="fetchCalendarButton" class="btn btn-primary mt-3">Fetch Calendar</button>
-    </div>
 
-    <!-- Calendar Container -->
-    <div id="calendarContainer" class="container mt-3" style="display:none;">
-        <div class="d-flex justify-content-between mb-2">
-            <button id="prevMonthButton" class="btn btn-primary">Previous Month</button>
+    <div id="main-container" class="container justify-content-between gap-4 d-flex pt-4 row-cols-2">
+        @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator"))
+        {
+            <div id="pdf-container" class="container">
+                @if (User.IsInRole("SuperStudent"))
+                {
+                    <h2>List of your Private and Flagged PDFs</h2>
+                }
+                @if (User.IsInRole("Educator"))
+                {
+                    <h2>List of your Public PDFs</h2>
+                }
 
-            <span id="monthLabel" class="d-flex align-items-center justify-content-center" style="font-size: 1.2em;"></span>
+                <div id="filter-container" class="d-flex gap-3">
+                    <p class="text-break mt-2">Filter by tag to find exactly what you need</p>
+                    <div class="d-flex w-25 row-cols-4">
+                        <select id="tagFilter" class="form-control form-bg-color align-self-center">
+                            <option value="">All tags</option>
+                        </select>
+                        <button id="filterButton" class="btn btn-primary align-self-center">Filter</button>
+                    </div>
+                </div>
 
-            <button id="nextMonthButton" class="btn btn-primary">Next Month</button>
-        </div>
+                @if (User.IsInRole("Educator"))
+                {
+                    <div class="d-flex gap-3 align-items-center">
+                        <p class="text-break align-self-center mt-2">View removed PDFs</p>
+                        <a href="@Url.Action("ViewRemovedLogs", "Pdf")" class="btn btn-secondary align-self-center">View</a>
+                    </div>
+                }
 
-        <!-- Days of the week headers -->
-        <div class="row text-center">
-            <div class="col">MON</div>
-            <div class="col">TUE</div>
-            <div class="col">WED</div>
-            <div class="col">THU</div>
-            <div class="col">FRI</div>
-            <div class="col">SAT</div>
-            <div class="col">SUN</div>
-        </div>
+                <div class="d-flex gap-3 align-items-center">
+                    <p class="text-break align-self-center mt-2">Sort the PDFs alphabetically</p>
+                    <button id="sortButton" class="btn btn-primary align-self-center">Sort</button>
+                </div>
 
-        <!-- Calendar grid using Bootstrap row-cols-7 -->
-        <div id="calendarGrid" class="row row-cols-7 g-0"></div>
+                <div class="bg-table rounded">
+                    <table class="table my-4 d-table">
+                        <tbody id="pdfTableBody" class="d-flex flex-column gap-2">
+                        @foreach (var pdf in Model)
+                        {
+                            <tr>
+                                <td class="d-flex flex-column mx-3 my-2 gap-0 table-primary align-items-center rounded text-light" style="min-height: 4.5em">
+                                    <div class="d-flex mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
+                                        <form action="@(pdf.IsPublic ? Url.Action("OpenPublicPdf", "Pdf") : Url.Action("OpenPrivatePdf", "Pdf"))" method="post" target="_blank">
+                                            <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                            <button type="submit" class="btn-link name-size-1 table-primary text-light border-0">@pdf.PdfName</button>
+                                        </form>
+                                        <div class="d-flex gap-0 bg-light text-primary rounded align-items-center">
+                                            <img src="~/images/tag-solid.svg" alt="Logo" class="icon3 p-1"/>
+                                            <div id="tag-name" class="name-size-3">@pdf.TagName</div>
+                                        </div>
+                                    </div>
+                                    <div class="mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
+                                        @if (User.IsInRole("SuperStudent"))
+                                        {
+                                            <div id="pdf-author" class="name-size-2 text-center">
+                                                @(pdf.IsPublic ? pdf.EducatorUsername : "You")
+                                            </div>
+                                        }
+                                        <div>@(pdf.IsPublic ? "Public" : "Private")</div>
+                                        @if (pdf.Rating > 0)
+                                        {
+                                            @if (User.IsInRole("SuperStudent"))
+                                            {
+                                                <div id="rating-1" class="element-width2 positive-rating fw-bold">
+                                                    +@pdf.Rating
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div id="rating-1" class="element-width2 positive-rating fw-bold w-100">
+                                                    +@pdf.Rating
+                                                </div>
+                                            }
+                                        }
+                                        else if (pdf.Rating == 0)
+                                        {
+                                            @if (User.IsInRole("SuperStudent"))
+                                            {
+                                                <div id="rating-1" class="element-width2 positive-rating fw-bold">
+                                                    @pdf.Rating
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div id="rating-1" class="element-width2 positive-rating fw-bold w-100">
+                                                    @pdf.Rating
+                                                </div>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @if (User.IsInRole("SuperStudent"))
+                                            {
+                                                <div id="rating-2" class="element-width2 negative-rating fw-bold">
+                                                    @pdf.Rating
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div id="rating-2" class="element-width2 negative-rating fw-bold w-100">
+                                                    @pdf.Rating
+                                                </div>
+                                            }
+                                        }
+                                        @if (User.IsInRole("Educator"))
+                                        {
+                                            <form action="@Url.Action("DeletePublicPdf", "Pdf")" method="post" style="display:inline;"><input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        }
+                                    </div>
+
+                                    @if (User.IsInRole("SuperStudent"))
+                                    {
+                                        <div class="mx-3 gap-4 align-items-center rounded text-light" style="min-height: 3em">
+                                            @if (pdf.IsPublic)
+                                            {
+                                                <form class="unflag-form" data-pdf-id="@pdf.PdfId" style="display:inline;">
+                                                    <input type="hidden" name="publicPdfId" value="@pdf.PdfId"/>
+                                                    <button type="submit" class="btn btn-danger">Unflag</button>
+                                                </form>
+                                                <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
+                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                                    <input type="hidden" name="isUpvote" value="true"/>
+                                                    <button type="submit" class="btn btn-success">Upvote</button>
+                                                </form>
+                                                <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
+                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                                    <input type="hidden" name="isUpvote" value="false"/>
+                                                    <button type="submit" class="btn btn-warning">Downvote</button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form action="@Url.Action("DeletePrivatePdf", "Pdf")" method="post" style="display:inline;">
+                                                    <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            }
+                                            <form action="@Url.Action("CreateTask", "Tasks")" method="post" style="display:inline;">
+                                                <input type="hidden" name="pdfId" value="@pdf.PdfId" />
+                                                <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")" />
+                                                <button type="submit" class="btn btn-primary">Create Flashcards</button>
+                                            </form>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <div id="weekEvents" class="container"></div>
     </div>
 }
 
-@if (User.IsInRole("SuperStudent"))
-{
-    <div class="container mt-4">
-        <h2>List of Private and Flagged PDFs</h2>
-        <div>
-            <select id="tagFilter" class="form-control">
-                <option value="">All Tags</option>
-            </select>
-            <button id="filterButton" class="btn btn-primary mt-2">Filter</button>
-        </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>PDF Name</th>
-                <th>Uploaded by</th>
-                <th>Rating</th>
-                <th>Tag Name</th>
-                <th>Type</th>
-                <th>Actions</th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody id="pdfTableBody">
-            @foreach (var pdf in Model)
-            {
-                <tr>
-                    <td>
-                        <form action="@(pdf.IsPublic ? Url.Action("OpenPublicPdf", "Pdf") : Url.Action("OpenPrivatePdf", "Pdf"))" method="post" target="_blank">
-                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                            <button type="submit" class="btn-link">@pdf.PdfName</button>
-                        </form>
-                    </td>
-                    <td>@(pdf.IsPublic ? pdf.EducatorUsername : "You" )</td>
-                    <td>@pdf.Rating</td>
-                    <td>@pdf.TagName</td>
-                    <td>@(pdf.IsPublic ? "Public" : "Private")</td>
-                    @if (pdf.IsPublic)
-                    {
-                        <td>
-                            <form class="unflag-form" data-pdf-id="@pdf.PdfId" style="display:inline;">
-                                <input type="hidden" name="publicPdfId" value="@pdf.PdfId" />
-                                <button type="submit" class="btn btn-danger">Unflag</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
-                                <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                                <input type="hidden" name="isUpvote" value="true" />
-                                <button type="submit" class="btn btn-success">Upvote</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
-                                <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                                <input type="hidden" name="isUpvote" value="false" />
-                                <button type="submit" class="btn btn-warning">Downvote</button>
-                            </form>
-                        </td>
-                    }
-                    else
-                    {
-                    <td>
-                        <form action="@Url.Action("DeletePrivatePdf", "Pdf")" method="post" style="display:inline;">
-                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                    }
-                    <td>
-                        <form action="@Url.Action("CreateTask", "Tasks")" method="post" style="display:inline;">
-                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                            <input type="hidden" name="isPublic" value="@(pdf.IsPublic ? "true" : "false")" />
-                            <button type="submit" class="btn btn-primary">Create Flashcards</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-}
-
-@if (User.IsInRole("Educator"))
-{
-    <div class="container mt-4">
-        <h2>List of Your Pdfs</h2>
-        <div>
-            <select id="educatorTagFilter" class="form-control">
-                <option value="">All Tags</option>
-            </select>
-            <button id="educatorFilterButton" class="btn btn-primary mt-2">Filter</button>
-        </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>PDF Name</th>
-                <th>Rating</th>
-                <th>Tag Name</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody id="educatorPdfTableBody">
-            @foreach (var pdf in Model)
-            {
-                <tr>
-                    <td>
-                        <form action="@Url.Action("OpenPublicPdf", "Pdf")" method="post" target="_blank">
-                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                            <button type="submit" class="btn-link">@pdf.PdfName</button>
-                        </form>
-                    </td>
-                    <td>@pdf.Rating</td>
-                    <td>@pdf.TagName</td>
-                    <td>
-                        <form action="@Url.Action("DeletePublicPdf", "Pdf")" method="post" style="display:inline;">
-                            <input type="hidden" name="pdfId" value="@pdf.PdfId" />
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-}
-
-@*
-<!-- Delete Event Button Example for Frontend team-->
-<div class="text-center">
-    <button id="deleteEventButton" class="btn btn-primary mt-3">Delete Event</button>
-</div>
-*@
-
-@* This script attaches getcalendar route to the fetch calendar button and changes content of calendarContent div *@
 @section Scripts {
     <script src="~/js/index.js" asp-append-version="true"></script>
     <script>
-        @if (User.IsInRole("SuperStudent"))
+        @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator"))
         {
             <text>
                 document.addEventListener('DOMContentLoaded', async function() {
@@ -197,7 +191,6 @@
                         method: 'GET'
                     });
                     const tags = await response.json();
-                    console.log('Fetched tags:', tags); 
                     const tagFilter = document.getElementById('tagFilter');
                     tags.forEach(tag => {
                         const option = document.createElement('option');
@@ -206,13 +199,17 @@
                         tagFilter.appendChild(option);
                     });
                 });
-            
+
                 document.getElementById('filterButton').addEventListener('click', function() {
+                    if (document.getElementById("no-pdf")) {
+                        document.getElementById("no-pdf").remove();
+                    }
+                    
                     const selectedTag = document.getElementById('tagFilter').value.toLowerCase();
                     const rows = document.querySelectorAll('#pdfTableBody tr');
 
                     rows.forEach(row => {
-                        const tagName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                        const tagName = row.querySelector('.name-size-3').textContent.toLowerCase().trim();
                         if (selectedTag === "" || tagName === selectedTag) {
                             row.style.display = "";
                         } else {
@@ -220,48 +217,54 @@
                         }
                     });
                 });
-            </text>
-        }
-        @if (User.IsInRole("Educator"))
-        {
-            <text>
-                document.addEventListener('DOMContentLoaded', async function() {
-                    const response = await fetch('/Pdf/GetAllTags', {
-                        method: 'GET'
-                    });
-                    const tags = await response.json();
-                    console.log('Fetched tags:', tags);
-                    const tagFilter = document.getElementById('educatorTagFilter');
-                    tags.forEach(tag => {
-                        const option = document.createElement('option');
-                        option.value = tag.tagName;
-                        option.textContent = tag.tagName;
-                        tagFilter.appendChild(option);
-                    });
-                });
 
-                document.getElementById('educatorFilterButton').addEventListener('click', function() {
-                    const selectedTag = document.getElementById('educatorTagFilter').value.toLowerCase();
-                    const rows = document.querySelectorAll('#educatorPdfTableBody tr');
-
-                    rows.forEach(row => {
-                        const tagName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                        if (selectedTag === "" || tagName === selectedTag) {
-                            row.style.display = "";
-                        } else {
-                            row.style.display = "none";
+                document.getElementById("sortButton").addEventListener("click", function () {
+                    var table, rows, switching, i, x, y, shouldSwitch;
+                    table = document.getElementById("pdfTableBody");
+                    switching = true;
+                    while (switching) {
+                        switching = false;
+                        rows = table.rows;
+                        for (i = 0; i < (rows.length - 1); i++) {
+                            shouldSwitch = false;
+                            x = rows[i].getElementsByTagName("TD")[0].querySelector('form:nth-child(1)').querySelector("button").innerText.trim().toLowerCase();
+                            y = rows[i + 1].getElementsByTagName("TD")[0].querySelector('form:nth-child(1)').querySelector("button").innerText.trim().toLowerCase();
+                            if (x > y) {
+                                shouldSwitch = true;
+                                break;
+                            }
                         }
-                    });
+                        if (shouldSwitch) {
+                            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                            switching = true;
+                        }
+                    }
+                });
+
+                document.getElementById('filterButton').addEventListener('click', function() {
+                    var a = document.querySelectorAll("#pdfTableBody tr");
+                    let count = 0;
+                    for (let b of a) {
+                        if (b.style.display !== "none")
+                            count++;
+                    }
+                    if (count === 0) {
+                        const msg = document.createElement("h2");
+                        msg.setAttribute("class", "text-primary");
+                        msg.setAttribute("id", "no-pdf");
+                        msg.innerHTML = "No PDFs available";
+                        document.getElementById("pdfTableBody").appendChild(msg);
+                    }
                 });
             </text>
         }
-                
+
         // check if the calendar is succesfully uploaded
         @if (uploadSuccess == true)
         {
             <text>alert('File successfully updated!');</text>
         }
-        
+
         // for unflagging for SuperStudents
         @if (User.IsInRole("SuperStudent"))
         {
@@ -282,29 +285,8 @@
                             location.reload();
                         }
                     });
-                });        
-            </text>
-        }   
-        @*
-        // Example of using the delete route (same for add route) for frontend team
-        document.getElementById('deleteEventButton').addEventListener('click', async function() {
-            const eventDate = prompt("Enter event date (YYYY-MM-DD):");
-            const eventDescription = prompt("Enter event description:");
-
-            if (eventDate && eventDescription) {
-                const response = await fetch(`/api/calendars/deleteevent?eventDate=${encodeURIComponent(eventDate)}&eventDescription=${encodeURIComponent(eventDescription)}`, {
-                    method: 'DELETE'
                 });
-
-                if (response.ok) {
-                    alert('Event deleted successfully.');
-                } else {
-                    alert('Failed to delete event.');
-                }
-            } else {
-                alert('Event date and description are required.');
-            }
-        });
-        *@
+            </text>
+        }
     </script>
 }

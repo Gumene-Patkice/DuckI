@@ -2,12 +2,21 @@
     ViewData["Title"] = "Upload Calendar";
 }
 
-<h2>Upload Calendar</h2>
+<link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true">
 
-<form asp-action="UploadCalendar" asp-controller="Home" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="file">Choose CSV file</label>
-        <input type="file" name="file" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Upload</button>
-</form>
+<div class="d-flex flex-column justify-content-center align-items-center gap-4">
+    <h2 class="text-primary fw-bold align-self-center">Upload Calendar</h2>
+
+    <form class="d-flex flex-column gap-3" asp-action="UploadCalendar" asp-controller="Home" method="post" enctype="multipart/form-data">
+        <div class="d-flex flex-row gap-4 align-items-center">
+            <img src="~/images/folder-solid.svg" alt="Logo" class="icon"/>
+            <p class="mt-2">For uploading a .csv file of your calendar.</p>
+        </div>
+        <div class="form-group d-flex flex-column gap-2">
+            <label for="file">Choose CSV file</label>
+            <input type="file" id="file" name="file" class="form-control"/>
+        </div>
+        <button type="submit" class="btn btn-primary w-25">Upload</button>
+    </form>
+</div>
+
