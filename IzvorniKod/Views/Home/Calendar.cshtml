@@ -7,47 +7,80 @@
 
 <link rel="stylesheet" href="~/css/calendar.css" asp-append-version="true"/>
 
-<h2>Upload Your Calendar</h2>
-<p>Have a calendar in CSV format ready to go? Click the button below to visit our upload page, where you can easily integrate your events into our calendar system.</p>
-<p>The upload process is quick and simple, allowing you to bring your important dates to life in just a few clicks. Ensure your file includes event details in the correct format for a seamless experience.</p>
+<div id="site-div" class="d-flex gap-4">
+    <div id="left-div" class="container-fluid">
+        <h2>Upload Your Calendar</h2>
+        
+        <p>Have a calendar in CSV format ready to go? Click the button below to visit our upload page, where you can easily integrate your events into our calendar system.</p>
+        <p>The upload process is quick and simple, allowing you to bring your important dates to life in just a few clicks. Ensure your file includes event details in the correct format for a seamless experience.</p>
 
-<div class="text-start">
-    <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
-</div>
-
-<h2 class="mt-3">My Calendar</h2>
-<p>View and interact with your calendar below. Use the navigation buttons to switch between months.</p>
-
-<!-- Calendar Container -->
-<div id="calendarContainer" class="container mt-1" style="display:none;">
-    <div class="d-flex justify-content-between mb-2">
-        <button id="prevMonthButton" class="btn btn-primary">Previous Month</button>
-
-        <span id="monthLabel" class="d-flex align-items-center justify-content-center" style="font-size: 1.2em;"></span>
-
-        <button id="nextMonthButton" class="btn btn-primary">Next Month</button>
+        <div id="uploadBtn" class="d-flex gap-4 align-items-center text-start">
+            <button onclick="window.location.href='@Url.Action("UploadCalendar", "Home")'" class="btn btn-primary">Upload Calendar</button>
+        </div>
+        
+        <div id="eventForm" class="mt-3" style="display: none;">
+            <h4 class="text-light">Add New Event</h4>
+            <form id="createEventForm">
+                <div class="mb-3">
+                    <label for="eventDate" class="form-label text-light">Date</label>
+                    <input type="date" class="form-control" id="eventDate" required disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="eventDescription" class="form-label text-light">Event Description</label>
+                    <input type="text" class="form-control" id="eventDescription" required>
+                </div>
+                <button type="button" class="btn btn-danger text-light" id="cancelEventForm">Cancel</button>
+                <button type="submit" class="btn btn-success text-light">Create</button>
+            </form>
+        </div>
     </div>
+    
+    <div id="calendarContainer" class="container mt-1">
+        <div class="d-flex justify-content-between mb-2">
+            <button id="prevMonthButton" class="btn btn-primary">Previous Month</button>
 
-    <!-- Days of the week headers -->
-    <div class="row text-center">
-        <div class="col">Mon</div>
-        <div class="col">Tue</div>
-        <div class="col">Wed</div>
-        <div class="col">Thu</div>
-        <div class="col">Fri</div>
-        <div class="col">Sat</div>
-        <div class="col">Sun</div>
+            <span id="monthLabel" class="d-flex align-items-center justify-content-center" style="font-size: 1.2em;"></span>
+
+            <button id="nextMonthButton" class="btn btn-primary">Next Month</button>
+        </div>
+
+        <!-- Days of the week headers -->
+        <div class="row text-center">
+            <div class="col">Mon</div>
+            <div class="col">Tue</div>
+            <div class="col">Wed</div>
+            <div class="col">Thu</div>
+            <div class="col">Fri</div>
+            <div class="col">Sat</div>
+            <div class="col">Sun</div>
+        </div>
+
+        <!-- Calendar grid using Bootstrap row-cols-7 -->
+        <div id="calendarGrid" class="row row-cols-7 g-0"></div>
     </div>
-
-    <!-- Calendar grid using Bootstrap row-cols-7 -->
-    <div id="calendarGrid" class="row row-cols-7 g-0"></div>
 </div>
 
 @section Scripts
 {
     <script src="~/js/calendar.js" asp-append-version="true"></script>
-    @if (uploadSuccess == true)
-    {
-        <text>alert('File successfully updated!');</text>
-    }
+    <script>
+        @if (uploadSuccess == true)
+        {
+            <text>
+                const element = document.getElementById("flag-message")
+                if (typeof(element) != 'undefined' && element != null)
+                {
+                    element.remove()
+                }
+
+                const msg = document.createElement("span")
+                msg.setAttribute("id", "flag-message")
+                msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+                msg.style.color = "green";
+                msg.style.display = "block";
+                msg.innerHTML = "File successfully uploaded!"
+                document.getElementById("uploadBtn").appendChild(msg)
+            </text>
+        }
+    </script>
 }
