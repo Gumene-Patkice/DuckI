@@ -5,7 +5,21 @@
 async function loadCurrentWeekAndNextEvents() {
   const response = await fetch(`/api/calendars/getcalendar`);
   if (!response.ok) {
-    alert("Failed to fetch calendar.");
+
+    const element = document.getElementById("flag-message");
+    if (typeof(element) != 'undefined' && element != null)
+    {
+      element.remove()
+    }
+
+    const msg = document.createElement("h5")
+    msg.setAttribute("id", "flag-message")
+    msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+    msg.style.color = "orangered";
+    msg.style.display = "block";
+    msg.innerHTML = "Failed to load calendar."
+    document.getElementById("weekEvents").appendChild(msg)
+    
     return;
   }
 

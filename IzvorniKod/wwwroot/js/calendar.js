@@ -32,15 +32,52 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "POST",
         },
       );
+      const element = document.getElementById("flag-message");
       if (response.ok) {
-        alert("Event created successfully!");
+        if (typeof(element) != 'undefined' && element != null)
+        {
+          element.remove()
+        }
+        
+        const msg = document.createElement("span")
+        msg.setAttribute("id", "flag-message")
+        msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+        msg.style.color = "green";
+        msg.style.display = "block";
+        msg.innerHTML = "Event created successfully!"
+        document.getElementById("uploadBtn").appendChild(msg)
+        
         renderCalendar();
         eventForm.style.display = "none";
       } else {
-        alert("Failed to create event.");
+        if (typeof(element) != 'undefined' && element != null)
+        {
+          element.remove()
+        }
+
+        const msg = document.createElement("span")
+        msg.setAttribute("id", "flag-message")
+        msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+        msg.style.color = "orangered";
+        msg.style.display = "block";
+        msg.innerHTML = "Failed to create event."
+        document.getElementById("uploadBtn").appendChild(msg)
+        
       }
     } else {
-      alert("Both date and description are required.");
+      const element = document.getElementById("flag-message");
+      if (typeof(element) != 'undefined' && element != null)
+      {
+        element.remove()
+      }
+
+      const msg = document.createElement("span")
+      msg.setAttribute("id", "flag-message")
+      msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+      msg.style.color = "orangered";
+      msg.style.display = "block";
+      msg.innerHTML = "Both date and description are required."
+      document.getElementById("uploadBtn").appendChild(msg)
     }
   });
 
@@ -133,7 +170,19 @@ async function renderCalendar() {
       }
     });
   } else {
-    alert("Failed to fetch calendar.");
+    const element = document.getElementById("flag-message");
+    if (typeof(element) != 'undefined' && element != null)
+    {
+      element.remove()
+    }
+
+    const msg = document.createElement("h5")
+    msg.setAttribute("id", "flag-message")
+    msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+    msg.style.color = "orangered";
+    msg.style.display = "block";
+    msg.innerHTML = "Failed to load calendar."
+    document.getElementById("uploadBtn").appendChild(msg)
   }
 }
 
@@ -168,12 +217,38 @@ function addDeleteEventButton(dayCell, eventDate, eventDescription) {
       )}&eventDescription=${encodeURIComponent(eventDescription.trim())}`,
       { method: "DELETE" },
     );
+    const element = document.getElementById("flag-message");
     if (response.ok) {
-      alert("Event deleted successfully.");
+      
+      if (typeof(element) != 'undefined' && element != null)
+      {
+        element.remove()
+      }
+
+      const msg = document.createElement("span")
+      msg.setAttribute("id", "flag-message")
+      msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+      msg.style.color = "green";
+      msg.style.display = "block";
+      msg.innerHTML = "Event deleted successfully."
+      document.getElementById("uploadBtn").appendChild(msg)
+      
       dayCell.classList.remove("has-event");
       renderCalendar();
     } else {
-      alert("Failed to delete event.");
+      if (typeof(element) != 'undefined' && element != null)
+      {
+        element.remove()
+      }
+
+      const msg = document.createElement("span")
+      msg.setAttribute("id", "flag-message")
+      msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
+      msg.style.color = "orangered";
+      msg.style.display = "block";
+      msg.innerHTML = "Failed to delete event."
+      document.getElementById("uploadBtn").appendChild(msg)
+      
     }
   });
 
