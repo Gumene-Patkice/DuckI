@@ -137,28 +137,37 @@ document.addEventListener("DOMContentLoaded", function () {
   const currentTasks = document.getElementById("currenttasks");
   const allTasks = document.getElementById("alltasks");
 
-  // Fetch and display flashcards
   getAllFlashcards()
     .then((flashcards) => {
       if (flashcards && flashcards.length > 0) {
         const groupedFlashcards = groupFlashcardsByTitle(flashcards);
         renderGroupedFlashcards(groupedFlashcards, allTasks);
-      } else {
-        currentTasks.innerHTML = "No flashcards selected or generated.";
       }
     })
     .catch((error) => {
       console.error("Error fetching flashcards:", error);
-      currentTasks.innerHTML = "Failed to load flashcards.";
     });
 
   var response =
     typeof viewBagResponse !== "undefined" ? viewBagResponse : null;
 
-  if (response && response.Flashcards && response.Flashcards.length > 0) {
-    renderFlashcards(response.Flashcards, currentTasks);
+  if (response && response.Flashcards.flashcards) {
+    if (
+      response &&
+      response.Flashcards &&
+      response.Flashcards.flashcards &&
+      response.Flashcards.flashcards.length > 0
+    ) {
+      renderFlashcards(response.Flashcards.flashcards, currentTasks);
+    } else {
+      currentTasks.innerHTML = "No flashcards selected or generated.";
+    }
   } else {
-    currentTasks.innerHTML = "No flashcards selected or generated.";
+    if (response && response.Flashcards && response.Flashcards.length > 0) {
+      renderFlashcards(response.Flashcards, currentTasks);
+    } else {
+      currentTasks.innerHTML = "No flashcards selected or generated.";
+    }
   }
 });
 
