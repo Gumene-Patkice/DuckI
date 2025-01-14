@@ -55,6 +55,8 @@ public class ManageUsersController : Controller
 
         // YOU COULD ADD FORCE LOGOUT HERE, DELETE THIS COMMENT LATER LEO
         // (you can also add it somewhere else)
-        return Ok("User data deleted successfully.");
+        //return Ok("User data deleted successfully.");
+        var users = await _manageUsersService.GetAllUsersAsync();
+        return View("/Views/Admin/DeleteUsers.cshtml", users);
     }
 }
