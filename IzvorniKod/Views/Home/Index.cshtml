@@ -13,7 +13,16 @@
 {
     <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true" />
-
+    
+    @if (User.IsInRole("SuperStudent"))
+    {
+        <div id="spinnerOverlay" class="spinner-overlay d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    }
+    
     <div class="text-center">
         <h1 class="display-4">User</h1>
         <p>Enjoy your stay!</p>
@@ -284,6 +293,12 @@
                             alert('Failed to unflag the PDF.');
                             location.reload();
                         }
+                    });
+                });
+
+                document.querySelectorAll('form[action*="CreateTask"]').forEach(form => {
+                    form.addEventListener('submit', function() {
+                        document.getElementById('spinnerOverlay').classList.remove('d-none');
                     });
                 });
             </text>

@@ -149,6 +149,8 @@ h3 {
     cursor: pointer;
     transition: transform 0.3s ease;
     font-size: 0;
+    background-color: #5271ff;
+    border-radius: 5px;
 }
 
 .star-icon:hover {
@@ -255,5 +257,9 @@ p {
     svg {
         width: 15px;
         height: 15px;
+    }
+
+    p {
+        font-size: small;
     }
 }
