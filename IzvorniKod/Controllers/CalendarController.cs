@@ -35,6 +35,24 @@ public class CalendarController : ControllerBase
 
         if (fileBytes == null)
         {
+            var defaultCsvContent = "1990-01-01,ThisEventHereWasAddedByDuckITeamSoThatYourCalendarCouldWork";
+            var defaultCalendarBytes = System.Text.Encoding.UTF8.GetBytes(defaultCsvContent);
+
+            using (var stream = new MemoryStream(defaultCalendarBytes))
+            {
+                var formFile = new FormFile(stream, 0, defaultCalendarBytes.Length, "default_calendar", "default_calendar.csv")
+                {
+                    Headers = new HeaderDictionary(),
+                    ContentType = "text/csv"
+                };
+                await _calendarService.UploadCalendarAsync(formFile, userId);
+            }
+
+            fileBytes = await _calendarService.GetCalendarAsync(userId);
+        }
+
+        if (fileBytes == null)
+        {
             return NotFound("Calendar not found.");
         }
 
