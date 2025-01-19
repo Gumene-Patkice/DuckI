@@ -132,35 +132,8 @@ namespace DuckI.Tests
             Assert.That(_driver.Url, Is.EqualTo("https://localhost:44385/Pdf/ViewPublicMaterial"));
         }
 
-        // Test za upload kalendara
-        [Test, Order(6)]
-        public void TestFileUpload()
-        {
-            _driver.Navigate().GoToUrl("https://localhost:44385/Identity/Account/Login");
-
-            var usernameField = _driver.FindElement(By.Id("Input_Email"));
-            var passwordField = _driver.FindElement(By.Id("Input_Password"));
-            var loginButton = _driver.FindElement(By.Id("login-submit"));
-
-            usernameField.SendKeys(_testEmail);
-            passwordField.SendKeys(_testPassword);
-            loginButton.Click();
-
-            _driver.Navigate().GoToUrl("https://localhost:44385/Home/UploadCalendar");
-
-            var fileInput = _driver.FindElement(By.ClassName("form-control"));
-            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestingCalendar.csv");
-
-            fileInput.SendKeys(filePath);
-
-            var uploadButton = _driver.FindElement(By.CssSelector(".btn.btn-primary"));
-            uploadButton.Click();
-
-            Assert.That(_driver.Url, Is.EqualTo("https://localhost:44385/"));
-        }
-
         // Test za potpun proces od logina do uploadanja pdf-a
-        [Test, Order(7)]
+        [Test, Order(6)]
         public void TestLoginAndUploadPdf()
         {
             _driver.Navigate().GoToUrl("https://localhost:44385/Identity/Account/Login");
@@ -217,6 +190,38 @@ namespace DuckI.Tests
             Assert.That(confirmationText, Is.EqualTo("File uploaded successfully."));
         }
 
+        // Test za upload kalendara
+        [Test, Order(7)]
+        public void TestFileUpload()
+        {
+            _driver.Navigate().GoToUrl("https://localhost:44385/Identity/Account/Login");
+
+            var usernameField = _driver.FindElement(By.Id("Input_Email"));
+            var passwordField = _driver.FindElement(By.Id("Input_Password"));
+            var loginButton = _driver.FindElement(By.Id("login-submit"));
+            
+            usernameField.SendKeys(_testEmail);
+            passwordField.SendKeys(_testPassword);
+            loginButton.Click();
+
+            var calendarButton = _driver.FindElement(By.XPath("//a[@href='/Home/Calendar']"));
+            calendarButton.Click();
+            
+            var uploadCalendarButton = _driver.FindElement(By.XPath("//button[text()='Upload Calendar']"));
+            uploadCalendarButton.Click();
+            
+            var fileInput = _driver.FindElement(By.Id("file"));
+            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            var projectPath = Directory.GetParent(basePath).Parent.Parent.Parent.FullName;
+            var filePath = Path.Combine(projectPath, "Tests", "TestingCalendar.csv");
+            var confirmCalendarButton = _driver.FindElement(By.XPath("//button[text()='Upload']"));
+            
+            fileInput.SendKeys(filePath);
+            confirmCalendarButton.Click();
+
+            Assert.That(_driver.Url, Is.EqualTo("https://localhost:44385/"));
+        }
+        
         // Testing uploading something that isn't a pdf, calendar used as exsample
         [Test, Order(8)]
         public void TestLoginAndUploadNonPdf()
@@ -299,7 +304,7 @@ namespace DuckI.Tests
             Assert.That(firstEventTextDiv.Text, Is.EqualTo("Test event"));
         }
 
-    // Test deletanja novostvorenog usera
+        // Test deletanja novostvorenog usera
         [Test, Order(10)]
         public void TestDeleteUser()
         {
@@ -321,9 +326,6 @@ namespace DuckI.Tests
             
             var lastButton = _driver.FindElement(By.XPath("(//button[contains(@class, 'btn btn-danger')])[last()]"));
             lastButton.Click();
-
-            var confirmButton = _driver.FindElement(By.XPath("//button[text()='Delete']"));
-            confirmButton.Click();
             
             bool isEmailPresent = _driver.PageSource.Contains(_testEmail);
             

@@ -28,7 +28,6 @@
                         Add relevant tags to your PDF using the drop table.</p>
                     <div class="form-group w-50">
                         <select class="form-control form-bg-color" id="tagName" name="tagName" required>
-                            <option value="NO TAG">NO TAG</option>
                             @foreach (var tag in ViewBag.Tags)
                             {
                                 <option value="@tag.Value">@tag.Text</option>
@@ -39,9 +38,9 @@
                 
                 
                 <div class="d-flex justify-content-start align-items-center gap-4">
-                    <button id="submit-button" class="btn btn-primary" type="submit">Upload Private PDF</button>
-                    <div id="notification" class="fw-bold notification">File uploaded successfully.</div>
-                    <div id="error" class="fw-bold error"></div>
+                    <button class="btn btn-primary" type="submit">Upload Private PDF</button>
+                    <div id="notification" class="fw-bold notification msg-animation">File uploaded successfully.</div>
+                    <div id="error" class="fw-bold error msg-animation"></div>
                 </div>
                 
             </form>
@@ -84,8 +83,8 @@
 
                 <div class="d-flex justify-content-start align-items-center gap-4">
                     <button class="btn btn-primary" type="submit">Upload Public PDF</button>
-                    <div id="notification" class="fw-bold notification">File uploaded successfully.</div>
-                    <div id="error" class="fw-bold error"></div>
+                    <div id="notification" class="fw-bold notification msg-animation">File uploaded successfully.</div>
+                    <div id="error" class="fw-bold error msg-animation"></div>
                 </div>
 
             </form>
