@@ -59,3 +59,8 @@ input::placeholder {
 @keyframes fade {
     from {font-size: 2px}
 }
+
+.delete-user-container {
+    max-height: 450px;
+    overflow-y: auto;
+}

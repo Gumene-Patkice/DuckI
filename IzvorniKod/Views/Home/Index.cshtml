@@ -5,10 +5,11 @@
     var uploadSuccess = TempData["UploadSuccess"] as bool?;
 }
 
+<link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true" />
+
 @if (User.IsInRole("SuperStudent") || User.IsInRole("Educator") || User.IsInRole("Admin") || User.IsInRole("Reviewer"))
 {
-    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/pdf.css" asp-append-version="true" />
     
    <div class="text-center text-primary">
         <h1 class="display-4">Welcome To DuckI</h1>
@@ -91,45 +92,27 @@
                                         <div>@(pdf.IsPublic ? "Public" : "Private")</div>
                                         @if (pdf.Rating > 0)
                                         {
-                                            @if (User.IsInRole("SuperStudent"))
+                                            @if (pdf.IsPublic)
                                             {
                                                 <div id="rating-1" class="element-width2 positive-rating fw-bold">
-                                                    +@pdf.Rating
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div id="rating-1" class="element-width2 positive-rating fw-bold w-100">
                                                     +@pdf.Rating
                                                 </div>
                                             }
                                         }
                                         else if (pdf.Rating == 0)
                                         {
-                                            @if (User.IsInRole("SuperStudent"))
+                                            @if (pdf.IsPublic)
                                             {
                                                 <div id="rating-1" class="element-width2 positive-rating fw-bold">
-                                                    @pdf.Rating
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div id="rating-1" class="element-width2 positive-rating fw-bold w-100">
                                                     @pdf.Rating
                                                 </div>
                                             }
                                         }
                                         else
                                         {
-                                            @if (User.IsInRole("SuperStudent"))
+                                            @if (pdf.IsPublic)
                                             {
                                                 <div id="rating-2" class="element-width2 negative-rating fw-bold">
-                                                    @pdf.Rating
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div id="rating-2" class="element-width2 negative-rating fw-bold w-100">
                                                     @pdf.Rating
                                                 </div>
                                             }
@@ -184,6 +167,27 @@
                 </div>
             </div>
         }
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="d-flex flex-column gap-3 align-items-center align-self-center">
+                <h3 class="text-primary">As Admin, you can:</h3>
+                <ul>
+                    <li class="mb-2">Recruit and overlook new Educators and Reviewers</li>
+                    <li class="mb-2">Manage and add new Tags for Students<br/>and Educators to use</li>
+                </ul>
+            </div>
+        }
+        
+        @if (User.IsInRole("Reviewer"))
+        {
+            <div class="d-flex flex-column gap-3 align-items-center align-self-center">
+                <h3 class="text-primary">As Reviewer, you can:</h3>
+                <ul>
+                    <li class="mb-2">Review publicly available material</li>
+                    <li class="mb-2">Remove publicly available material if necessary</li>
+                </ul>
+            </div>
+        }
 
         <div id="weekEvents" class="container"></div>
     </div>
@@ -196,24 +200,24 @@ else if (User.IsInRole("Student"))
 }
 else if (!User.IsInRole("Student"))
 {
-    <div class="d-flex flex-lg-row flex-column gap-5">
-        <div class="bg-primary w-25 p-2 align-self-center text-center" style="border-radius: 40px">
-            <img src="~/images/duck.png" class="w-75" alt="DuckI">
+    <div class="d-flex flex-column gap-5 row-cols-lg-4">
+        <div class="logo-border-radius bg-primary w-25 p-2 align-self-center text-center">
+            <img src="~/images/duck.png" class="w-25" alt="DuckI">
         </div>
         <div class="d-flex gap-4 flex-column ms-5 align-self-center">
             <span>
-                <h3 class="text-primary">Welcome to DuckI!</h3>
-                <h4>An app made for students, by students.</h4>
+                <h3 class="text-primary text-center mb-lg-4 mb-1">Welcome to DuckI!</h3>
+                <h5 class="text-center mb-lg-4 mb-1">An app made for students, by students.</h5>
             </span>
             <span>
-                <p>In this app you can:</p>
+                <p class="fw-bold mb-4">In this app you can:</p>
                 <ul>
-                    <li>Upload PDFs: Easily upload your study materials in the form of <br/>PDFs</li>
-                    <li>Create Flashcards: Turn your PDFs into flashcards to learn and <br/>review effectively</li>
-                    <li>Organize Your School Life: Upload your school calendar and <br/>
-                        create personalized events to sty on top of your schedule.</li>
-                    <li>Access Public Materials: Explore and download a wide range of <br/>public
-                        resources shard by the DuckI community.</li>
+                    <li class="mb-lg-3">Upload PDFs: Easily upload your study materials in the form of <br/>PDFs</li>
+                    <li class="mb-lg-3">Create Flashcards: Turn your PDFs into flashcards to learn and <br/>review effectively</li>
+                    <li class="mb-lg-3">Organize Your School Life: Upload your school calendar and <br/>
+                        create personalized events to stay on top of your schedule</li>
+                    <li class="mb-lg-3">Access Public Materials: Explore and download a wide range of <br/>public
+                        resources shared by the DuckI community</li>
                 </ul>
             </span>
         </div>
