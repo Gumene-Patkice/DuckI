@@ -134,7 +134,7 @@ public class ManagePdfService : IManagePdfService
                 PdfName = sp.PublicPdf.PdfName,
                 Rating = sp.PublicPdf.Rating,
                 TagName = sp.PublicPdf.PublicPdfTag.Tag.TagName,
-                IsPublic = false
+                IsPublic = true
             })
             .ToListAsync();
 
