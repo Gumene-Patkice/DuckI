@@ -10,8 +10,7 @@ namespace DuckI.Tests
     [TestFixture]
     class TestSuite
     {
-        // Radimo usera, nema delete metode dobre pa se generatea random username, be warned runnanje testova n puta
-        // kreira n usera
+        // Radimo usera
         private IWebDriver _driver;
         private string _testEmail = $"testuser_{Guid.NewGuid()}@exampletest.com";
         private string _testPassword = "Test@1234";
@@ -30,6 +29,7 @@ namespace DuckI.Tests
         }
 
         // lista testova, samo na dodavati testove koje zelite, order odreduje kojim se redoslijedom izvrsavaju
+        
         // TestOpeningPageDisplaysWelcomeMessage sluzi da provjeri ako se pocetni site uspjesno otvara
         [Test, Order(1)]
         public void TestOpeningPageDisplaysWelcomeMessage()
@@ -83,9 +83,7 @@ namespace DuckI.Tests
             usernameField.SendKeys(_testEmail);
             passwordField.SendKeys(_testPassword);
             loginButton.Click();
-
-            TestContext.WriteLine($"Logging in with Email: {_testEmail}, Password: {_testPassword}");
-
+            
             Assert.That(_driver.Url, Is.EqualTo("https://localhost:44385/"));
         }
 
