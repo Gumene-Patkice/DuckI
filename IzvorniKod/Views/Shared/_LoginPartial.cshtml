@@ -41,8 +41,8 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-                <img src="~/images/user-solid.svg" class="header-icon" alt="Icon">Account management
+            <a class="nav-link text-light d-flex" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                <img src="~/images/user-solid.svg" class="header-icon" alt="Icon"><span class="name-size-5">@User.Identity?.Name</span>
             </a>
         </li>
     }
