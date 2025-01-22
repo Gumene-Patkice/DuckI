@@ -192,6 +192,28 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .catch((error) => {
       console.error("Error fetching flashcards:", error);
+
+      var response =
+        typeof viewBagResponse !== "undefined" ? viewBagResponse : null;
+
+      if (response && response.Flashcards.flashcards) {
+        if (
+          response &&
+          response.Flashcards &&
+          response.Flashcards.flashcards &&
+          response.Flashcards.flashcards.length > 0
+        ) {
+          renderFlashcards(response.Flashcards.flashcards, currentTasks);
+        } else {
+          currentTasks.innerHTML = "No flashcards selected or generated.";
+        }
+      } else {
+        if (response && response.Flashcards && response.Flashcards.length > 0) {
+          renderFlashcards(response.Flashcards, currentTasks);
+        } else {
+          currentTasks.innerHTML = "No flashcards selected or generated.";
+        }
+      }
     });
 });
 
