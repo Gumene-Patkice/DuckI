@@ -55,6 +55,13 @@ h3 {
     font-size: x-large;
 }
 
+.tasks-group.selected {
+    border: 3px solid black; /* Highlight with a border */
+    box-shadow: 0 0 10px rgba(82, 113, 255, 0.5); /* Optional glow effect */
+    background-color: rgba(82, 113, 255, 0.1); /* Light background tint */
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
 .tasks-group:hover {
     cursor: pointer;
 }
@@ -176,7 +183,7 @@ p {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .tasks-nav {
         width: 98vw;
         min-width: 98vw;
@@ -185,7 +192,7 @@ p {
         height: 25vh;
         max-height: 25vh;
     }
-    
+
     #alltasks {
         min-width: 98vw;
         width: 98vw;
@@ -207,7 +214,7 @@ p {
         max-height: 141px;
         font-size: larger;
     }
-    
+
     .tasks-main {
         min-width: 98vw;
         width: 98vw;
@@ -227,16 +234,16 @@ p {
         height: 251px;
         max-height: 251px;
     }
-    
+
     p {
         font-size: larger;
     }
-    
+
     .star-icon {
         top: 0;
         right: 1px;
     }
-    
+
     svg {
         width: 24px;
         height: 24px;

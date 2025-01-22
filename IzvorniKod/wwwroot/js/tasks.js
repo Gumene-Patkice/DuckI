@@ -135,13 +135,22 @@ function renderFlashcards(flashcards, container) {
 
 function renderGroupedFlashcards(groups, container) {
   const currentTasks = document.getElementById("currenttasks");
+  let lastSelectedGroup = null;
 
   container.innerHTML = "";
   Object.keys(groups).forEach((title) => {
     const groupDiv = document.createElement("div");
     groupDiv.className = "tasks-group";
     groupDiv.textContent = title;
+
     groupDiv.addEventListener("click", () => {
+      if (lastSelectedGroup) {
+        lastSelectedGroup.classList.remove("selected");
+      }
+
+      groupDiv.classList.add("selected");
+      lastSelectedGroup = groupDiv;
+
       renderFlashcards(groups[title], currentTasks);
     });
     container.appendChild(groupDiv);

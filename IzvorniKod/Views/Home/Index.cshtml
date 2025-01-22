@@ -34,7 +34,7 @@
             <div id="pdf-container" class="container">
                 @if (User.IsInRole("SuperStudent"))
                 {
-                    <h2>List of your Private and Flagged PDFs</h2>
+                    <h2>List of your Private and Saved PDFs</h2>
                 }
                 @if (User.IsInRole("Educator"))
                 {
@@ -149,7 +149,7 @@
                                             {
                                                 <form class="unflag-form" data-pdf-id="@pdf.PdfId" style="display:inline;">
                                                     <input type="hidden" name="publicPdfId" value="@pdf.PdfId"/>
-                                                    <button type="submit" class="btn btn-danger">Unflag</button>
+                                                    <button type="submit" class="btn btn-danger">Remove</button>
                                                 </form>
                                                 <form action="@Url.Action("RatePdf", "Home")" method="post" style="display:inline;">
                                                     <input type="hidden" name="pdfId" value="@pdf.PdfId"/>
