@@ -12,7 +12,7 @@
 {
     
    <div class="text-center text-primary">
-        <h1 class="display-4">Welcome To DuckI</h1>
+        <h1 class="display-4 fw-bold">Welcome To DuckI</h1>
     </div>
    
     @if (User.IsInRole("SuperStudent"))
@@ -25,8 +25,7 @@
     }
     
     <div class="text-center">
-        <h1 class="display-4  text-primary">User</h1>
-        <p>Enjoy your stay!</p>
+        <h1 class="display-5 text-primary">Enjoy your stay!</h1>
     </div>
 
     <div id="main-container" class="container justify-content-between gap-4 d-flex pt-4 row-cols-2">
@@ -62,7 +61,7 @@
 
                 <div id="sortBtn" class="d-flex gap-3 align-items-center">
                     <p class="text-break align-self-center mt-2">Sort the PDFs alphabetically</p>
-                    <button id="sortButton" class="btn btn-primary align-self-center">Sort</button>
+                    <button id="sortButton" class="btn btn-primary align-self-center mt-2">Sort</button>
                 </div>
 
                 <div class="bg-table rounded">
@@ -170,10 +169,11 @@
         @if (User.IsInRole("Admin"))
         {
             <div class="d-flex flex-column gap-3 align-items-center align-self-center">
-                <h3 class="text-primary">As Admin, you can:</h3>
-                <ul>
-                    <li class="mb-2">Recruit and overlook new Educators and Reviewers</li>
-                    <li class="mb-2">Manage and add new Tags for Students<br/>and Educators to use</li>
+                <ul class="fs-5">
+                    <h3 class="text-primary fw-bold">As Admin, you can:</h3>
+                    <li class="mb-2 ms-4">Recruit new Educators and Reviewers</li>
+                    <li class="mb-2 ms-4">Manage and add new Tags for Students and Educators to use</li>
+                    <li class="mb-2 ms-4">Oversee and remove users if necessary</li>
                 </ul>
             </div>
         }
@@ -181,10 +181,10 @@
         @if (User.IsInRole("Reviewer"))
         {
             <div class="d-flex flex-column gap-3 align-items-center align-self-center">
-                <h3 class="text-primary">As Reviewer, you can:</h3>
-                <ul>
-                    <li class="mb-2">Review publicly available material</li>
-                    <li class="mb-2">Remove publicly available material if necessary</li>
+                <ul class="fs-5">
+                    <h3 class="text-primary fw-bold">As Reviewer, you can:</h3>
+                    <li class="mb-2 ms-4">Review publicly available material</li>
+                    <li class="mb-2 ms-4">Remove publicly available material if necessary</li>
                 </ul>
             </div>
         }
@@ -201,16 +201,16 @@ else if (User.IsInRole("Student"))
 else if (!User.IsInRole("Student"))
 {
     <div class="d-flex flex-column gap-5 row-cols-lg-4">
-        <div class="logo-border-radius bg-primary w-25 p-2 align-self-center text-center">
-            <img src="~/images/duck.png" class="w-25" alt="DuckI">
+        <div class="d-flex justify-content-center align-items-center greet-screen-logo bg-primary align-self-center">
+            <img src="~/images/duck.png" class="w-75" alt="DuckI">
         </div>
-        <div class="d-flex gap-4 flex-column ms-5 align-self-center">
+        <div class="d-flex gap-4 flex-column align-self-center">
             <span>
-                <h3 class="text-primary text-center mb-lg-4 mb-1">Welcome to DuckI!</h3>
+                <h3 class="text-primary fw-bold text-center mb-lg-4 mb-1 fs-2">Welcome to DuckI!</h3>
                 <h5 class="text-center mb-lg-4 mb-1">An app made for students, by students.</h5>
             </span>
             <span>
-                <p class="fw-bold mb-4">In this app you can:</p>
+                <p class="fw-bold mb-4 fs-5">In this app you can:</p>
                 <ul>
                     <li class="mb-lg-3">Upload PDFs: Easily upload your study materials in the form of PDFs</li>
                     <li class="mb-lg-3">Create Flashcards: Turn your PDFs into flashcards to learn and review effectively</li>
