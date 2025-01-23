@@ -28,7 +28,6 @@
                         Add relevant tags to your PDF using the drop table.</p>
                     <div class="form-group w-50">
                         <select class="form-control form-bg-color" id="tagName" name="tagName" required>
-                            <option value="" disabled selected>Select your tag</option>
                             @foreach (var tag in ViewBag.Tags)
                             {
                                 <option value="@tag.Value">@tag.Text</option>
