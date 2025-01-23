@@ -28,7 +28,7 @@
                 }
                 else if (User.IsInRole("SuperStudent"))
                 {
-                    <p class="text-break mt-2">Student view! You can use this page to go through the material, flag it or rate it.</p>
+                    <p class="text-break mt-2">Student view! You can use this page to go through the material, save it or rate it.</p>
                 }
                 else if (User.IsInRole("Admin"))
                 {
@@ -137,7 +137,7 @@
                             {
                                 <form class="flag-form w-50" data-pdf-id="@pdf.PublicPdfId">
                                     <input type="hidden" name="publicPdfId" value="@pdf.PublicPdfId"/>
-                                    <button type="submit" class="btn btn-warning">Flag PDF</button>
+                                    <button type="submit" class="btn btn-warning">Save PDF</button>
                                 </form>
 
                                 <form action="@Url.Action("RatePdf", "Pdf")" method="post">

@@ -28,7 +28,12 @@ function createFlashcard(card) {
 
   const starIcon = document.createElement("div");
   starIcon.className = "star-icon";
-  const isSaved = savedQuestions.includes(card.question);
+  const isSaved = savedQuestions.some(
+    (savedCard) =>
+      savedCard.title === card.title &&
+      savedCard.question === card.question &&
+      savedCard.answer === card.answer,
+  );
 
   const regularStarSVG = `
     <svg fill="#FFE052" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="42" height="42">
@@ -47,12 +52,17 @@ function createFlashcard(card) {
   starIcon.addEventListener("click", async function (event) {
     event.stopPropagation();
 
-    const isSaved = savedQuestions.includes(card.question);
+    const isSaved = savedQuestions.some(
+      (savedCard) =>
+        savedCard.title === card.title &&
+        savedCard.question === card.question &&
+        savedCard.answer === card.answer,
+    );
 
     if (!isSaved) {
       try {
         await SaveFlashcard(card.title, card.question, card.answer);
-        savedQuestions.push(card.question);
+        savedQuestions.push(card);
         starIcon.innerHTML = solidStarSVG;
 
         const flashcards = await getAllFlashcards();
@@ -65,7 +75,12 @@ function createFlashcard(card) {
     } else {
       try {
         await DeleteFlashcard(card.title, card.question, card.answer);
-        savedQuestions = savedQuestions.filter((q) => q !== card.question);
+        savedQuestions = savedQuestions.filter(
+          (savedCard) =>
+            savedCard.title !== card.title ||
+            savedCard.question !== card.question ||
+            savedCard.answer !== card.answer,
+        );
         starIcon.innerHTML = regularStarSVG;
 
         const flashcards = await getAllFlashcards();
@@ -120,13 +135,22 @@ function renderFlashcards(flashcards, container) {
 
 function renderGroupedFlashcards(groups, container) {
   const currentTasks = document.getElementById("currenttasks");
+  let lastSelectedGroup = null;
 
   container.innerHTML = "";
   Object.keys(groups).forEach((title) => {
     const groupDiv = document.createElement("div");
     groupDiv.className = "tasks-group";
     groupDiv.textContent = title;
+
     groupDiv.addEventListener("click", () => {
+      if (lastSelectedGroup) {
+        lastSelectedGroup.classList.remove("selected");
+      }
+
+      groupDiv.classList.add("selected");
+      lastSelectedGroup = groupDiv;
+
       renderFlashcards(groups[title], currentTasks);
     });
     container.appendChild(groupDiv);
@@ -143,32 +167,54 @@ document.addEventListener("DOMContentLoaded", function () {
         const groupedFlashcards = groupFlashcardsByTitle(flashcards);
         renderGroupedFlashcards(groupedFlashcards, allTasks);
       }
+
+      var response =
+        typeof viewBagResponse !== "undefined" ? viewBagResponse : null;
+
+      if (response && response.Flashcards.flashcards) {
+        if (
+          response &&
+          response.Flashcards &&
+          response.Flashcards.flashcards &&
+          response.Flashcards.flashcards.length > 0
+        ) {
+          renderFlashcards(response.Flashcards.flashcards, currentTasks);
+        } else {
+          currentTasks.innerHTML = "No flashcards selected or generated.";
+        }
+      } else {
+        if (response && response.Flashcards && response.Flashcards.length > 0) {
+          renderFlashcards(response.Flashcards, currentTasks);
+        } else {
+          currentTasks.innerHTML = "No flashcards selected or generated.";
+        }
+      }
     })
     .catch((error) => {
       console.error("Error fetching flashcards:", error);
+
+      var response =
+        typeof viewBagResponse !== "undefined" ? viewBagResponse : null;
+
+      if (response && response.Flashcards.flashcards) {
+        if (
+          response &&
+          response.Flashcards &&
+          response.Flashcards.flashcards &&
+          response.Flashcards.flashcards.length > 0
+        ) {
+          renderFlashcards(response.Flashcards.flashcards, currentTasks);
+        } else {
+          currentTasks.innerHTML = "No flashcards selected or generated.";
+        }
+      } else {
+        if (response && response.Flashcards && response.Flashcards.length > 0) {
+          renderFlashcards(response.Flashcards, currentTasks);
+        } else {
+          currentTasks.innerHTML = "No flashcards selected or generated.";
+        }
+      }
     });
-
-  var response =
-    typeof viewBagResponse !== "undefined" ? viewBagResponse : null;
-
-  if (response && response.Flashcards.flashcards) {
-    if (
-      response &&
-      response.Flashcards &&
-      response.Flashcards.flashcards &&
-      response.Flashcards.flashcards.length > 0
-    ) {
-      renderFlashcards(response.Flashcards.flashcards, currentTasks);
-    } else {
-      currentTasks.innerHTML = "No flashcards selected or generated.";
-    }
-  } else {
-    if (response && response.Flashcards && response.Flashcards.length > 0) {
-      renderFlashcards(response.Flashcards, currentTasks);
-    } else {
-      currentTasks.innerHTML = "No flashcards selected or generated.";
-    }
-  }
 });
 
 async function SaveFlashcard(title, question, answer) {
@@ -231,7 +277,11 @@ async function getAllFlashcards() {
       if (xhr.readyState === 4 && xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
         if (response && response.flashcards) {
-          savedQuestions = response.flashcards.map((card) => card.question);
+          savedQuestions = response.flashcards.map((card) => ({
+            title: card.title,
+            question: card.question,
+            answer: card.answer,
+          }));
           resolve(response.flashcards);
         } else {
           resolve([]);
