@@ -15,8 +15,10 @@ main {
     align-self: center;
 }
 
-.logo-border-radius {
-    border-radius: 40px;
+.greet-screen-logo {
+    border-radius: 30px;
+    width: 100px;
+    height: 100px;
 }
 
 h2 {

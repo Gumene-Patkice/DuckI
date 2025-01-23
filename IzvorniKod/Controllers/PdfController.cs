@@ -98,7 +98,7 @@ public class PdfController : Controller
     /// <summary>
     /// Used to render the ViewPublicMaterial view with all available public PDFs
     /// </summary>
-    [Authorize]
+    [Authorize(Roles="SuperStudent,Educator,Reviewer,Admin")]
     public async Task<IActionResult> ViewPublicMaterial()
     {
         var pdfs = await _managePdfService.GetAllPublicPdfsAsync();
@@ -153,7 +153,7 @@ public class PdfController : Controller
     /// <summary>
     ///  Used in both Index and ViewPublicMaterial views to open public PDFs.
     /// </summary>
-    [Authorize(Roles="SuperStudent,Educator,Reviewer")]
+    [Authorize(Roles="SuperStudent,Educator,Reviewer,Admin")]
     [HttpPost]
     public async Task<IActionResult> OpenPublicPdf([FromForm] long pdfId)
     {
