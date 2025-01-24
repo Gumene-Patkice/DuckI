@@ -3,21 +3,25 @@
 # Opis projekta
 Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
 
-Kao projektni zadatak izvodit će se aplikacija za pomoć pri učenju u obliku AI asistenta. Koristeći materijale tekstualnih oblika poput PDF, AI asistent bi kreirao brojan sadržaj s kojim bi se korisnik mogao bolje shvatiti određenu temu uz osjećaj personaliziranog podučavanja. Uz studente aplikaciju bi koristili i edukatori koji bi imali mogućnost objavljivanja svog sadržaja, resursa i materijala koje može koristiti student ili ih AI asistent može koristiti kao izvor podataka. Nad edukatorima nadgledaju i administratori čija je uloga provjeravati točnost sadržaja koji su dodali edukatori. 
+Kao projektni zadatak izvodit će se aplikacija za pomoć pri učenju u obliku AI asistenta. Koristeći materijale tekstualnih oblika u PDF formatu, AI asistent bi kreirao brojan sadržaj s kojim bi korisnik mogao bolje shvatiti određenu temu uz osjećaj personaliziranog podučavanja. Uz studente aplikaciju bi koristili i edukatori koji bi imali mogućnost objavljivanja svog sadržaja, resursa i materijala, također u PDF formatu, koje može koristiti student ili ih AI asistent može koristiti kao izvor podataka. Nad edukatorima nadgledaju i recezenti (engl. Reviewers) čija je uloga provjeravati točnost sadržaja koji su dodali edukatori i po potrebi ih izbrisati. Administratori imaju mogućnosti dodavanje oznaka u sustav koje se koriste za označavanje PDF dokumenata (engl. Tags) te dodijeljivanje uloga korisniku i brisanje korisnika iz sustava. 
 
-Studentu aplikacija služi za spremište i upravljanje svojim materijalima. Kada će student htjeti interakciju s AI asistentom, generirali bi se resursi u obliku raznih zadataka, „flashcards“-ova, te ostalih oblika učenja koje bi studentu pomogle pri savladavanju određenih tema. Kao izvore podataka bi se koristili upravo materijali koji su spremljeni na aplikaciju, tako da se svakome studentu može kreirati točno taj sadržaj koji njemu treba.
+Studentu aplikacija služi za spremište i upravljanje svojim materijalima. Kada će student htjeti interakciju s AI asistentom, generirali bi se resursi u obliku raznih flash kartica što bi studentu pomoglo pri savladavanju određenih tema. Kao izvore podataka bi se koristili upravo materijali koji su spremljeni na aplikaciju, tako da se svakome studentu može kreirati točno taj sadržaj koji njemu treba.
 
-AI asistent je izveden pomoću Google Gemini 1.5 Flash modela. Model će primati dokumente (poput PDF-a), te na temelju njih stvoriti sadržaj, zadatke i ostale resurse koji bi pomogli studentu. Student sam bira dokumente iz kojih želi generirati sadržaj.
+AI asistent je izveden pomoću Google Gemini 1.5 Flash modela. Model će primati dokumente (PDF format), te na temelju njih stvoriti sadržaj, zadatke i ostale resurse koji bi pomogli studentu. Student sam bira dokumente iz kojih želi generirati sadržaj.
 
-Uz studenta, aplikacijom se mogu koristiti i edukatori koji bi imali mogućnost kreiranja i dodavanja svojih materijala za koje oni smatraju da bi mogli pomoći studentu, te se student može pretplatiti na dodatne materijale što bi omogućilo AI asistentu da se služi s tim materijalima pri generiranju sadržaja.
+Uz studenta, aplikacijom se mogu koristiti i edukatori koji bi imali mogućnost kreiranja i dodavanja svojih materijala za koje oni smatraju da bi mogli pomoći studentu, te student može spremiti dodatne materijale što bi omogućilo AI asistentu da se služi s tim materijalima pri generiranju sadržaja.
 
-Edukatore nadzire administrator koji se bavi pregledom sadržaja i rada edukatora, te se bavi prijavama, poput neispravnog sadržaja ili sličnog. Oni bi odobravali edukatore, resurse i bavili time da je sadržaj aplikacije i rad edukatora u skladu sa pravilima ponašanja.
+Materijale edukatora kontroliraju recezenti. Recezenti mogu izbrisati javni materijal koji smatraju da ne zadovoljava zahtjeve kvalitete. Pri brisanju recezenti ostavljaju povratnu poruku kako bi edukator koji je vlasnik materijala bio upućen u razloge brisanja.
 
-Svi korisnici aplikacije se moraju prijaviti i potvrditi svoj identitet, te je u tu svrhu korištena OAuth2 autentifikacija. Responzivnost će biti ostvarena pomoću modernih alata poput JavaScript-a i Bootstrap CSS-a. U tu svrhu, koristit će se principi responzivnog dizajna za dinamičku prilagodbu korisničkog sučelja različitim veličinama i razlučivostima zaslona.
+Administratori nadgledaju rad korisnika u sustavu i dodavaju oznake za PDF dokumente. Administrator je zadužen za dodavanje uloge korisniku te za brisanje korisnika ako smatra da njihovo ponašanje ugrožava sustav.
 
-Aplikacija također sadrži kalendar preko kojega studenti mogu upravljati svoj raspored sati. Mogu staviti svoj predefinirani raspored iz .csv datoteke ili izraditi svoj klikanjem na željene datume.
+Svi korisnici aplikacije se moraju prijaviti i potvrditi svoj identitet, te je u tu svrhu korištena OAuth2 autentifikacija. Koristit će se principi responzivnog dizajna za dinamičku prilagodbu korisničkog sučelja različitim veličinama i razlučivostima zaslona.
 
-Studenti mogu ostaviti recenzije o materijalima, na bazi tih recenzija se odabiru najprimjereniji materijali za učenje.
+Aplikacija također sadrži kalendar preko kojega korisnici mogu upravljati svojim rasporedom sati. Mogu staviti svoj predefinirani raspored iz .csv datoteke ili izraditi svoj klikanjem na željene datume.
+
+Svim korisnicima koji imaju neku od uloga sustava (Administrator, Edukator, Recezent, Student) dozvoljeno je upravljati personaliziranim kalendarom.
+
+Studenti mogu ostaviti recenzije o materijalima. Te recenzije studenti i ostali korisnici mogu koristiti u svrhu procijenjivanja vjerodostojnosti materijala.
 
 # Cilj i motivacija? 
 Ideja iza projekta je napraviti aplikaciju koja može pomoći prosječnome studentu/učeniku uz pomoć AI asistenta raditi prilagođene materijale za učenje te učiniti učenje pristupačnijim,
@@ -25,30 +29,36 @@ također s dodatkom edukatora u sistem ova aplikacija može se lagano prilagodit
 
 # Funkcijski zahtjevi
 | ID zahtjeva | Opis | Prioritet | Izvor | Kriteriji prihvaćanja |
-|-------------|------|-----------|-------|------------------------|
+|---|---|---|---|---|
 | F-001 | Sustav omogućuje korisnicima registraciju putem e-mail adrese ili OAuth2 autentifikacije. | Visok | Zahtjev dionika | Korisnik može kreirati račun putem e-maila, primiti potvrdu i uspješno se prijaviti. |
-| F-002 | Sustav omogućuje studentima dodavanje vlastitih materijala (PDF, tekstualne datoteke) u osobni profil. | Visok | Zahtjev dionika | Student može uspješno prenijeti materijale i pregledati ih unutar aplikacije. |
-| F-003 | Sustav omogućuje generiranje personaliziranih zadataka i “flashcards”-a iz odabranih materijala putem AI asistenta. | Visok | Specifikacija projekta | Na temelju priloženih materijala, AI kreira prilagođeni sadržaj za korisnika. |
+| F-002 | Sustav omogućuje studentima dodavanje vlastitih materijala (PDF) u osobni profil. | Visok | Zahtjev dionika | Student može uspješno prenijeti materijale i pregledati ih unutar aplikacije. |
+| F-003 | Sustav omogućuje Studentima generiranje personaliziranih “flashcards”-a iz odabranih materijala putem AI asistenta. | Visok | Specifikacija projekta | Na temelju priloženih materijala, AI kreira prilagođeni sadržaj za korisnika. |
 | F-004 | Edukatori mogu objavljivati dodatne obrazovne resurse dostupne studentima. | Srednji | Povratne informacije korisnika | Edukator može uspješno dodati resurse, a studenti ih mogu pregledati i koristiti. |
 | F-005 | Revieweri mogu pregledati i brisati sadržaj objavljen od strane edukatora. | Visok | Zahtjev dionika | Reviewer može uspješno pregledati i potvrditi/odbiti dodane resurse. |
-| F-006 | Aplikacija omogućuje studentima pregled rasporeda ispita kroz kalendar. | Srednji | Specifikacija projekta | Student može dodati termine ispita u kalendar i pregledati ih kasnije. |
-| F-007 | Sustav omogućuje korisnicima ocjenjivanje materijala. | Srednji | Specifikacija projekta | Korisnik može ostaviti recenziju na materijal, a najbolji materijali se prikazuju kao preporučeni. |
-| F-008 | Student može uploadati kalendar u obliku CSV datoteke. | Srednji | Zahtjev dionika | Student može uspješno prenijeti CSV datoteku, a sustav je prikazuje u osobnom kalendaru unutar aplikacije. |
-| F-009 | Korisnici mogu brisati vlastiti sadržaj s aplikacije. | Visok | Zahtjev dionika | Korisnici mogu uspješno ukloniti svoj preneseni sadržaj iz aplikacije. |
-| F-010 | Administrator može odobravati nove edukatore na sustavu. | Visok | Zahtjev dionika | Administrator može pregledati i odobriti/odbiti zahtjeve edukatora za pridruživanje sustavu. |
-| F-011 | Reviewer i administrator nadgledaju i brišu nepremjerene i neispravne recenzije. | Nizak | Zahtjev dionika | Reviewer i administrator mogu brisati recenzije. |
+| F-006 | Aplikacija omogućuje svim korisnicima osim default usera pregled rasporeda ispita kroz kalendar. | Srednji | Specifikacija projekta | Svi osim default usera može dodati termine ispita u kalendar i pregledati ih kasnije. |
+| F-007 | Sustav omogućuje studentima ocjenjivanje materijala. | Srednji | Specifikacija projekta | Student može ostaviti recenziju na materijal. |
+| F-008 | Svi osim default usera mogu uploadati kalendar u obliku CSV datoteke. | Srednji | Zahtjev dionika | Svi osim default usera mogu uspješno prenijeti CSV datoteku, a sustav je prikazuje u osobnom kalendaru unutar aplikacije. |
+| F-009 | Korisnici mogu brisati vlastiti sadržaj s aplikacije | Visok | Zahtjev dionika | Svi korisnici koji mogu staviti sadržaj na aplikaciju mogu ga i izbrisati. |
+| F-010 | Administrator može odobravati nove edukatore i rewievere na sustavu. | Visok | Zahtjev dionika | Administrator može pregledati i odobriti/odbiti zahtjeve edukatora za pridruživanje sustavu. |
+| F-011 | Administrator može izbrisati korisnike sa sustava | Srednji | Zahtjev dionika | Administrator briše korisnika i sve što je korisnik stavio na sustav. |
+| F-012 | Pregledavanje i dodavanje tag-ova od strane administratora. | Srednji | Zahtjev dionika | Administrator treba moći kreirati i brisati tag-ove. |
+| F-013 | Default user se može prijaviti na role | Visoki | Zahtjev dionika | Default user može prijaviti za Studenta ili poslati prijavu za role Edukatora i Reviewera. |
+| F-014 | Student može pregledati javne i svoje osobne materijale | Visoki | Zahtjev dionika | Student može pregledati javne i svoje osobne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
+| F-015 | Edukator može pregledavati javno dostupne materijale. | Visoki | Zahtjev dionika | Edukator može pregledavati javno dostupne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
+| F-016 | Recezent može pregledavati javno dostupne materijale. | Visoki | Zahtjev dionika | Recezent može pregledavati javno dostupne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
+| F-017 | Administrator može pregledavati javno dostupne materijale. | Visoki | Zahtjev dionika | Administrator može pregledavati javno dostupne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
 
 
 
 # Tehnologije
 
-Frontend - jQuery, Bootstrap
+Frontend - Razor, Bootstrap
 
 Backend - ASP .NET
 
 Database - SQLite
 
-Project Management - JIRA + Confluence
+Project Management - JIRA + Confluence + Github
 
 # Članovi tima 
 
