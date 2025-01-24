@@ -86,7 +86,7 @@ document.querySelectorAll('.flag-form').forEach(form => {
             msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
             msg.style.color = "orangered";
             msg.style.display = "block";
-            msg.innerHTML = "The selected PDF has already been flagged!"
+            msg.innerHTML = "The selected PDF has already been saved!"
             document.getElementById("nextToMsg").appendChild(msg)
 
         } else {
@@ -99,7 +99,7 @@ document.querySelectorAll('.flag-form').forEach(form => {
             msg.setAttribute("class", "text-center flag-message fw-bold msg-animation")
             msg.style.color = "orangered";
             msg.style.display = "block";
-            msg.innerHTML = "Failed to flag the PDF."
+            msg.innerHTML = "Failed to save the PDF."
             document.getElementById("nextToMsg").appendChild(msg)
         }
     });

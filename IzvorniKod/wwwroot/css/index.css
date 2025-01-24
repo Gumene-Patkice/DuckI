@@ -15,6 +15,11 @@ main {
     align-self: center;
 }
 
+.table-size {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
 .greet-screen-logo {
     border-radius: 30px;
     width: 100px;
