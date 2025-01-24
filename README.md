@@ -3,7 +3,7 @@
 # Opis projekta
 Ovaj projekt je reultat timskog rada u sklopu projeknog zadatka kolegija [Programsko inženjerstvo](https://www.fer.unizg.hr/predmet/proinz) na Fakultetu elektrotehnike i računarstva Sveučilišta u Zagrebu.
 
-Kao projektni zadatak izvodit će se aplikacija za pomoć pri učenju u obliku AI asistenta. Koristeći materijale tekstualnih oblika u PDF formatu, AI asistent bi kreirao brojan sadržaj s kojim bi korisnik mogao bolje shvatiti određenu temu uz osjećaj personaliziranog podučavanja. Uz studente aplikaciju bi koristili i edukatori koji bi imali mogućnost objavljivanja svog sadržaja, resursa i materijala, također u PDF formatu, koje može koristiti student ili ih AI asistent može koristiti kao izvor podataka. Nad edukatorima nadgledaju i recezenti (engl. Reviewers) čija je uloga provjeravati točnost sadržaja koji su dodali edukatori i po potrebi ih izbrisati. Administratori imaju mogućnosti dodavanje oznaka u sustav koje se koriste za označavanje PDF dokumenata (engl. Tags) te dodijeljivanje uloga korisniku i brisanje korisnika iz sustava. 
+Kao projektni zadatak izvodit će se aplikacija za pomoć pri učenju u obliku AI asistenta. Koristeći materijale tekstualnih oblika u PDF formatu, AI asistent bi kreirao brojan sadržaj s kojim bi korisnik mogao bolje shvatiti određenu temu uz osjećaj personaliziranog podučavanja. Uz studente aplikaciju bi koristili i edukatori koji bi imali mogućnost objavljivanja svog sadržaja, resursa i materijala, također u PDF formatu, koje može koristiti student ili ih AI asistent može koristiti kao izvor podataka. Nad edukatorima nadgledaju i recenzenti (engl. Reviewers) čija je uloga provjeravati točnost sadržaja koji su dodali edukatori i po potrebi ih izbrisati. Administratori imaju mogućnosti dodavanje oznaka u sustav koje se koriste za označavanje PDF dokumenata (engl. Tags) te dodijeljivanje uloga korisniku i brisanje korisnika iz sustava. 
 
 Studentu aplikacija služi za spremište i upravljanje svojim materijalima. Kada će student htjeti interakciju s AI asistentom, generirali bi se resursi u obliku raznih flash kartica što bi studentu pomoglo pri savladavanju određenih tema. Kao izvore podataka bi se koristili upravo materijali koji su spremljeni na aplikaciju, tako da se svakome studentu može kreirati točno taj sadržaj koji njemu treba.
 
@@ -11,7 +11,7 @@ AI asistent je izveden pomoću Google Gemini 1.5 Flash modela. Model će primati
 
 Uz studenta, aplikacijom se mogu koristiti i edukatori koji bi imali mogućnost kreiranja i dodavanja svojih materijala za koje oni smatraju da bi mogli pomoći studentu, te student može spremiti dodatne materijale što bi omogućilo AI asistentu da se služi s tim materijalima pri generiranju sadržaja.
 
-Materijale edukatora kontroliraju recezenti. Recezenti mogu izbrisati javni materijal koji smatraju da ne zadovoljava zahtjeve kvalitete. Pri brisanju recezenti ostavljaju povratnu poruku kako bi edukator koji je vlasnik materijala bio upućen u razloge brisanja.
+Materijale edukatora kontroliraju recenzenti. Recenzenti mogu izbrisati javni materijal koji smatraju da ne zadovoljava zahtjeve kvalitete. Pri brisanju recenzenti ostavljaju povratnu poruku kako bi edukator koji je vlasnik materijala bio upućen u razloge brisanja.
 
 Administratori nadgledaju rad korisnika u sustavu i dodavaju oznake za PDF dokumente. Administrator je zadužen za dodavanje uloge korisniku te za brisanje korisnika ako smatra da njihovo ponašanje ugrožava sustav.
 
@@ -19,7 +19,7 @@ Svi korisnici aplikacije se moraju prijaviti i potvrditi svoj identitet, te je u
 
 Aplikacija također sadrži kalendar preko kojega korisnici mogu upravljati svojim rasporedom sati. Mogu staviti svoj predefinirani raspored iz .csv datoteke ili izraditi svoj klikanjem na željene datume.
 
-Svim korisnicima koji imaju neku od uloga sustava (Administrator, Edukator, Recezent, Student) dozvoljeno je upravljati personaliziranim kalendarom.
+Svim korisnicima koji imaju neku od uloga sustava (Administrator, Edukator, Recenzent, Student) dozvoljeno je upravljati personaliziranim kalendarom.
 
 Studenti mogu ostaviti recenzije o materijalima. Te recenzije studenti i ostali korisnici mogu koristiti u svrhu procijenjivanja vjerodostojnosti materijala.
 
@@ -45,7 +45,7 @@ također s dodatkom edukatora u sistem ova aplikacija može se lagano prilagodit
 | F-013 | Default user se može prijaviti na role | Visoki | Zahtjev dionika | Default user može prijaviti za Studenta ili poslati prijavu za role Edukatora i Reviewera. |
 | F-014 | Student može pregledati javne i svoje osobne materijale | Visoki | Zahtjev dionika | Student može pregledati javne i svoje osobne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
 | F-015 | Edukator može pregledavati javno dostupne materijale. | Visoki | Zahtjev dionika | Edukator može pregledavati javno dostupne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
-| F-016 | Recezent može pregledavati javno dostupne materijale. | Visoki | Zahtjev dionika | Recezent može pregledavati javno dostupne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
+| F-016 | Recenzent može pregledavati javno dostupne materijale. | Visoki | Zahtjev dionika | Recezent može pregledavati javno dostupne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
 | F-017 | Administrator može pregledavati javno dostupne materijale. | Visoki | Zahtjev dionika | Administrator može pregledavati javno dostupne materijale tako da ih direktno otvori u browseru ili preuzme na vlastiti uređaj, ovisno o uređaju. |
 
 
