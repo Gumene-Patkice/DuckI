@@ -82,6 +82,9 @@ Jan Badel - Frontend Engineer
 
 Kontribucije su vidljive i opisane u Confluence dokumentaciji.
 
+# Link na deployanu aplikaciju
+https://www.ducki.space/
+
 
 
 # 📝 Kodeks ponašanja [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
